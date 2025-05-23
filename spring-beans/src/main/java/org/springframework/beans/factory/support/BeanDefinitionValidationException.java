@@ -1,25 +1,21 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012 原作者或作者。
+*
+* 根据 Apache License, Version 2.0（以下简称“许可证”）授权；
+* 除非遵守许可证，否则不得使用此文件。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件
+* 是按“原样”提供的，不提供任何形式的质量保证或适用性保证；
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.beans.factory.support;
 
 import org.springframework.beans.FatalBeanException;
 
 /**
- * Exception thrown when the validation of a bean definition failed.
+ * 当Bean定义的验证失败时抛出的异常。
  *
  * @author Juergen Hoeller
  * @since 21.11.2003
@@ -28,22 +24,20 @@ import org.springframework.beans.FatalBeanException;
 @SuppressWarnings("serial")
 public class BeanDefinitionValidationException extends FatalBeanException {
 
-	/**
-	 * Create a new BeanDefinitionValidationException with the specified message.
-	 * @param msg the detail message
-	 */
-	public BeanDefinitionValidationException(String msg) {
-		super(msg);
-	}
+    /**
+     * 创建一个新的 BeanDefinitionValidationException，带有指定的消息。
+     * @param msg 详细消息
+     */
+    public BeanDefinitionValidationException(String msg) {
+        super(msg);
+    }
 
-	/**
-	 * Create a new BeanDefinitionValidationException with the specified message
-	 * and root cause.
-	 * @param msg the detail message
-	 * @param cause the root cause
-	 */
-	public BeanDefinitionValidationException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-
+    /**
+     * 创建一个新的 BeanDefinitionValidationException，带有指定的消息和根本原因。
+     * @param msg 详细消息
+     * @param cause 根本原因
+     */
+    public BeanDefinitionValidationException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }

@@ -1,27 +1,23 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可；
+* 除非符合许可证规定，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件
+* 是按“原样”分发的，不提供任何形式的明示或暗示保证，
+* 包括但不限于适销性、特定用途适用性和非侵权性。
+* 请参阅许可证了解具体管理权限和限制的条款。*/
 package org.springframework.beans;
 
 import java.beans.PropertyChangeEvent;
-
 import org.springframework.lang.Nullable;
 
 /**
- * Exception thrown when no suitable editor or converter can be found for a bean property.
+ * 抛出异常时，无法找到适合的编辑器或转换器来处理bean属性。
  *
  * @author Arjen Poutsma
  * @author Juergen Hoeller
@@ -30,25 +26,23 @@ import org.springframework.lang.Nullable;
 @SuppressWarnings("serial")
 public class ConversionNotSupportedException extends TypeMismatchException {
 
-	/**
-	 * Create a new ConversionNotSupportedException.
-	 * @param propertyChangeEvent the PropertyChangeEvent that resulted in the problem
-	 * @param requiredType the required target type (or {@code null} if not known)
-	 * @param cause the root cause (may be {@code null})
-	 */
-	public ConversionNotSupportedException(PropertyChangeEvent propertyChangeEvent,
-			@Nullable Class<?> requiredType, @Nullable Throwable cause) {
-		super(propertyChangeEvent, requiredType, cause);
-	}
+    /**
+     * 创建一个新的 ConversionNotSupportedException。
+     * @param propertyChangeEvent 导致问题的 PropertyChangeEvent
+     * @param requiredType 所需的目标类型（如果不知道，则为 {@code null}）
+     * @param cause 根本原因（可能为 {@code null}）
+     */
+    public ConversionNotSupportedException(PropertyChangeEvent propertyChangeEvent, @Nullable Class<?> requiredType, @Nullable Throwable cause) {
+        super(propertyChangeEvent, requiredType, cause);
+    }
 
-	/**
-	 * Create a new ConversionNotSupportedException.
-	 * @param value the offending value that couldn't be converted (may be {@code null})
-	 * @param requiredType the required target type (or {@code null} if not known)
-	 * @param cause the root cause (may be {@code null})
-	 */
-	public ConversionNotSupportedException(@Nullable Object value, @Nullable Class<?> requiredType, @Nullable Throwable cause) {
-		super(value, requiredType, cause);
-	}
-
+    /**
+     * 创建一个新的 ConversionNotSupportedException。
+     * @param value 无法转换的违规值（可能为 {@code null}）
+     * @param requiredType 所需的目标类型（如果不知道，则为 {@code null}）
+     * @param cause 根本原因（可能为 {@code null}）
+     */
+    public ConversionNotSupportedException(@Nullable Object value, @Nullable Class<?> requiredType, @Nullable Throwable cause) {
+        super(value, requiredType, cause);
+    }
 }

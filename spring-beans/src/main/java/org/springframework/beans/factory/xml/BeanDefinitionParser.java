@@ -1,35 +1,25 @@
-/*
- * Copyright 2002-2011 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2011 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可协议”）许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可协议的副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可协议下分发的软件按“现状”提供，不提供任何明示或暗示的保证或条件。
+* 请参阅许可协议，了解具体管理权限和限制的内容。*/
 package org.springframework.beans.factory.xml;
 
 import org.w3c.dom.Element;
-
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface used by the {@link DefaultBeanDefinitionDocumentReader} to handle custom,
- * top-level (directly under {@code <beans/>}) tags.
+ * 由 {@link DefaultBeanDefinitionDocumentReader} 使用的接口，用于处理自定义、顶级（直接位于 {@code <beans/>} 标签下）的标签。
  *
- * <p>Implementations are free to turn the metadata in the custom tag into as many
- * {@link BeanDefinition BeanDefinitions} as required.
+ * <p>实现类可以自由地将自定义标签中的元数据转换为所需的任意数量的 {@link BeanDefinition BeanDefinitions}。
  *
- * <p>The parser locates a {@link BeanDefinitionParser} from the associated
- * {@link NamespaceHandler} for the namespace in which the custom tag resides.
+ * <p>解析器从与自定义标签所在命名空间关联的 {@link NamespaceHandler} 中定位一个 {@link BeanDefinitionParser}。
  *
  * @author Rob Harrop
  * @since 2.0
@@ -38,21 +28,15 @@ import org.springframework.lang.Nullable;
  */
 public interface BeanDefinitionParser {
 
-	/**
-	 * Parse the specified {@link Element} and register the resulting
-	 * {@link BeanDefinition BeanDefinition(s)} with the
-	 * {@link org.springframework.beans.factory.xml.ParserContext#getRegistry() BeanDefinitionRegistry}
-	 * embedded in the supplied {@link ParserContext}.
-	 * <p>Implementations must return the primary {@link BeanDefinition} that results
-	 * from the parse if they will ever be used in a nested fashion (for example as
-	 * an inner tag in a {@code <property/>} tag). Implementations may return
-	 * {@code null} if they will <strong>not</strong> be used in a nested fashion.
-	 * @param element the element that is to be parsed into one or more {@link BeanDefinition BeanDefinitions}
-	 * @param parserContext the object encapsulating the current state of the parsing process;
-	 * provides access to a {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}
-	 * @return the primary {@link BeanDefinition}
-	 */
-	@Nullable
-	BeanDefinition parse(Element element, ParserContext parserContext);
-
+    /**
+     * 解析指定的 {@link Element}，并将解析结果 {@link BeanDefinition BeanDefinition(s)} 注册到由提供的 {@link ParserContext} 包含的
+     * {@link org.springframework.beans.factory.xml.ParserContext#getRegistry() BeanDefinitionRegistry}。
+     * <p>实现类必须返回解析产生的首要 {@link BeanDefinition}，如果它们将用于嵌套方式（例如作为 <code><property/></code> 标签内的内部标签）。如果实现类将
+     * <strong>不</strong> 用于嵌套方式，则可以返回 {@code null}。
+     * @param element 要解析成一个或多个 {@link BeanDefinition BeanDefinitions} 的元素
+     * @param parserContext 封装当前解析过程状态的对象；提供对 {@link org.springframework.beans.factory.support.BeanDefinitionRegistry} 的访问
+     * @return 首要的 {@link BeanDefinition}
+     */
+    @Nullable
+    BeanDefinition parse(Element element, ParserContext parserContext);
 }

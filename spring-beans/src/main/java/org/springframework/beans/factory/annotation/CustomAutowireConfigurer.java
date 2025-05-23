@@ -1,24 +1,18 @@
-/*
- * Copyright 2002-2021 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2021 原作者或作者。
+*
+* 根据 Apache License, Version 2.0 ("许可证") 许可使用，除非遵守许可证规定，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件按“现状”提供，
+* 不提供任何明示或暗示的保证或条件，包括但不限于适销性、适用性或非侵权性。
+* 请参阅许可证了解管理许可权和限制的具体语言。*/
 package org.springframework.beans.factory.annotation;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -29,9 +23,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 /**
- * A {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor}
- * implementation that allows for convenient registration of custom autowire
- * qualifier types.
+ * 一个实现 {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor} 的类，允许方便地注册自定义自动装配限定符类型。
  *
  * <pre class="code">
  * &lt;bean id="customAutowireConfigurer" class="org.springframework.beans.factory.annotation.CustomAutowireConfigurer"&gt;
@@ -49,76 +41,63 @@ import org.springframework.util.ClassUtils;
  */
 public class CustomAutowireConfigurer implements BeanFactoryPostProcessor, BeanClassLoaderAware, Ordered {
 
-	private int order = Ordered.LOWEST_PRECEDENCE;  // default: same as non-Ordered
+    // 默认：与非有序相同
+    private int order = Ordered.LOWEST_PRECEDENCE;
 
-	@Nullable
-	private Set<?> customQualifierTypes;
+    @Nullable
+    private Set<?> customQualifierTypes;
 
-	@Nullable
-	private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+    @Nullable
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
+    public void setOrder(int order) {
+        this.order = order;
+    }
 
-	public void setOrder(int order) {
-		this.order = order;
-	}
+    @Override
+    public int getOrder() {
+        return this.order;
+    }
 
-	@Override
-	public int getOrder() {
-		return this.order;
-	}
+    @Override
+    public void setBeanClassLoader(@Nullable ClassLoader beanClassLoader) {
+        this.beanClassLoader = beanClassLoader;
+    }
 
-	@Override
-	public void setBeanClassLoader(@Nullable ClassLoader beanClassLoader) {
-		this.beanClassLoader = beanClassLoader;
-	}
+    /**
+     * 注册自定义限定符注解类型，以便在自动装配 bean 时考虑。提供的集合中的每个元素可以是 Class 实例，也可以是自定义注解的完全限定类名的字符串表示。
+     * <p>注意，任何自身被 Spring 的 {@link org.springframework.beans.factory.annotation.Qualifier} 注解的注解不需要显式注册。
+     * @param customQualifierTypes 要注册的自定义类型
+     */
+    public void setCustomQualifierTypes(Set<?> customQualifierTypes) {
+        this.customQualifierTypes = customQualifierTypes;
+    }
 
-	/**
-	 * Register custom qualifier annotation types to be considered
-	 * when autowiring beans. Each element of the provided set may
-	 * be either a Class instance or a String representation of the
-	 * fully-qualified class name of the custom annotation.
-	 * <p>Note that any annotation that is itself annotated with Spring's
-	 * {@link org.springframework.beans.factory.annotation.Qualifier}
-	 * does not require explicit registration.
-	 * @param customQualifierTypes the custom types to register
-	 */
-	public void setCustomQualifierTypes(Set<?> customQualifierTypes) {
-		this.customQualifierTypes = customQualifierTypes;
-	}
-
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		if (this.customQualifierTypes != null) {
-			if (!(beanFactory instanceof DefaultListableBeanFactory dlbf)) {
-				throw new IllegalStateException(
-						"CustomAutowireConfigurer needs to operate on a DefaultListableBeanFactory");
-			}
-			if (!(dlbf.getAutowireCandidateResolver() instanceof QualifierAnnotationAutowireCandidateResolver)) {
-				dlbf.setAutowireCandidateResolver(new QualifierAnnotationAutowireCandidateResolver());
-			}
-			QualifierAnnotationAutowireCandidateResolver resolver =
-					(QualifierAnnotationAutowireCandidateResolver) dlbf.getAutowireCandidateResolver();
-			for (Object value : this.customQualifierTypes) {
-				Class<? extends Annotation> customType = null;
-				if (value instanceof Class) {
-					customType = (Class<? extends Annotation>) value;
-				}
-				else if (value instanceof String className) {
-					customType = (Class<? extends Annotation>) ClassUtils.resolveClassName(className, this.beanClassLoader);
-				}
-				else {
-					throw new IllegalArgumentException(
-							"Invalid value [" + value + "] for custom qualifier type: needs to be Class or String.");
-				}
-				if (!Annotation.class.isAssignableFrom(customType)) {
-					throw new IllegalArgumentException(
-							"Qualifier type [" + customType.getName() + "] needs to be annotation type");
-				}
-				resolver.addQualifierType(customType);
-			}
-		}
-	}
-
+    @Override
+    @SuppressWarnings("unchecked")
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        if (this.customQualifierTypes != null) {
+            if (!(beanFactory instanceof DefaultListableBeanFactory dlbf)) {
+                throw new IllegalStateException("CustomAutowireConfigurer needs to operate on a DefaultListableBeanFactory");
+            }
+            if (!(dlbf.getAutowireCandidateResolver() instanceof QualifierAnnotationAutowireCandidateResolver)) {
+                dlbf.setAutowireCandidateResolver(new QualifierAnnotationAutowireCandidateResolver());
+            }
+            QualifierAnnotationAutowireCandidateResolver resolver = (QualifierAnnotationAutowireCandidateResolver) dlbf.getAutowireCandidateResolver();
+            for (Object value : this.customQualifierTypes) {
+                Class<? extends Annotation> customType = null;
+                if (value instanceof Class) {
+                    customType = (Class<? extends Annotation>) value;
+                } else if (value instanceof String className) {
+                    customType = (Class<? extends Annotation>) ClassUtils.resolveClassName(className, this.beanClassLoader);
+                } else {
+                    throw new IllegalArgumentException("Invalid value [" + value + "] for custom qualifier type: needs to be Class or String.");
+                }
+                if (!Annotation.class.isAssignableFrom(customType)) {
+                    throw new IllegalArgumentException("Qualifier type [" + customType.getName() + "] needs to be annotation type");
+                }
+                resolver.addQualifierType(customType);
+            }
+        }
+    }
 }

@@ -1,30 +1,22 @@
-/*
- * Copyright 2002-2022 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2022 原作者或作者。
+*
+* 根据 Apache 许可证 2.0 版（“许可证”），除非适用法律要求或书面同意，否则您不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件按“原样”提供，
+* 不提供任何明示或暗示的保证或条件，包括但不限于对适销性、特定用途适用性和非侵权的保证。
+* 请参阅许可证了解管理许可权限和限制的具体语言。*/
 package org.springframework.beans.factory.aot;
 
 import org.springframework.aot.generate.GenerationContext;
 
 /**
- * AOT contribution from a {@link BeanFactoryInitializationAotProcessor} used to
- * initialize a bean factory.
+ * 来自于一个用于初始化bean工厂的 {@link BeanFactoryInitializationAotProcessor} 的AOT（Ahead-of-Time）贡献。
  *
- * <p>Note: Beans implementing this interface will not have registration methods
- * generated during AOT processing unless they also implement
- * {@link org.springframework.beans.factory.aot.BeanRegistrationExcludeFilter}.
+ * <p>注意：实现此接口的bean在AOT处理期间不会生成注册方法，除非它们还实现了 {@link org.springframework.beans.factory.aot.BeanRegistrationExcludeFilter}。
  *
  * @author Phillip Webb
  * @since 6.0
@@ -33,12 +25,10 @@ import org.springframework.aot.generate.GenerationContext;
 @FunctionalInterface
 public interface BeanFactoryInitializationAotContribution {
 
-	/**
-	 * Apply this contribution to the given {@link BeanFactoryInitializationCode}.
-	 * @param generationContext the active generation context
-	 * @param beanFactoryInitializationCode the bean factory initialization code
-	 */
-	void applyTo(GenerationContext generationContext,
-			BeanFactoryInitializationCode beanFactoryInitializationCode);
-
+    /**
+     * 将此贡献应用于给定的{@link BeanFactoryInitializationCode}。
+     * @param generationContext 活跃的生成上下文
+     * @param beanFactoryInitializationCode Bean工厂初始化代码
+     */
+    void applyTo(GenerationContext generationContext, BeanFactoryInitializationCode beanFactoryInitializationCode);
 }

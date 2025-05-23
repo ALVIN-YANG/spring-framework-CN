@@ -1,32 +1,22 @@
-/*
- * Copyright 2002-2017 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2017 原作者或作者们。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，您可能无法使用此文件除非符合许可证规定。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”提供，
+* 不提供任何明示或暗示的保证或条件，包括但不限于对适销性、特定用途适用性的保证。
+* 请参阅许可证了解具体管理权限和限制的条款。*/
 package org.springframework.beans.factory;
 
 /**
- * Callback that allows a bean to be aware of the bean
- * {@link ClassLoader class loader}; that is, the class loader used by the
- * present bean factory to load bean classes.
+ * 回调接口，允许一个Bean感知到其使用的类加载器（ClassLoader）；即当前Bean工厂用于加载Bean类的类加载器。
  *
- * <p>This is mainly intended to be implemented by framework classes which
- * have to pick up application classes by name despite themselves potentially
- * being loaded from a shared class loader.
+ * <p>此接口主要供框架类实现，这些框架类需要通过名称来获取应用类，尽管它们自身可能由共享的类加载器加载。
  *
- * <p>For a list of all bean lifecycle methods, see the
- * {@link BeanFactory BeanFactory javadocs}.
+ * <p>有关所有Bean生命周期方法的列表，请参阅{@link BeanFactory BeanFactory}的javadoc。
  *
  * @author Juergen Hoeller
  * @author Chris Beams
@@ -37,16 +27,13 @@ package org.springframework.beans.factory;
  */
 public interface BeanClassLoaderAware extends Aware {
 
-	/**
-	 * Callback that supplies the bean {@link ClassLoader class loader} to
-	 * a bean instance.
-	 * <p>Invoked <i>after</i> the population of normal bean properties but
-	 * <i>before</i> an initialization callback such as
-	 * {@link InitializingBean InitializingBean's}
-	 * {@link InitializingBean#afterPropertiesSet()}
-	 * method or a custom init-method.
-	 * @param classLoader the owning class loader
-	 */
-	void setBeanClassLoader(ClassLoader classLoader);
-
+    /**
+     * 回调，用于向一个bean实例提供bean的类加载器。
+     * <p>在正常bean属性的填充之后，但在初始化回调（如
+     * {@link InitializingBean InitializingBean} 的
+     * {@link InitializingBean#afterPropertiesSet()}
+     * 方法或自定义的init-method）之前被调用。
+     * @param classLoader 拥有该类加载器的对象
+     */
+    void setBeanClassLoader(ClassLoader classLoader);
 }

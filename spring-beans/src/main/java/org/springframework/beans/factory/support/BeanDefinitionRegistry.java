@@ -1,19 +1,15 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2018 原作者或作者。
+*
+* 根据 Apache License 2.0 ("许可证") 许可使用；
+* 除非符合许可证，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，
+* 不提供任何明示或暗示的保证或条件，无论是关于其适用性、无侵权或特定用途的适用性。
+* 请参阅许可证了解具体语言管理权限和限制。*/
 package org.springframework.beans.factory.support;
 
 import org.springframework.beans.factory.BeanDefinitionStoreException;
@@ -22,17 +18,11 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.AliasRegistry;
 
 /**
- * Interface for registries that hold bean definitions, for example RootBeanDefinition
- * and ChildBeanDefinition instances. Typically implemented by BeanFactories that
- * internally work with the AbstractBeanDefinition hierarchy.
+ * 用于持有Bean定义的注册表的接口，例如RootBeanDefinition和ChildBeanDefinition实例。通常由内部使用AbstractBeanDefinition层级的BeanFactory实现。
  *
- * <p>This is the only interface in Spring's bean factory packages that encapsulates
- * <i>registration</i> of bean definitions. The standard BeanFactory interfaces
- * only cover access to a <i>fully configured factory instance</i>.
+ * <p>这是Spring的bean factory包中唯一封装了Bean定义的<i>注册</i>的接口。标准的BeanFactory接口仅涵盖对<i>完全配置的工厂实例</i>的访问。
  *
- * <p>Spring's bean definition readers expect to work on an implementation of this
- * interface. Known implementors within the Spring core are DefaultListableBeanFactory
- * and GenericApplicationContext.
+ * <p>Spring的bean定义读取器预期将与该接口的实现一起工作。Spring核心中已知的实现者包括DefaultListableBeanFactory和GenericApplicationContext。
  *
  * @author Juergen Hoeller
  * @since 26.11.2003
@@ -47,62 +37,59 @@ import org.springframework.core.AliasRegistry;
  */
 public interface BeanDefinitionRegistry extends AliasRegistry {
 
-	/**
-	 * Register a new bean definition with this registry.
-	 * Must support RootBeanDefinition and ChildBeanDefinition.
-	 * @param beanName the name of the bean instance to register
-	 * @param beanDefinition definition of the bean instance to register
-	 * @throws BeanDefinitionStoreException if the BeanDefinition is invalid
-	 * @throws BeanDefinitionOverrideException if there is already a BeanDefinition
-	 * for the specified bean name and we are not allowed to override it
-	 * @see GenericBeanDefinition
-	 * @see RootBeanDefinition
-	 * @see ChildBeanDefinition
-	 */
-	void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
-			throws BeanDefinitionStoreException;
+    /**
+     * 向此注册表中注册一个新的Bean定义。
+     * 必须支持RootBeanDefinition和ChildBeanDefinition。
+     * @param beanName 要注册的Bean实例的名称
+     * @param beanDefinition 要注册的Bean实例的定义
+     * @throws BeanDefinitionStoreException 如果BeanDefinition无效
+     * @throws BeanDefinitionOverrideException 如果已存在指定名称的BeanDefinition，并且不允许覆盖它
+     * @see GenericBeanDefinition
+     * @see RootBeanDefinition
+     * @see ChildBeanDefinition
+     */
+    void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) throws BeanDefinitionStoreException;
 
-	/**
-	 * Remove the BeanDefinition for the given name.
-	 * @param beanName the name of the bean instance to register
-	 * @throws NoSuchBeanDefinitionException if there is no such bean definition
-	 */
-	void removeBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
+    /**
+     * 移除给定名称的BeanDefinition。
+     * @param beanName 要注册的Bean实例的名称
+     * @throws NoSuchBeanDefinitionException 如果不存在这样的Bean定义异常
+     */
+    void removeBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 
-	/**
-	 * Return the BeanDefinition for the given bean name.
-	 * @param beanName name of the bean to find a definition for
-	 * @return the BeanDefinition for the given name (never {@code null})
-	 * @throws NoSuchBeanDefinitionException if there is no such bean definition
-	 */
-	BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
+    /**
+     * 返回给定 bean 名称的 BeanDefinition。
+     * @param beanName 要查找定义的 bean 名称
+     * @return 给定名称的 BeanDefinition（从不为 {@code null}）
+     * @throws NoSuchBeanDefinitionException 如果不存在这样的 bean 定义
+     */
+    BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 
-	/**
-	 * Check if this registry contains a bean definition with the given name.
-	 * @param beanName the name of the bean to look for
-	 * @return if this registry contains a bean definition with the given name
-	 */
-	boolean containsBeanDefinition(String beanName);
+    /**
+     * 检查此注册表中是否包含具有给定名称的Bean定义。
+     * @param beanName 要查找的Bean的名称
+     * @return 如果此注册表包含具有给定名称的Bean定义，则返回true
+     */
+    boolean containsBeanDefinition(String beanName);
 
-	/**
-	 * Return the names of all beans defined in this registry.
-	 * @return the names of all beans defined in this registry,
-	 * or an empty array if none defined
-	 */
-	String[] getBeanDefinitionNames();
+    /**
+     * 返回在此注册表中定义的所有 Bean 的名称。
+     * @return 在此注册表中定义的所有 Bean 的名称数组，
+     * 或一个空数组，如果没有定义任何 Bean。
+     */
+    String[] getBeanDefinitionNames();
 
-	/**
-	 * Return the number of beans defined in the registry.
-	 * @return the number of beans defined in the registry
-	 */
-	int getBeanDefinitionCount();
+    /**
+     * 返回在注册表中定义的豆子数量。
+     * @return 注册表中定义的豆子数量
+     */
+    int getBeanDefinitionCount();
 
-	/**
-	 * Determine whether the given bean name is already in use within this registry,
-	 * i.e. whether there is a local bean or alias registered under this name.
-	 * @param beanName the name to check
-	 * @return whether the given bean name is already in use
-	 */
-	boolean isBeanNameInUse(String beanName);
-
+    /**
+     * 判断给定的 Bean 名称是否已在本注册表中使用，
+     * 即是否在本名称下已注册了本地 Bean 或别名。
+     * @param beanName 要检查的名称
+     * @return 给定的 Bean 名称是否已被使用
+     */
+    boolean isBeanNameInUse(String beanName);
 }

@@ -1,26 +1,21 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2023 原作者或作者。
+*
+* 根据 Apache License, Version 2.0 ("许可证") 进行许可；
+* 除非符合许可证规定，否则不得使用此文件。
+* 您可以在以下链接获得许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件
+* 是按“原样”分发的，不提供任何形式的明示或暗示保证。
+* 请参阅许可证以了解管理许可权和限制的具体语言。*/
 package org.springframework.beans.factory.support;
 
 import java.lang.reflect.Executable;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-
 import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -35,252 +30,224 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * A {@code RegisteredBean} represents a bean that has been registered with a
- * {@link BeanFactory}, but has not necessarily been instantiated. It provides
- * access to the bean factory that contains the bean as well as the bean name.
- * In the case of inner-beans, the bean name may have been generated.
+ * 一个 {@code RegisteredBean} 表示一个已与 {@link BeanFactory} 注册的 Bean，但不一定已经实例化。它提供了访问包含该 Bean 的 Bean 工厂以及 Bean 名称的方法。在内部 Bean 的情况下，Bean 名称可能已经生成。
  *
  * @author Phillip Webb
  * @since 6.0
  */
 public final class RegisteredBean {
 
-	private final ConfigurableListableBeanFactory beanFactory;
+    private final ConfigurableListableBeanFactory beanFactory;
 
-	private final Supplier<String> beanName;
+    private final Supplier<String> beanName;
 
-	private final boolean generatedBeanName;
+    private final boolean generatedBeanName;
 
-	private final Supplier<RootBeanDefinition> mergedBeanDefinition;
+    private final Supplier<RootBeanDefinition> mergedBeanDefinition;
 
-	@Nullable
-	private final RegisteredBean parent;
+    @Nullable
+    private final RegisteredBean parent;
 
+    private RegisteredBean(ConfigurableListableBeanFactory beanFactory, Supplier<String> beanName, boolean generatedBeanName, Supplier<RootBeanDefinition> mergedBeanDefinition, @Nullable RegisteredBean parent) {
+        this.beanFactory = beanFactory;
+        this.beanName = beanName;
+        this.generatedBeanName = generatedBeanName;
+        this.mergedBeanDefinition = mergedBeanDefinition;
+        this.parent = parent;
+    }
 
-	private RegisteredBean(ConfigurableListableBeanFactory beanFactory, Supplier<String> beanName,
-			boolean generatedBeanName, Supplier<RootBeanDefinition> mergedBeanDefinition,
-			@Nullable RegisteredBean parent) {
+    /**
+     * 为普通bean创建一个新的 {@link RegisteredBean} 实例。
+     * @param beanFactory bean工厂的来源
+     * @param beanName bean名称
+     * @return 一个新的 {@link RegisteredBean} 实例
+     */
+    public static RegisteredBean of(ConfigurableListableBeanFactory beanFactory, String beanName) {
+        Assert.notNull(beanFactory, "'beanFactory' must not be null");
+        Assert.hasLength(beanName, "'beanName' must not be empty");
+        return new RegisteredBean(beanFactory, () -> beanName, false, () -> (RootBeanDefinition) beanFactory.getMergedBeanDefinition(beanName), null);
+    }
 
-		this.beanFactory = beanFactory;
-		this.beanName = beanName;
-		this.generatedBeanName = generatedBeanName;
-		this.mergedBeanDefinition = mergedBeanDefinition;
-		this.parent = parent;
-	}
+    /**
+     * 为一个常规bean创建一个新的{@link RegisteredBean}实例。
+     * @param beanFactory bean工厂的来源
+     * @param beanName bean名称
+     * @param mbd 预先确定的合并后的bean定义
+     * @return 一个新的{@link RegisteredBean}实例
+     * @since 6.0.7
+     */
+    static RegisteredBean of(ConfigurableListableBeanFactory beanFactory, String beanName, RootBeanDefinition mbd) {
+        return new RegisteredBean(beanFactory, () -> beanName, false, () -> mbd, null);
+    }
 
+    /**
+     * 为内部bean创建一个新的 {@link RegisteredBean} 实例。
+     * @param parent 内部bean的父级
+     * @param innerBean 内部bean的 {@link BeanDefinitionHolder}
+     * @return 一个新的 {@link RegisteredBean} 实例
+     */
+    public static RegisteredBean ofInnerBean(RegisteredBean parent, BeanDefinitionHolder innerBean) {
+        Assert.notNull(innerBean, "'innerBean' must not be null");
+        return ofInnerBean(parent, innerBean.getBeanName(), innerBean.getBeanDefinition());
+    }
 
-	/**
-	 * Create a new {@link RegisteredBean} instance for a regular bean.
-	 * @param beanFactory the source bean factory
-	 * @param beanName the bean name
-	 * @return a new {@link RegisteredBean} instance
-	 */
-	public static RegisteredBean of(ConfigurableListableBeanFactory beanFactory, String beanName) {
-		Assert.notNull(beanFactory, "'beanFactory' must not be null");
-		Assert.hasLength(beanName, "'beanName' must not be empty");
-		return new RegisteredBean(beanFactory, () -> beanName, false,
-				() -> (RootBeanDefinition) beanFactory.getMergedBeanDefinition(beanName),
-				null);
-	}
+    /**
+     * 为内部bean创建一个新的 {@link RegisteredBean} 实例。
+     * @param parent 内部bean的父对象
+     * @param innerBeanDefinition 内部bean的定义
+     * @return 一个新的 {@link RegisteredBean} 实例
+     */
+    public static RegisteredBean ofInnerBean(RegisteredBean parent, BeanDefinition innerBeanDefinition) {
+        return ofInnerBean(parent, null, innerBeanDefinition);
+    }
 
-	/**
-	 * Create a new {@link RegisteredBean} instance for a regular bean.
-	 * @param beanFactory the source bean factory
-	 * @param beanName the bean name
-	 * @param mbd the pre-determined merged bean definition
-	 * @return a new {@link RegisteredBean} instance
-	 * @since 6.0.7
-	 */
-	static RegisteredBean of(ConfigurableListableBeanFactory beanFactory, String beanName, RootBeanDefinition mbd) {
-		return new RegisteredBean(beanFactory, () -> beanName, false, () -> mbd, null);
-	}
+    /**
+     * 为内部Bean创建一个新的 {@link RegisteredBean} 实例。
+     * @param parent 内部Bean的父Bean
+     * @param innerBeanName 内部Bean的名称，或传入 {@code null} 以生成一个名称
+     * @param innerBeanDefinition 内部Bean的定义
+     * @return 一个新的 {@link RegisteredBean} 实例
+     */
+    public static RegisteredBean ofInnerBean(RegisteredBean parent, @Nullable String innerBeanName, BeanDefinition innerBeanDefinition) {
+        Assert.notNull(parent, "'parent' must not be null");
+        Assert.notNull(innerBeanDefinition, "'innerBeanDefinition' must not be null");
+        InnerBeanResolver resolver = new InnerBeanResolver(parent, innerBeanName, innerBeanDefinition);
+        Supplier<String> beanName = (StringUtils.hasLength(innerBeanName) ? () -> innerBeanName : resolver::resolveBeanName);
+        return new RegisteredBean(parent.getBeanFactory(), beanName, innerBeanName == null, resolver::resolveMergedBeanDefinition, parent);
+    }
 
-	/**
-	 * Create a new {@link RegisteredBean} instance for an inner-bean.
-	 * @param parent the parent of the inner-bean
-	 * @param innerBean a {@link BeanDefinitionHolder} for the inner bean
-	 * @return a new {@link RegisteredBean} instance
-	 */
-	public static RegisteredBean ofInnerBean(RegisteredBean parent, BeanDefinitionHolder innerBean) {
-		Assert.notNull(innerBean, "'innerBean' must not be null");
-		return ofInnerBean(parent, innerBean.getBeanName(), innerBean.getBeanDefinition());
-	}
+    /**
+     * 返回 bean 的名称。
+     * @return the beanName bean 名称
+     */
+    public String getBeanName() {
+        return this.beanName.get();
+    }
 
-	/**
-	 * Create a new {@link RegisteredBean} instance for an inner-bean.
-	 * @param parent the parent of the inner-bean
-	 * @param innerBeanDefinition the inner-bean definition
-	 * @return a new {@link RegisteredBean} instance
-	 */
-	public static RegisteredBean ofInnerBean(RegisteredBean parent, BeanDefinition innerBeanDefinition) {
-		return ofInnerBean(parent, null, innerBeanDefinition);
-	}
+    /**
+     * 如果已生成 Bean 名称，则返回。
+     * @return 如果名称已生成，则返回 {@code true}
+     */
+    public boolean isGeneratedBeanName() {
+        return this.generatedBeanName;
+    }
 
-	/**
-	 * Create a new {@link RegisteredBean} instance for an inner-bean.
-	 * @param parent the parent of the inner-bean
-	 * @param innerBeanName the name of the inner bean or {@code null} to
-	 * generate a name
-	 * @param innerBeanDefinition the inner-bean definition
-	 * @return a new {@link RegisteredBean} instance
-	 */
-	public static RegisteredBean ofInnerBean(RegisteredBean parent,
-			@Nullable String innerBeanName, BeanDefinition innerBeanDefinition) {
+    /**
+     * 返回包含该Bean的Bean工厂。
+     * @return Bean工厂
+     */
+    public ConfigurableListableBeanFactory getBeanFactory() {
+        return this.beanFactory;
+    }
 
-		Assert.notNull(parent, "'parent' must not be null");
-		Assert.notNull(innerBeanDefinition, "'innerBeanDefinition' must not be null");
-		InnerBeanResolver resolver = new InnerBeanResolver(parent, innerBeanName, innerBeanDefinition);
-		Supplier<String> beanName = (StringUtils.hasLength(innerBeanName) ?
-				() -> innerBeanName : resolver::resolveBeanName);
-		return new RegisteredBean(parent.getBeanFactory(), beanName,
-				innerBeanName == null, resolver::resolveMergedBeanDefinition, parent);
-	}
+    /**
+     * 返回该 Bean 的用户定义类。
+     * @return Bean 类
+     */
+    public Class<?> getBeanClass() {
+        return ClassUtils.getUserClass(getBeanType().toClass());
+    }
 
+    /**
+     * 返回该 Bean 的 {@link ResolvableType}。
+     * @return Bean 类型
+     */
+    public ResolvableType getBeanType() {
+        return getMergedBeanDefinition().getResolvableType();
+    }
 
-	/**
-	 * Return the name of the bean.
-	 * @return the beanName the bean name
-	 */
-	public String getBeanName() {
-		return this.beanName.get();
-	}
+    /**
+     * 返回该 Bean 的合并后的 Bean 定义。
+     * @return 合并后的 Bean 定义
+     * @see ConfigurableListableBeanFactory#getMergedBeanDefinition(String)
+     */
+    public RootBeanDefinition getMergedBeanDefinition() {
+        return this.mergedBeanDefinition.get();
+    }
 
-	/**
-	 * Return if the bean name is generated.
-	 * @return {@code true} if the name was generated
-	 */
-	public boolean isGeneratedBeanName() {
-		return this.generatedBeanName;
-	}
+    /**
+     * 如果此实例是为内部Bean创建的，则返回。
+     * @return 如果是内部Bean
+     */
+    public boolean isInnerBean() {
+        return this.parent != null;
+    }
 
-	/**
-	 * Return the bean factory containing the bean.
-	 * @return the bean factory
-	 */
-	public ConfigurableListableBeanFactory getBeanFactory() {
-		return this.beanFactory;
-	}
+    /**
+     * 返回此实例的父类或如果不是内部bean则返回{@code null}。
+     * @return 父类
+     */
+    @Nullable
+    public RegisteredBean getParent() {
+        return this.parent;
+    }
 
-	/**
-	 * Return the user-defined class of the bean.
-	 * @return the bean class
-	 */
-	public Class<?> getBeanClass() {
-		return ClassUtils.getUserClass(getBeanType().toClass());
-	}
+    /**
+     * 解决用于此bean的构造函数或工厂方法的选用。
+     * @return 返回 {@link java.lang.reflect.Constructor} 或 {@link java.lang.reflect.Method}
+     */
+    public Executable resolveConstructorOrFactoryMethod() {
+        return new ConstructorResolver((AbstractAutowireCapableBeanFactory) getBeanFactory()).resolveConstructorOrFactoryMethod(getBeanName(), getMergedBeanDefinition());
+    }
 
-	/**
-	 * Return the {@link ResolvableType} of the bean.
-	 * @return the bean type
-	 */
-	public ResolvableType getBeanType() {
-		return getMergedBeanDefinition().getResolvableType();
-	}
+    /**
+     * 解决自动装配的参数。
+     * @param descriptor 依赖的描述符（字段/方法/构造函数）
+     * @param typeConverter 用于填充数组和集合的TypeConverter
+     * @param autowiredBeanNames 一个Set集合，所有自动装配的bean名称（用于解决给定的依赖）都应该添加到该集合中
+     * @return 解析出的对象，如果没有找到则返回{@code null}
+     * @since 6.0.9
+     */
+    @Nullable
+    public Object resolveAutowiredArgument(DependencyDescriptor descriptor, TypeConverter typeConverter, Set<String> autowiredBeanNames) {
+        return new ConstructorResolver((AbstractAutowireCapableBeanFactory) getBeanFactory()).resolveAutowiredArgument(descriptor, descriptor.getDependencyType(), getBeanName(), autowiredBeanNames, typeConverter, true);
+    }
 
-	/**
-	 * Return the merged bean definition of the bean.
-	 * @return the merged bean definition
-	 * @see ConfigurableListableBeanFactory#getMergedBeanDefinition(String)
-	 */
-	public RootBeanDefinition getMergedBeanDefinition() {
-		return this.mergedBeanDefinition.get();
-	}
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("beanName", getBeanName()).append("mergedBeanDefinition", getMergedBeanDefinition()).toString();
+    }
 
-	/**
-	 * Return if this instance is for an inner-bean.
-	 * @return if an inner-bean
-	 */
-	public boolean isInnerBean() {
-		return this.parent != null;
-	}
+    /**
+     * 用于获取内部Bean详细信息的解析器。
+     */
+    private static class InnerBeanResolver {
 
-	/**
-	 * Return the parent of this instance or {@code null} if not an inner-bean.
-	 * @return the parent
-	 */
-	@Nullable
-	public RegisteredBean getParent() {
-		return this.parent;
-	}
+        private final RegisteredBean parent;
 
-	/**
-	 * Resolve the constructor or factory method to use for this bean.
-	 * @return the {@link java.lang.reflect.Constructor} or {@link java.lang.reflect.Method}
-	 */
-	public Executable resolveConstructorOrFactoryMethod() {
-		return new ConstructorResolver((AbstractAutowireCapableBeanFactory) getBeanFactory())
-				.resolveConstructorOrFactoryMethod(getBeanName(), getMergedBeanDefinition());
-	}
+        @Nullable
+        private final String innerBeanName;
 
-	/**
-	 * Resolve an autowired argument.
-	 * @param descriptor the descriptor for the dependency (field/method/constructor)
-	 * @param typeConverter the TypeConverter to use for populating arrays and collections
-	 * @param autowiredBeanNames a Set that all names of autowired beans (used for
-	 * resolving the given dependency) are supposed to be added to
-	 * @return the resolved object, or {@code null} if none found
-	 * @since 6.0.9
-	 */
-	@Nullable
-	public Object resolveAutowiredArgument(
-			DependencyDescriptor descriptor, TypeConverter typeConverter, Set<String> autowiredBeanNames) {
+        private final BeanDefinition innerBeanDefinition;
 
-		return new ConstructorResolver((AbstractAutowireCapableBeanFactory) getBeanFactory())
-				.resolveAutowiredArgument(descriptor, descriptor.getDependencyType(),
-						getBeanName(), autowiredBeanNames, typeConverter, true);
-	}
+        @Nullable
+        private volatile String resolvedBeanName;
 
+        InnerBeanResolver(RegisteredBean parent, @Nullable String innerBeanName, BeanDefinition innerBeanDefinition) {
+            Assert.isInstanceOf(AbstractAutowireCapableBeanFactory.class, parent.getBeanFactory());
+            this.parent = parent;
+            this.innerBeanName = innerBeanName;
+            this.innerBeanDefinition = innerBeanDefinition;
+        }
 
-	@Override
-	public String toString() {
-		return new ToStringCreator(this).append("beanName", getBeanName())
-				.append("mergedBeanDefinition", getMergedBeanDefinition()).toString();
-	}
+        String resolveBeanName() {
+            String resolvedBeanName = this.resolvedBeanName;
+            if (resolvedBeanName != null) {
+                return resolvedBeanName;
+            }
+            resolvedBeanName = resolveInnerBean((beanName, mergedBeanDefinition) -> beanName);
+            this.resolvedBeanName = resolvedBeanName;
+            return resolvedBeanName;
+        }
 
+        RootBeanDefinition resolveMergedBeanDefinition() {
+            return resolveInnerBean((beanName, mergedBeanDefinition) -> mergedBeanDefinition);
+        }
 
-	/**
-	 * Resolver used to obtain inner-bean details.
-	 */
-	private static class InnerBeanResolver {
-
-		private final RegisteredBean parent;
-
-		@Nullable
-		private final String innerBeanName;
-
-		private final BeanDefinition innerBeanDefinition;
-
-		@Nullable
-		private volatile String resolvedBeanName;
-
-		InnerBeanResolver(RegisteredBean parent, @Nullable String innerBeanName, BeanDefinition innerBeanDefinition) {
-			Assert.isInstanceOf(AbstractAutowireCapableBeanFactory.class, parent.getBeanFactory());
-			this.parent = parent;
-			this.innerBeanName = innerBeanName;
-			this.innerBeanDefinition = innerBeanDefinition;
-		}
-
-		String resolveBeanName() {
-			String resolvedBeanName = this.resolvedBeanName;
-			if (resolvedBeanName != null) {
-				return resolvedBeanName;
-			}
-			resolvedBeanName = resolveInnerBean((beanName, mergedBeanDefinition) -> beanName);
-			this.resolvedBeanName = resolvedBeanName;
-			return resolvedBeanName;
-		}
-
-		RootBeanDefinition resolveMergedBeanDefinition() {
-			return resolveInnerBean((beanName, mergedBeanDefinition) -> mergedBeanDefinition);
-		}
-
-		private <T> T resolveInnerBean(BiFunction<String, RootBeanDefinition, T> resolver) {
-			// Always use a fresh BeanDefinitionValueResolver in case the parent merged bean definition has changed.
-			BeanDefinitionValueResolver beanDefinitionValueResolver = new BeanDefinitionValueResolver(
-					(AbstractAutowireCapableBeanFactory) this.parent.getBeanFactory(),
-					this.parent.getBeanName(), this.parent.getMergedBeanDefinition());
-			return beanDefinitionValueResolver.resolveInnerBean(this.innerBeanName, this.innerBeanDefinition, resolver);
-		}
-	}
-
+        private <T> T resolveInnerBean(BiFunction<String, RootBeanDefinition, T> resolver) {
+            // 始终在父合并的Bean定义已更改的情况下使用一个新的BeanDefinitionValueResolver。
+            BeanDefinitionValueResolver beanDefinitionValueResolver = new BeanDefinitionValueResolver((AbstractAutowireCapableBeanFactory) this.parent.getBeanFactory(), this.parent.getBeanName(), this.parent.getMergedBeanDefinition());
+            return beanDefinitionValueResolver.resolveInnerBean(this.innerBeanName, this.innerBeanDefinition, resolver);
+        }
+    }
 }

@@ -1,72 +1,57 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012 原作者或作者。
+*
+* 根据 Apache License 2.0 版本（以下简称“许可证”）授权；
+* 您不得使用此文件除非符合许可证规定。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件
+* 是按“原样”分发的，不提供任何形式的明示或暗示保证。
+* 请参阅许可证了解具体管理权限和限制的条款。*/
 package org.springframework.beans.factory.xml;
 
 import org.w3c.dom.Node;
-
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 
 /**
- * Interface used by the {@link DefaultBeanDefinitionDocumentReader}
- * to handle custom, nested (directly under a {@code <bean>}) tags.
+ *  由 {@link DefaultBeanDefinitionDocumentReader} 使用的接口
+ *  用于处理自定义的嵌套（直接位于一个 {@code <bean>} 标签下）标签。
  *
- * <p>Decoration may also occur based on custom attributes applied to the
- * {@code <bean>} tag. Implementations are free to turn the metadata in the
- * custom tag into as many
- * {@link org.springframework.beans.factory.config.BeanDefinition BeanDefinitions} as
- * required and to transform the
- * {@link org.springframework.beans.factory.config.BeanDefinition} of the enclosing
- * {@code <bean>} tag, potentially even returning a completely different
- * {@link org.springframework.beans.factory.config.BeanDefinition} to replace the
- * original.
+ * <p>装饰也可以基于应用于 {@code <bean>} 标签的自定义属性发生。实现可以自由地将自定义标签中的元数据转换为所需的任意多个
+ *  {@link org.springframework.beans.factory.config.BeanDefinition BeanDefinitions}，并转换封装的
+ *  {@link org.springframework.beans.factory.config.BeanDefinition} 的标签，甚至可能返回一个完全不同的
+ *  {@link org.springframework.beans.factory.config.BeanDefinition} 来替换原始的。
  *
- * <p>{@link BeanDefinitionDecorator BeanDefinitionDecorators} should be aware that
- * they may be part of a chain. In particular, a {@link BeanDefinitionDecorator} should
- * be aware that a previous {@link BeanDefinitionDecorator} may have replaced the
- * original {@link org.springframework.beans.factory.config.BeanDefinition} with a
- * {@link org.springframework.aop.framework.ProxyFactoryBean} definition allowing for
- * custom {@link org.aopalliance.intercept.MethodInterceptor interceptors} to be added.
+ * <p>{@link BeanDefinitionDecorator BeanDefinitionDecorators} 应该意识到它们可能是一个链的一部分。特别是，
+ *  一个 {@link BeanDefinitionDecorator} 应该意识到前一个 {@link BeanDefinitionDecorator} 可能已经用
+ *  {@link org.springframework.aop.framework.ProxyFactoryBean} 定义替换了原始的
+ *  {@link org.springframework.beans.factory.config.BeanDefinition}，允许添加自定义的
+ *  {@link org.aopalliance.intercept.MethodInterceptor} 拦截器。
  *
- * <p>{@link BeanDefinitionDecorator BeanDefinitionDecorators} that wish to add an
- * interceptor to the enclosing bean should extend
- * {@link org.springframework.aop.config.AbstractInterceptorDrivenBeanDefinitionDecorator}
- * which handles the chaining ensuring that only one proxy is created and that it
- * contains all interceptors from the chain.
+ * <p>希望向封装的 bean 添加拦截器的
+ *  {@link BeanDefinitionDecorator BeanDefinitionDecorators} 应该扩展
+ *  {@link org.springframework.aop.config.AbstractInterceptorDrivenBeanDefinitionDecorator}，
+ *  该类处理链的链接，确保只创建一个代理，并且它包含链中的所有拦截器。
  *
- * <p>The parser locates a {@link BeanDefinitionDecorator} from the
- * {@link NamespaceHandler} for the namespace in which the custom tag resides.
+ * <p>解析器从自定义标签所在的命名空间的
+ *  {@link NamespaceHandler} 中定位到一个
+ *  {@link BeanDefinitionDecorator}。
  *
- * @author Rob Harrop
- * @since 2.0
- * @see NamespaceHandler
- * @see BeanDefinitionParser
+ *  作者：Rob Harrop
+ *  自 2.0 版本以来
+ *  @see NamespaceHandler
+ *  @see BeanDefinitionParser
  */
 public interface BeanDefinitionDecorator {
 
-	/**
-	 * Parse the specified {@link Node} (either an element or an attribute) and decorate
-	 * the supplied {@link org.springframework.beans.factory.config.BeanDefinition},
-	 * returning the decorated definition.
-	 * <p>Implementations may choose to return a completely new definition, which will
-	 * replace the original definition in the resulting
-	 * {@link org.springframework.beans.factory.BeanFactory}.
-	 * <p>The supplied {@link ParserContext} can be used to register any additional
-	 * beans needed to support the main definition.
-	 */
-	BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext);
-
+    /**
+     * 解析指定的 {@link Node}（元素或属性）并装饰提供的 {@link org.springframework.beans.factory.config.BeanDefinition}，
+     * 返回装饰后的定义。
+     * <p>实现者可以选择返回一个全新的定义，这将替换在最终生成的
+     * {@link org.springframework.beans.factory.BeanFactory} 中的原始定义。
+     * <p>提供的 {@link ParserContext} 可以用于注册任何支持主定义所需的支持性额外的 bean。
+     */
+    BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext);
 }

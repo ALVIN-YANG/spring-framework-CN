@@ -1,60 +1,42 @@
-/*
- * Copyright 2002-2013 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2013 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，不提供任何形式的明示或暗示保证。
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.beans;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
-
 import org.springframework.lang.Nullable;
 
 /**
- * Strategy interface for creating {@link BeanInfo} instances for Spring beans.
- * Can be used to plug in custom bean property resolution strategies (e.g. for other
- * languages on the JVM) or more efficient {@link BeanInfo} retrieval algorithms.
+ *  用于为 Spring 实例创建 {@link BeanInfo} 对象的策略接口。
+ *  可以用于插入自定义的 bean 属性解析策略（例如用于 JVM 上的其他语言）或更高效的 {@link BeanInfo} 获取算法。
  *
- * <p>BeanInfoFactories are instantiated by the {@link CachedIntrospectionResults},
- * by using the {@link org.springframework.core.io.support.SpringFactoriesLoader}
- * utility class.
+ * <p>通过使用 {@link org.springframework.core.io.support.SpringFactoriesLoader} 工具类，由 {@link CachedIntrospectionResults} 实例化 BeanInfoFactories。
  *
- * When a {@link BeanInfo} is to be created, the {@code CachedIntrospectionResults}
- * will iterate through the discovered factories, calling {@link #getBeanInfo(Class)}
- * on each one. If {@code null} is returned, the next factory will be queried.
- * If none of the factories support the class, a standard {@link BeanInfo} will be
- * created as a default.
+ * 当需要创建一个 {@link BeanInfo} 对象时，{@code CachedIntrospectionResults} 将遍历发现的工厂，并对每个工厂调用 {@link #getBeanInfo(Class)} 方法。如果返回值为 null，则查询下一个工厂。如果没有任何工厂支持该类，将创建一个标准的 {@link BeanInfo} 作为默认值。
  *
- * <p>Note that the {@link org.springframework.core.io.support.SpringFactoriesLoader}
- * sorts the {@code BeanInfoFactory} instances by
- * {@link org.springframework.core.annotation.Order @Order}, so that ones with a
- * higher precedence come first.
+ * <p>请注意，由 {@link org.springframework.core.io.support.SpringFactoriesLoader} 对 BeanInfoFactory 实例进行排序，按照 {@link org.springframework.core.annotation.Order @Order}，这样具有更高优先级的实例将排在前面。
  *
- * @author Arjen Poutsma
+ * @作者 Arjen Poutsma
  * @since 3.2
  * @see CachedIntrospectionResults
  * @see org.springframework.core.io.support.SpringFactoriesLoader
  */
 public interface BeanInfoFactory {
 
-	/**
-	 * Return the bean info for the given class, if supported.
-	 * @param beanClass the bean class
-	 * @return the BeanInfo, or {@code null} if the given class is not supported
-	 * @throws IntrospectionException in case of exceptions
-	 */
-	@Nullable
-	BeanInfo getBeanInfo(Class<?> beanClass) throws IntrospectionException;
-
+    /**
+     * 返回给定类的 Bean 信息，如果受支持的话。
+     * @param beanClass Bean 类
+     * @return BeanInfo 对象，或者如果给定的类不受支持则返回 {@code null}
+     * @throws IntrospectionException 如果发生异常
+     */
+    @Nullable
+    BeanInfo getBeanInfo(Class<?> beanClass) throws IntrospectionException;
 }

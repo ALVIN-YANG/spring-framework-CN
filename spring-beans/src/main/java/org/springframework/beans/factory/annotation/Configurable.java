@@ -1,19 +1,15 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012 原作者或作者们。
+*
+* 根据 Apache License 2.0 ("许可证") 许可；
+* 除非遵守许可证，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”提供，
+* 不提供任何明示或暗示的保证或条件，包括但不限于适销性、适用性或非侵权性。
+* 请参阅许可证了解具体管理权限和限制的内容。*/
 package org.springframework.beans.factory.annotation;
 
 import java.lang.annotation.Documented;
@@ -24,9 +20,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a class as being eligible for Spring-driven configuration.
+ * 标记一个类为可被Spring驱动的配置类。
  *
- * <p>Typically used with the AspectJ {@code AnnotationBeanConfigurerAspect}.
+ * <p>通常与AspectJ的{@code AnnotationBeanConfigurerAspect}一起使用。
  *
  * @author Rod Johnson
  * @author Rob Harrop
@@ -40,24 +36,23 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Configurable {
 
-	/**
-	 * The name of the bean definition that serves as the configuration template.
-	 */
-	String value() default "";
+    /**
+     * 作为配置模板使用的bean定义的名称。
+     */
+    String value() default "";
 
-	/**
-	 * Are dependencies to be injected via autowiring?
-	 */
-	Autowire autowire() default Autowire.NO;
+    /**
+     * 是否需要通过自动装配来注入依赖项？
+     */
+    Autowire autowire() default Autowire.NO;
 
-	/**
-	 * Is dependency checking to be performed for configured objects?
-	 */
-	boolean dependencyCheck() default false;
+    /**
+     * 是否需要对配置的对象执行依赖性检查？
+     */
+    boolean dependencyCheck() default false;
 
-	/**
-	 * Are dependencies to be injected prior to the construction of an object?
-	 */
-	boolean preConstruction() default false;
-
+    /**
+     * 是否在构建对象之前注入依赖？
+     */
+    boolean preConstruction() default false;
 }

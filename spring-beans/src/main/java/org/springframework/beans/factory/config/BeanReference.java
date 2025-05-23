@@ -1,40 +1,32 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012，原作者或作者。
+*
+* 根据Apache License，版本2.0（“许可证”）授权；
+* 您不得使用此文件除非遵守许可证。
+* 您可以在以下地址获得许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非法律要求或书面同意，否则在许可证下分发的软件
+* 是按“原样”分发的，不提供任何形式的保证或条件，
+* 明示或暗示的。有关权限和限制的特定语言，请参阅许可证。*/
 package org.springframework.beans.factory.config;
 
 import org.springframework.beans.BeanMetadataElement;
 
 /**
- * Interface that exposes a reference to a bean name in an abstract fashion.
- * This interface does not necessarily imply a reference to an actual bean
- * instance; it just expresses a logical reference to the name of a bean.
+ * 接口，以抽象方式暴露对bean名称的引用。
+ * 此接口并不一定意味着对实际bean实例的引用；它只是表达了对bean名称的逻辑引用。
  *
- * <p>Serves as common interface implemented by any kind of bean reference
- * holder, such as {@link RuntimeBeanReference RuntimeBeanReference} and
- * {@link RuntimeBeanNameReference RuntimeBeanNameReference}.
+ * <p>作为任何类型的bean引用持有者（如{@link RuntimeBeanReference}和{@link RuntimeBeanNameReference}）实现的通用接口。
  *
  * @author Juergen Hoeller
  * @since 2.0
  */
 public interface BeanReference extends BeanMetadataElement {
 
-	/**
-	 * Return the target bean name that this reference points to (never {@code null}).
-	 */
-	String getBeanName();
-
+    /**
+     * 返回此引用指向的目标Bean名称（永远不会为null）。
+     */
+    String getBeanName();
 }

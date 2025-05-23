@@ -1,50 +1,37 @@
-/*
- * Copyright 2002-2015 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2015 原作者或作者。
+*
+* 根据 Apache License 2.0（“许可证”），除非适用法律要求或书面同意，否则您不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件按“原样”提供，
+* 不提供任何形式的明示或暗示保证，包括但不限于适销性、适用性和非侵权性。
+* 请参阅许可证以了解具体管理权限和限制的条款。*/
 package org.springframework.beans.factory.xml;
 
 import org.w3c.dom.Document;
-
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 
 /**
- * SPI for parsing an XML document that contains Spring bean definitions.
- * Used by {@link XmlBeanDefinitionReader} for actually parsing a DOM document.
+ *  用于解析包含 Spring 容器配置定义的 XML 文档的 SPI。
+ *  由 {@link XmlBeanDefinitionReader} 用于实际解析 DOM 文档。
  *
- * <p>Instantiated per document to parse: implementations can hold
- * state in instance variables during the execution of the
- * {@code registerBeanDefinitions} method &mdash; for example, global
- * settings that are defined for all bean definitions in the document.
+ * <p>每个文档实例化一次：实现可以在执行 {@code registerBeanDefinitions} 方法时保留实例变量中的状态 —— 例如，为文档中所有 bean 定义定义的全局设置。
  *
- * @author Juergen Hoeller
- * @author Rob Harrop
- * @since 18.12.2003
- * @see XmlBeanDefinitionReader#setDocumentReaderClass
+ *  @author Juergen Hoeller
+ *  @author Rob Harrop
+ *  @since 2003年12月18日
+ *  @see XmlBeanDefinitionReader#setDocumentReaderClass
  */
 public interface BeanDefinitionDocumentReader {
 
-	/**
-	 * Read bean definitions from the given DOM document and
-	 * register them with the registry in the given reader context.
-	 * @param doc the DOM document
-	 * @param readerContext the current context of the reader
-	 * (includes the target registry and the resource being parsed)
-	 * @throws BeanDefinitionStoreException in case of parsing errors
-	 */
-	void registerBeanDefinitions(Document doc, XmlReaderContext readerContext)
-			throws BeanDefinitionStoreException;
-
+    /**
+     * 从给定的 DOM 文档中读取 Bean 定义，并将它们注册到给定读取上下文中的注册器中。
+     * @param doc 给定的 DOM 文档
+     * @param readerContext 当前的读取上下文（包括目标注册器和正在解析的资源）
+     * @throws BeanDefinitionStoreException 在解析错误的情况下
+     */
+    void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) throws BeanDefinitionStoreException;
 }

@@ -1,155 +1,143 @@
-/*
- * Copyright 2002-2022 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2022 原作者或作者。
+*
+* 根据 Apache License 2.0（“许可证”），除非法律要求或书面同意，否则您不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非根据法律规定或书面同意，否则在许可证下分发的软件按“原样”提供，
+* 不提供任何形式的明示或暗示保证，包括但不限于适销性、适用性和非侵权性。
+* 请参阅许可证了解具体管理许可权限和限制的语言。*/
 package org.springframework.beans.factory.support;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.springframework.beans.BeanMetadataElement;
 import org.springframework.beans.Mergeable;
 import org.springframework.lang.Nullable;
 
 /**
- * Tag collection class used to hold managed Map values, which may
- * include runtime bean references (to be resolved into bean objects).
+ * 用于存储管理 Map 值的标签集合类，可能包括运行时 Bean 引用（将被解析为 Bean 对象）。
  *
  * @author Juergen Hoeller
  * @author Rob Harrop
  * @since 27.05.2003
- * @param <K> the key type
- * @param <V> the value type
+ * @param <K> 键类型
+ * @param <V> 值类型
  */
 @SuppressWarnings("serial")
 public class ManagedMap<K, V> extends LinkedHashMap<K, V> implements Mergeable, BeanMetadataElement {
 
-	@Nullable
-	private Object source;
+    @Nullable
+    private Object source;
 
-	@Nullable
-	private String keyTypeName;
+    @Nullable
+    private String keyTypeName;
 
-	@Nullable
-	private String valueTypeName;
+    @Nullable
+    private String valueTypeName;
 
-	private boolean mergeEnabled;
+    private boolean mergeEnabled;
 
+    public ManagedMap() {
+    }
 
-	public ManagedMap() {
-	}
+    public ManagedMap(int initialCapacity) {
+        super(initialCapacity);
+    }
 
-	public ManagedMap(int initialCapacity) {
-		super(initialCapacity);
-	}
+    /**
+     * 返回一个新的实例，其中包含从给定条目中提取的键和值。这些条目本身不存储在映射中。
+     * @param entries 包含要填充映射的键和值的 {@code Map.Entry}
+     * @param <K> 映射的键类型
+     * @param <V> 映射的值类型
+     * @return 包含指定映射的 {@code Map}
+     * @since 5.3.16
+     */
+    @SafeVarargs
+    @SuppressWarnings("unchecked")
+    public static <K, V> ManagedMap<K, V> ofEntries(Entry<? extends K, ? extends V>... entries) {
+        ManagedMap<K, V> map = new ManagedMap<>();
+        for (Entry<? extends K, ? extends V> entry : entries) {
+            map.put(entry.getKey(), entry.getValue());
+        }
+        return map;
+    }
 
+    /**
+     * 设置此元数据元素的配置源对象。
+     * <p>对象的精确类型将取决于所使用的配置机制。
+     */
+    public void setSource(@Nullable Object source) {
+        this.source = source;
+    }
 
-	/**
-	 * Return a new instance containing keys and values extracted from the
-	 * given entries. The entries themselves are not stored in the map.
-	 * @param entries {@code Map.Entry}s containing the keys and values
-	 * from which the map is populated
-	 * @param <K> the {@code Map}'s key type
-	 * @param <V> the {@code Map}'s value type
-	 * @return a {@code Map} containing the specified mappings
-	 * @since 5.3.16
-	 */
-	@SafeVarargs
-	@SuppressWarnings("unchecked")
-	public static <K,V> ManagedMap<K,V> ofEntries(Entry<? extends K, ? extends V>... entries) {
-		ManagedMap<K,V > map = new ManagedMap<>();
-		for (Entry<? extends K, ? extends V> entry : entries) {
-			map.put(entry.getKey(), entry.getValue());
-		}
-		return map;
-	}
+    @Override
+    @Nullable
+    public Object getSource() {
+        return this.source;
+    }
 
-	/**
-	 * Set the configuration source {@code Object} for this metadata element.
-	 * <p>The exact type of the object will depend on the configuration mechanism used.
-	 */
-	public void setSource(@Nullable Object source) {
-		this.source = source;
-	}
+    /**
+     * 设置用于此映射的默认键类型名称（类名）。
+     */
+    public void setKeyTypeName(@Nullable String keyTypeName) {
+        this.keyTypeName = keyTypeName;
+    }
 
-	@Override
-	@Nullable
-	public Object getSource() {
-		return this.source;
-	}
+    /**
+     * 返回用于此映射的默认键类型名称（类名）。
+     */
+    @Nullable
+    public String getKeyTypeName() {
+        return this.keyTypeName;
+    }
 
-	/**
-	 * Set the default key type name (class name) to be used for this map.
-	 */
-	public void setKeyTypeName(@Nullable String keyTypeName) {
-		this.keyTypeName = keyTypeName;
-	}
+    /**
+     * 设置用于此映射的默认值类型名称（类名）。
+     */
+    public void setValueTypeName(@Nullable String valueTypeName) {
+        this.valueTypeName = valueTypeName;
+    }
 
-	/**
-	 * Return the default key type name (class name) to be used for this map.
-	 */
-	@Nullable
-	public String getKeyTypeName() {
-		return this.keyTypeName;
-	}
+    /**
+     * 返回用于此映射的默认值类型名称（类名）。
+     */
+    @Nullable
+    public String getValueTypeName() {
+        return this.valueTypeName;
+    }
 
-	/**
-	 * Set the default value type name (class name) to be used for this map.
-	 */
-	public void setValueTypeName(@Nullable String valueTypeName) {
-		this.valueTypeName = valueTypeName;
-	}
+    /**
+     * 设置是否启用此集合的合并功能，
+     * 如果存在一个'父'集合值时。
+     */
+    public void setMergeEnabled(boolean mergeEnabled) {
+        this.mergeEnabled = mergeEnabled;
+    }
 
-	/**
-	 * Return the default value type name (class name) to be used for this map.
-	 */
-	@Nullable
-	public String getValueTypeName() {
-		return this.valueTypeName;
-	}
+    @Override
+    public boolean isMergeEnabled() {
+        return this.mergeEnabled;
+    }
 
-	/**
-	 * Set whether merging should be enabled for this collection,
-	 * in case of a 'parent' collection value being present.
-	 */
-	public void setMergeEnabled(boolean mergeEnabled) {
-		this.mergeEnabled = mergeEnabled;
-	}
-
-	@Override
-	public boolean isMergeEnabled() {
-		return this.mergeEnabled;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Object merge(@Nullable Object parent) {
-		if (!this.mergeEnabled) {
-			throw new IllegalStateException("Not allowed to merge when the 'mergeEnabled' property is set to 'false'");
-		}
-		if (parent == null) {
-			return this;
-		}
-		if (!(parent instanceof Map)) {
-			throw new IllegalArgumentException("Cannot merge with object of type [" + parent.getClass() + "]");
-		}
-		Map<K, V> merged = new ManagedMap<>();
-		merged.putAll((Map<K, V>) parent);
-		merged.putAll(this);
-		return merged;
-	}
-
+    @Override
+    @SuppressWarnings("unchecked")
+    public Object merge(@Nullable Object parent) {
+        if (!this.mergeEnabled) {
+            throw new IllegalStateException("Not allowed to merge when the 'mergeEnabled' property is set to 'false'");
+        }
+        if (parent == null) {
+            return this;
+        }
+        if (!(parent instanceof Map)) {
+            throw new IllegalArgumentException("Cannot merge with object of type [" + parent.getClass() + "]");
+        }
+        Map<K, V> merged = new ManagedMap<>();
+        merged.putAll((Map<K, V>) parent);
+        merged.putAll(this);
+        return merged;
+    }
 }

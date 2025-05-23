@@ -1,23 +1,17 @@
-/*
- * Copyright 2002-2022 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2022 原作者或作者们。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，您不得使用此文件除非符合许可证规定。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”提供，
+* 不提供任何明示或暗示的保证或条件，包括但不限于适销性、适用于特定目的和不侵犯知识产权。
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.beans.factory.serviceloader;
 
 import java.util.ServiceLoader;
-
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.lang.Nullable;
@@ -25,60 +19,55 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
- * Abstract base class for FactoryBeans operating on the
- * JDK 1.6 {@link java.util.ServiceLoader} facility.
+ * 用于操作 JDK 1.6 中 {@link java.util.ServiceLoader} 服务的 FactoryBeans 的抽象基类。
  *
  * @author Juergen Hoeller
  * @since 2.5
  * @see java.util.ServiceLoader
  */
-public abstract class AbstractServiceLoaderBasedFactoryBean extends AbstractFactoryBean<Object>
-		implements BeanClassLoaderAware {
+public abstract class AbstractServiceLoaderBasedFactoryBean extends AbstractFactoryBean<Object> implements BeanClassLoaderAware {
 
-	@Nullable
-	private Class<?> serviceType;
+    @Nullable
+    private Class<?> serviceType;
 
-	@Nullable
-	private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+    @Nullable
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
+    /**
+     * 指定所需的服务类型（通常是服务的公共API）。
+     */
+    public void setServiceType(@Nullable Class<?> serviceType) {
+        this.serviceType = serviceType;
+    }
 
-	/**
-	 * Specify the desired service type (typically the service's public API).
-	 */
-	public void setServiceType(@Nullable Class<?> serviceType) {
-		this.serviceType = serviceType;
-	}
+    /**
+     * 返回期望的服务类型。
+     */
+    @Nullable
+    public Class<?> getServiceType() {
+        return this.serviceType;
+    }
 
-	/**
-	 * Return the desired service type.
-	 */
-	@Nullable
-	public Class<?> getServiceType() {
-		return this.serviceType;
-	}
+    @Override
+    public void setBeanClassLoader(@Nullable ClassLoader beanClassLoader) {
+        this.beanClassLoader = beanClassLoader;
+    }
 
-	@Override
-	public void setBeanClassLoader(@Nullable ClassLoader beanClassLoader) {
-		this.beanClassLoader = beanClassLoader;
-	}
+    /**
+     * 委派给 {@link #getObjectToExpose(java.util.ServiceLoader)}.
+     * @return 要暴露的对象
+     */
+    @Override
+    protected Object createInstance() {
+        Assert.state(getServiceType() != null, "Property 'serviceType' is required");
+        return getObjectToExpose(ServiceLoader.load(getServiceType(), this.beanClassLoader));
+    }
 
-
-	/**
-	 * Delegates to {@link #getObjectToExpose(java.util.ServiceLoader)}.
-	 * @return the object to expose
-	 */
-	@Override
-	protected Object createInstance() {
-		Assert.state(getServiceType() != null, "Property 'serviceType' is required");
-		return getObjectToExpose(ServiceLoader.load(getServiceType(), this.beanClassLoader));
-	}
-
-	/**
-	 * Determine the actual object to expose for the given ServiceLoader.
-	 * <p>Left to concrete subclasses.
-	 * @param serviceLoader the ServiceLoader for the configured service class
-	 * @return the object to expose
-	 */
-	protected abstract Object getObjectToExpose(ServiceLoader<?> serviceLoader);
-
+    /**
+     * 确定给定 ServiceLoader 的实际对象。
+     * <p>具体实现留给子类。
+     * @param serviceLoader 配置的服务类对应的 ServiceLoader
+     * @return 要暴露的对象
+     */
+    protected abstract Object getObjectToExpose(ServiceLoader<?> serviceLoader);
 }

@@ -1,46 +1,33 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2018 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件按“原样”提供，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体管理权限和限制的条款。*/
 package org.springframework.beans.factory;
 
 /**
- * Interface to be implemented by beans that want to release resources on destruction.
- * A {@link BeanFactory} will invoke the destroy method on individual destruction of a
- * scoped bean. An {@link org.springframework.context.ApplicationContext} is supposed
- * to dispose all of its singletons on shutdown, driven by the application lifecycle.
+ *  接口，由希望在被销毁时释放资源的bean实现。
+ *  当作用域bean被单独销毁时，`BeanFactory` 将会调用其`destroy`方法。`ApplicationContext` 应在应用程序生命周期驱动下关闭时销毁其所有单例bean。
  *
- * <p>A Spring-managed bean may also implement Java's {@link AutoCloseable} interface
- * for the same purpose. An alternative to implementing an interface is specifying a
- * custom destroy method, for example in an XML bean definition. For a list of all
- * bean lifecycle methods, see the {@link BeanFactory BeanFactory javadocs}.
+ * <p>Spring管理的bean也可以实现Java的`AutoCloseable`接口以实现相同的目的。实现接口的另一种方法是指定一个自定义的销毁方法，例如在XML bean定义中。有关所有bean生命周期方法的列表，请参阅`BeanFactory`的javadoc。
  *
- * @author Juergen Hoeller
- * @since 12.08.2003
- * @see InitializingBean
- * @see org.springframework.beans.factory.support.RootBeanDefinition#getDestroyMethodName()
- * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#destroySingletons()
- * @see org.springframework.context.ConfigurableApplicationContext#close()
+ *  @author Juergen Hoeller
+ *  @since 12.08.2003
+ *  @see InitializingBean
+ *  @see org.springframework.beans.factory.support.RootBeanDefinition#getDestroyMethodName()
+ *  @see org.springframework.beans.factory.config.ConfigurableBeanFactory#destroySingletons()
+ *  @see org.springframework.context.ConfigurableApplicationContext#close()
  */
 public interface DisposableBean {
 
-	/**
-	 * Invoked by the containing {@code BeanFactory} on destruction of a bean.
-	 * @throws Exception in case of shutdown errors. Exceptions will get logged
-	 * but not rethrown to allow other beans to release their resources as well.
-	 */
-	void destroy() throws Exception;
-
+    /**
+     * 当包含的 {@code BeanFactory} 在销毁一个 Bean 时调用。
+     * 在关闭过程中出现错误时抛出异常。异常将被记录但不会重新抛出，以允许其他 Bean 也能释放其资源。
+     */
+    void destroy() throws Exception;
 }

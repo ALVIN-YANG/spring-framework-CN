@@ -1,24 +1,17 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2023 原作者或作者。
+*
+* 根据 Apache License, Version 2.0 ("许可证") 许可使用，除非符合许可证规定，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件按“现状”提供，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.beans.support;
 
 import java.beans.PropertyEditor;
 import java.lang.reflect.Method;
-
 import org.springframework.beans.PropertyEditorRegistry;
 import org.springframework.beans.SimpleTypeConverter;
 import org.springframework.beans.TypeConverter;
@@ -29,11 +22,9 @@ import org.springframework.util.MethodInvoker;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Subclass of {@link MethodInvoker} that tries to convert the given
- * arguments for the actual target method via a {@link TypeConverter}.
+ * {@link MethodInvoker} 的子类，尝试通过一个 {@link TypeConverter} 将给定的参数转换为实际目标方法的参数。
  *
- * <p>Supports flexible argument conversions, in particular for
- * invoking a specific overloaded method.
+ * <p>支持灵活的参数转换，特别是用于调用特定重载方法的情况。
  *
  * @author Juergen Hoeller
  * @since 1.1
@@ -41,144 +32,133 @@ import org.springframework.util.ReflectionUtils;
  */
 public class ArgumentConvertingMethodInvoker extends MethodInvoker {
 
-	@Nullable
-	private TypeConverter typeConverter;
+    @Nullable
+    private TypeConverter typeConverter;
 
-	private boolean useDefaultConverter = true;
+    private boolean useDefaultConverter = true;
 
+    /**
+     * 设置用于参数类型转换的TypeConverter。
+     * <p>默认使用的是{@link org.springframework.beans.SimpleTypeConverter}。
+     * 可以通过任何TypeConverter实现来覆盖默认设置，通常是预先配置的SimpleTypeConverter或BeanWrapperImpl实例。
+     * @see org.springframework.beans.SimpleTypeConverter
+     * @see org.springframework.beans.BeanWrapperImpl
+     */
+    public void setTypeConverter(@Nullable TypeConverter typeConverter) {
+        this.typeConverter = typeConverter;
+        this.useDefaultConverter = (typeConverter == null);
+    }
 
-	/**
-	 * Set a TypeConverter to use for argument type conversion.
-	 * <p>Default is a {@link org.springframework.beans.SimpleTypeConverter}.
-	 * Can be overridden with any TypeConverter implementation, typically
-	 * a pre-configured SimpleTypeConverter or a BeanWrapperImpl instance.
-	 * @see org.springframework.beans.SimpleTypeConverter
-	 * @see org.springframework.beans.BeanWrapperImpl
-	 */
-	public void setTypeConverter(@Nullable TypeConverter typeConverter) {
-		this.typeConverter = typeConverter;
-		this.useDefaultConverter = (typeConverter == null);
-	}
+    /**
+     * 返回用于参数类型转换的 TypeConverter。
+     * <p>如果需要直接访问底层的 PropertyEditor，可以将此对象转换为 {@link org.springframework.beans.PropertyEditorRegistry}（前提是当前的 TypeConverter 实际上实现了 PropertyEditorRegistry 接口）。
+     */
+    @Nullable
+    public TypeConverter getTypeConverter() {
+        if (this.typeConverter == null && this.useDefaultConverter) {
+            this.typeConverter = getDefaultTypeConverter();
+        }
+        return this.typeConverter;
+    }
 
-	/**
-	 * Return the TypeConverter used for argument type conversion.
-	 * <p>Can be cast to {@link org.springframework.beans.PropertyEditorRegistry}
-	 * if direct access to the underlying PropertyEditors is desired
-	 * (provided that the present TypeConverter actually implements the
-	 * PropertyEditorRegistry interface).
-	 */
-	@Nullable
-	public TypeConverter getTypeConverter() {
-		if (this.typeConverter == null && this.useDefaultConverter) {
-			this.typeConverter = getDefaultTypeConverter();
-		}
-		return this.typeConverter;
-	}
+    /**
+     * 获取此方法调用器的默认TypeConverter。
+     * <p>当未指定显式TypeConverter时调用。
+     * 默认实现构建一个
+     * {@link org.springframework.beans.SimpleTypeConverter}。
+     * 可在子类中覆盖。
+     */
+    protected TypeConverter getDefaultTypeConverter() {
+        return new SimpleTypeConverter();
+    }
 
-	/**
-	 * Obtain the default TypeConverter for this method invoker.
-	 * <p>Called if no explicit TypeConverter has been specified.
-	 * The default implementation builds a
-	 * {@link org.springframework.beans.SimpleTypeConverter}.
-	 * Can be overridden in subclasses.
-	 */
-	protected TypeConverter getDefaultTypeConverter() {
-		return new SimpleTypeConverter();
-	}
+    /**
+     * 为给定类型的所有属性注册指定的自定义属性编辑器。
+     * <p>通常与默认的
+     * {@link org.springframework.beans.SimpleTypeConverter} 结合使用；也可以与任何实现 PropertyEditorRegistry 接口的 TypeConverter 一起使用。
+     * @param requiredType 属性的类型
+     * @param propertyEditor 要注册的编辑器
+     * @see #setTypeConverter
+     * @see org.springframework.beans.PropertyEditorRegistry#registerCustomEditor
+     */
+    public void registerCustomEditor(Class<?> requiredType, PropertyEditor propertyEditor) {
+        TypeConverter converter = getTypeConverter();
+        if (!(converter instanceof PropertyEditorRegistry registry)) {
+            throw new IllegalStateException("TypeConverter does not implement PropertyEditorRegistry interface: " + converter);
+        }
+        registry.registerCustomEditor(requiredType, propertyEditor);
+    }
 
-	/**
-	 * Register the given custom property editor for all properties of the given type.
-	 * <p>Typically used in conjunction with the default
-	 * {@link org.springframework.beans.SimpleTypeConverter}; will work with any
-	 * TypeConverter that implements the PropertyEditorRegistry interface as well.
-	 * @param requiredType type of the property
-	 * @param propertyEditor editor to register
-	 * @see #setTypeConverter
-	 * @see org.springframework.beans.PropertyEditorRegistry#registerCustomEditor
-	 */
-	public void registerCustomEditor(Class<?> requiredType, PropertyEditor propertyEditor) {
-		TypeConverter converter = getTypeConverter();
-		if (!(converter instanceof PropertyEditorRegistry registry)) {
-			throw new IllegalStateException(
-					"TypeConverter does not implement PropertyEditorRegistry interface: " + converter);
-		}
-		registry.registerCustomEditor(requiredType, propertyEditor);
-	}
+    /**
+     * 此实现寻找具有匹配参数类型的方法。
+     * @see #doFindMatchingMethod
+     */
+    @Override
+    @Nullable
+    protected Method findMatchingMethod() {
+        Method matchingMethod = super.findMatchingMethod();
+        // 第二次遍历：查找可以将参数转换为参数类型的函数。
+        if (matchingMethod == null) {
+            // 将参数数组解释为单个方法参数。
+            matchingMethod = doFindMatchingMethod(getArguments());
+        }
+        if (matchingMethod == null) {
+            // 将参数数组解释为单个方法参数的数组类型。
+            matchingMethod = doFindMatchingMethod(new Object[] { getArguments() });
+        }
+        return matchingMethod;
+    }
 
-
-	/**
-	 * This implementation looks for a method with matching parameter types.
-	 * @see #doFindMatchingMethod
-	 */
-	@Override
-	@Nullable
-	protected Method findMatchingMethod() {
-		Method matchingMethod = super.findMatchingMethod();
-		// Second pass: look for method where arguments can be converted to parameter types.
-		if (matchingMethod == null) {
-			// Interpret argument array as individual method arguments.
-			matchingMethod = doFindMatchingMethod(getArguments());
-		}
-		if (matchingMethod == null) {
-			// Interpret argument array as single method argument of array type.
-			matchingMethod = doFindMatchingMethod(new Object[] {getArguments()});
-		}
-		return matchingMethod;
-	}
-
-	/**
-	 * Actually find a method with matching parameter type, i.e. where each
-	 * argument value is assignable to the corresponding parameter type.
-	 * @param arguments the argument values to match against method parameters
-	 * @return a matching method, or {@code null} if none
-	 */
-	@Nullable
-	protected Method doFindMatchingMethod(Object[] arguments) {
-		TypeConverter converter = getTypeConverter();
-		if (converter != null) {
-			String targetMethod = getTargetMethod();
-			Method matchingMethod = null;
-			int argCount = arguments.length;
-			Class<?> targetClass = getTargetClass();
-			Assert.state(targetClass != null, "No target class set");
-			Method[] candidates = ReflectionUtils.getAllDeclaredMethods(targetClass);
-			int minTypeDiffWeight = Integer.MAX_VALUE;
-			Object[] argumentsToUse = null;
-			for (Method candidate : candidates) {
-				if (candidate.getName().equals(targetMethod)) {
-					// Check if the inspected method has the correct number of parameters.
-					int parameterCount = candidate.getParameterCount();
-					if (parameterCount == argCount) {
-						Class<?>[] paramTypes = candidate.getParameterTypes();
-						Object[] convertedArguments = new Object[argCount];
-						boolean match = true;
-						for (int j = 0; j < argCount && match; j++) {
-							// Verify that the supplied argument is assignable to the method parameter.
-							try {
-								convertedArguments[j] = converter.convertIfNecessary(arguments[j], paramTypes[j]);
-							}
-							catch (TypeMismatchException ex) {
-								// Ignore -> simply doesn't match.
-								match = false;
-							}
-						}
-						if (match) {
-							int typeDiffWeight = getTypeDifferenceWeight(paramTypes, convertedArguments);
-							if (typeDiffWeight < minTypeDiffWeight) {
-								minTypeDiffWeight = typeDiffWeight;
-								matchingMethod = candidate;
-								argumentsToUse = convertedArguments;
-							}
-						}
-					}
-				}
-			}
-			if (matchingMethod != null) {
-				setArguments(argumentsToUse);
-				return matchingMethod;
-			}
-		}
-		return null;
-	}
-
+    /**
+     * 实际上找到一个与匹配参数类型的方法，即每个参数值都可以赋值给相应的参数类型。
+     * @param arguments 要与方法参数匹配的参数值
+     * @return 一个匹配的方法，如果没有匹配的方法则返回 {@code null}
+     */
+    @Nullable
+    protected Method doFindMatchingMethod(Object[] arguments) {
+        TypeConverter converter = getTypeConverter();
+        if (converter != null) {
+            String targetMethod = getTargetMethod();
+            Method matchingMethod = null;
+            int argCount = arguments.length;
+            Class<?> targetClass = getTargetClass();
+            Assert.state(targetClass != null, "No target class set");
+            Method[] candidates = ReflectionUtils.getAllDeclaredMethods(targetClass);
+            int minTypeDiffWeight = Integer.MAX_VALUE;
+            Object[] argumentsToUse = null;
+            for (Method candidate : candidates) {
+                if (candidate.getName().equals(targetMethod)) {
+                    // 检查被检查的方法是否有正确的参数数量。
+                    int parameterCount = candidate.getParameterCount();
+                    if (parameterCount == argCount) {
+                        Class<?>[] paramTypes = candidate.getParameterTypes();
+                        Object[] convertedArguments = new Object[argCount];
+                        boolean match = true;
+                        for (int j = 0; j < argCount && match; j++) {
+                            // 验证提供的参数是否可以赋值给方法参数。
+                            try {
+                                convertedArguments[j] = converter.convertIfNecessary(arguments[j], paramTypes[j]);
+                            } catch (TypeMismatchException ex) {
+                                // 忽略 -> 简单地不匹配。
+                                match = false;
+                            }
+                        }
+                        if (match) {
+                            int typeDiffWeight = getTypeDifferenceWeight(paramTypes, convertedArguments);
+                            if (typeDiffWeight < minTypeDiffWeight) {
+                                minTypeDiffWeight = typeDiffWeight;
+                                matchingMethod = candidate;
+                                argumentsToUse = convertedArguments;
+                            }
+                        }
+                    }
+                }
+            }
+            if (matchingMethod != null) {
+                setArguments(argumentsToUse);
+                return matchingMethod;
+            }
+        }
+        return null;
+    }
 }

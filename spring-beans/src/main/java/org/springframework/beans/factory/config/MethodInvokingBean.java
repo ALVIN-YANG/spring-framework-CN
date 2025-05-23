@@ -1,23 +1,16 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2023 原作者或作者们。
+*
+* 根据 Apache License 2.0（“许可证”）许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，
+* 不提供任何明示或暗示的保证或条件。有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.beans.factory.config;
 
 import java.lang.reflect.InvocationTargetException;
-
 import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanFactory;
@@ -28,30 +21,20 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.ClassUtils;
 
 /**
- * Simple method invoker bean: just invoking a target method, not expecting a result
- * to expose to the container (in contrast to {@link MethodInvokingFactoryBean}).
+ * 简单的方法调用器 Bean：仅调用目标方法，不期望将结果暴露给容器（与 {@link MethodInvokingFactoryBean} 相比）。
  *
- * <p>This invoker supports any kind of target method. A static method may be specified
- * by setting the {@link #setTargetMethod targetMethod} property to a String representing
- * the static method name, with {@link #setTargetClass targetClass} specifying the Class
- * that the static method is defined on. Alternatively, a target instance method may be
- * specified, by setting the {@link #setTargetObject targetObject} property as the target
- * object, and the {@link #setTargetMethod targetMethod} property as the name of the
- * method to call on that target object. Arguments for the method invocation may be
- * specified by setting the {@link #setArguments arguments} property.
+ * <p>此调用器支持任何类型的目标方法。可以通过设置 {@link #setTargetMethod targetMethod} 属性为一个表示静态方法名称的字符串来指定静态方法，并通过设置 {@link #setTargetClass targetClass} 来指定定义静态方法的类。或者，可以通过设置 {@link #setTargetObject targetObject} 属性为目标对象，以及将 {@link #setTargetMethod targetMethod} 属性设置为要在该目标对象上调用的方法名称来指定目标实例方法。方法调用的参数可以通过设置 {@link #setArguments arguments} 属性来指定。
  *
- * <p>This class depends on {@link #afterPropertiesSet()} being called once
- * all properties have been set, as per the InitializingBean contract.
+ * <p>此类依赖于按照 InitializingBean 协议，在所有属性都已设置后调用一次 {@link #afterPropertiesSet()}。
  *
- * <p>An example (in an XML based bean factory definition) of a bean definition
- * which uses this class to call a static initialization method:
+ * <p>以下是一个使用此类调用静态初始化方法的 Bean 定义示例（基于 XML 的 Bean 工厂定义）：
  *
  * <pre class="code">
  * &lt;bean id="myObject" class="org.springframework.beans.factory.config.MethodInvokingBean"&gt;
  *   &lt;property name="staticMethod" value="com.whatever.MyClass.init"/&gt;
  * &lt;/bean&gt;</pre>
  *
- * <p>An example of calling an instance method to start some server bean:
+ * <p>以下是一个调用实例方法以启动某些服务器 Bean 的示例：
  *
  * <pre class="code">
  * &lt;bean id="myStarter" class="org.springframework.beans.factory.config.MethodInvokingBean"&gt;
@@ -64,73 +47,65 @@ import org.springframework.util.ClassUtils;
  * @see MethodInvokingFactoryBean
  * @see org.springframework.util.MethodInvoker
  */
-public class MethodInvokingBean extends ArgumentConvertingMethodInvoker
-		implements BeanClassLoaderAware, BeanFactoryAware, InitializingBean {
+public class MethodInvokingBean extends ArgumentConvertingMethodInvoker implements BeanClassLoaderAware, BeanFactoryAware, InitializingBean {
 
-	@Nullable
-	private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+    @Nullable
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
-	@Nullable
-	private ConfigurableBeanFactory beanFactory;
+    @Nullable
+    private ConfigurableBeanFactory beanFactory;
 
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        this.beanClassLoader = classLoader;
+    }
 
-	@Override
-	public void setBeanClassLoader(ClassLoader classLoader) {
-		this.beanClassLoader = classLoader;
-	}
+    @Override
+    protected Class<?> resolveClassName(String className) throws ClassNotFoundException {
+        return ClassUtils.forName(className, this.beanClassLoader);
+    }
 
-	@Override
-	protected Class<?> resolveClassName(String className) throws ClassNotFoundException {
-		return ClassUtils.forName(className, this.beanClassLoader);
-	}
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) {
+        if (beanFactory instanceof ConfigurableBeanFactory cbf) {
+            this.beanFactory = cbf;
+        }
+    }
 
-	@Override
-	public void setBeanFactory(BeanFactory beanFactory) {
-		if (beanFactory instanceof ConfigurableBeanFactory cbf) {
-			this.beanFactory = cbf;
-		}
-	}
+    /**
+     * 从运行此bean的BeanFactory中获取TypeConverter，如果可能的话。
+     * @see ConfigurableBeanFactory#getTypeConverter()
+     */
+    @Override
+    protected TypeConverter getDefaultTypeConverter() {
+        if (this.beanFactory != null) {
+            return this.beanFactory.getTypeConverter();
+        } else {
+            return super.getDefaultTypeConverter();
+        }
+    }
 
-	/**
-	 * Obtain the TypeConverter from the BeanFactory that this bean runs in,
-	 * if possible.
-	 * @see ConfigurableBeanFactory#getTypeConverter()
-	 */
-	@Override
-	protected TypeConverter getDefaultTypeConverter() {
-		if (this.beanFactory != null) {
-			return this.beanFactory.getTypeConverter();
-		}
-		else {
-			return super.getDefaultTypeConverter();
-		}
-	}
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        prepare();
+        invokeWithTargetException();
+    }
 
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		prepare();
-		invokeWithTargetException();
-	}
-
-	/**
-	 * Perform the invocation and convert InvocationTargetException
-	 * into the underlying target exception.
-	 */
-	@Nullable
-	protected Object invokeWithTargetException() throws Exception {
-		try {
-			return invoke();
-		}
-		catch (InvocationTargetException ex) {
-			if (ex.getTargetException() instanceof Exception exception) {
-				throw exception;
-			}
-			if (ex.getTargetException() instanceof Error error) {
-				throw error;
-			}
-			throw ex;
-		}
-	}
-
+    /**
+     * 执行调用并将InvocationTargetException转换为底层的目标异常。
+     */
+    @Nullable
+    protected Object invokeWithTargetException() throws Exception {
+        try {
+            return invoke();
+        } catch (InvocationTargetException ex) {
+            if (ex.getTargetException() instanceof Exception exception) {
+                throw exception;
+            }
+            if (ex.getTargetException() instanceof Error error) {
+                throw error;
+            }
+            throw ex;
+        }
+    }
 }

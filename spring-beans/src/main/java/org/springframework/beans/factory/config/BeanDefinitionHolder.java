@@ -1,19 +1,15 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2023 原作者或作者。
+*
+* 根据 Apache License 2.0 ("许可协议") 许可；
+* 除非符合许可协议，否则不得使用此文件。
+* 您可以在以下链接处获取许可协议的副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可协议下分发的软件
+* 是按“原样”分发的，不提供任何形式的明示或暗示保证。
+* 请参阅许可协议了解具体语言管辖的权限和限制。*/
 package org.springframework.beans.factory.config;
 
 import org.springframework.beans.BeanMetadataElement;
@@ -24,12 +20,10 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * Holder for a BeanDefinition with name and aliases.
- * Can be registered as a placeholder for an inner bean.
+ * 用于存储具有名称和别名的BeanDefinition的持有者。
+ * 可以注册为内部Bean的占位符。
  *
- * <p>Can also be used for programmatic registration of inner bean
- * definitions. If you don't care about BeanNameAware and the like,
- * registering RootBeanDefinition or ChildBeanDefinition is good enough.
+ * <p>还可以用于程序化注册内部Bean定义。如果您不关心BeanNameAware等，注册RootBeanDefinition或ChildBeanDefinition就足够了。
  *
  * @author Juergen Hoeller
  * @since 1.0.2
@@ -39,144 +33,129 @@ import org.springframework.util.StringUtils;
  */
 public class BeanDefinitionHolder implements BeanMetadataElement {
 
-	private final BeanDefinition beanDefinition;
+    private final BeanDefinition beanDefinition;
 
-	private final String beanName;
+    private final String beanName;
 
-	@Nullable
-	private final String[] aliases;
+    @Nullable
+    private final String[] aliases;
 
+    /**
+     * 创建一个新的 BeanDefinitionHolder。
+     * @param beanDefinition 要包装的 BeanDefinition
+     * @param beanName 该 BeanDefinition 指定的 Bean 名称
+     */
+    public BeanDefinitionHolder(BeanDefinition beanDefinition, String beanName) {
+        this(beanDefinition, beanName, null);
+    }
 
-	/**
-	 * Create a new BeanDefinitionHolder.
-	 * @param beanDefinition the BeanDefinition to wrap
-	 * @param beanName the name of the bean, as specified for the bean definition
-	 */
-	public BeanDefinitionHolder(BeanDefinition beanDefinition, String beanName) {
-		this(beanDefinition, beanName, null);
-	}
+    /**
+     * 创建一个新的BeanDefinitionHolder。
+     * @param beanDefinition 要包装的BeanDefinition
+     * @param beanName bean的名称，如bean定义中指定
+     * @param aliases bean的别名，或如果没有则为{@code null}
+     */
+    public BeanDefinitionHolder(BeanDefinition beanDefinition, String beanName, @Nullable String[] aliases) {
+        Assert.notNull(beanDefinition, "BeanDefinition must not be null");
+        Assert.notNull(beanName, "Bean name must not be null");
+        this.beanDefinition = beanDefinition;
+        this.beanName = beanName;
+        this.aliases = aliases;
+    }
 
-	/**
-	 * Create a new BeanDefinitionHolder.
-	 * @param beanDefinition the BeanDefinition to wrap
-	 * @param beanName the name of the bean, as specified for the bean definition
-	 * @param aliases alias names for the bean, or {@code null} if none
-	 */
-	public BeanDefinitionHolder(BeanDefinition beanDefinition, String beanName, @Nullable String[] aliases) {
-		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
-		Assert.notNull(beanName, "Bean name must not be null");
-		this.beanDefinition = beanDefinition;
-		this.beanName = beanName;
-		this.aliases = aliases;
-	}
+    /**
+     * 复制构造函数：创建一个新的 BeanDefinitionHolder，其内容与给定的 BeanDefinitionHolder 实例相同。
+     * <p>注意：包装的 BeanDefinition 引用按原样取用；它<em>不是</em>深拷贝。
+     * @param beanDefinitionHolder 要复制的 BeanDefinitionHolder
+     */
+    public BeanDefinitionHolder(BeanDefinitionHolder beanDefinitionHolder) {
+        Assert.notNull(beanDefinitionHolder, "BeanDefinitionHolder must not be null");
+        this.beanDefinition = beanDefinitionHolder.getBeanDefinition();
+        this.beanName = beanDefinitionHolder.getBeanName();
+        this.aliases = beanDefinitionHolder.getAliases();
+    }
 
-	/**
-	 * Copy constructor: Create a new BeanDefinitionHolder with the
-	 * same contents as the given BeanDefinitionHolder instance.
-	 * <p>Note: The wrapped BeanDefinition reference is taken as-is;
-	 * it is {@code not} deeply copied.
-	 * @param beanDefinitionHolder the BeanDefinitionHolder to copy
-	 */
-	public BeanDefinitionHolder(BeanDefinitionHolder beanDefinitionHolder) {
-		Assert.notNull(beanDefinitionHolder, "BeanDefinitionHolder must not be null");
-		this.beanDefinition = beanDefinitionHolder.getBeanDefinition();
-		this.beanName = beanDefinitionHolder.getBeanName();
-		this.aliases = beanDefinitionHolder.getAliases();
-	}
+    /**
+     * 返回包装的 BeanDefinition。
+     */
+    public BeanDefinition getBeanDefinition() {
+        return this.beanDefinition;
+    }
 
+    /**
+     * 返回为该bean定义指定的bean的主名称。
+     */
+    public String getBeanName() {
+        return this.beanName;
+    }
 
-	/**
-	 * Return the wrapped BeanDefinition.
-	 */
-	public BeanDefinition getBeanDefinition() {
-		return this.beanDefinition;
-	}
+    /**
+     * 返回为该Bean指定的别名名称，这些名称是直接在Bean定义中指定的。
+     * @return 返回别名名称数组，如果没有则返回{@code null}
+     */
+    @Nullable
+    public String[] getAliases() {
+        return this.aliases;
+    }
 
-	/**
-	 * Return the primary name of the bean, as specified for the bean definition.
-	 */
-	public String getBeanName() {
-		return this.beanName;
-	}
+    /**
+     * 暴露 Bean 定义的源对象。
+     * @see BeanDefinition#getSource()
+     */
+    @Override
+    @Nullable
+    public Object getSource() {
+        return this.beanDefinition.getSource();
+    }
 
-	/**
-	 * Return the alias names for the bean, as specified directly for the bean definition.
-	 * @return the array of alias names, or {@code null} if none
-	 */
-	@Nullable
-	public String[] getAliases() {
-		return this.aliases;
-	}
+    /**
+     * 判断给定的候选名称是否与该Bean定义中的Bean名称或别名匹配
+     */
+    public boolean matchesName(@Nullable String candidateName) {
+        return (candidateName != null && (candidateName.equals(this.beanName) || candidateName.equals(BeanFactoryUtils.transformedBeanName(this.beanName)) || ObjectUtils.containsElement(this.aliases, candidateName)));
+    }
 
-	/**
-	 * Expose the bean definition's source object.
-	 * @see BeanDefinition#getSource()
-	 */
-	@Override
-	@Nullable
-	public Object getSource() {
-		return this.beanDefinition.getSource();
-	}
+    /**
+     * 返回关于该对象的友好、简洁描述，包括名称和别名。
+     * @see #getBeanName()
+     * @see #getAliases()
+     */
+    public String getShortDescription() {
+        if (this.aliases == null) {
+            return "Bean definition with name '" + this.beanName + "'";
+        }
+        return "Bean definition with name '" + this.beanName + "' and aliases [" + StringUtils.arrayToCommaDelimitedString(this.aliases) + ']';
+    }
 
-	/**
-	 * Determine whether the given candidate name matches the bean name
-	 * or the aliases stored in this bean definition.
-	 */
-	public boolean matchesName(@Nullable String candidateName) {
-		return (candidateName != null && (candidateName.equals(this.beanName) ||
-				candidateName.equals(BeanFactoryUtils.transformedBeanName(this.beanName)) ||
-				ObjectUtils.containsElement(this.aliases, candidateName)));
-	}
+    /**
+     * 返回关于该实体的详细描述，包括名称和别名，以及包含的 {@link BeanDefinition} 的描述。
+     * @see #getShortDescription()
+     * @see #getBeanDefinition()
+     */
+    public String getLongDescription() {
+        return getShortDescription() + ": " + this.beanDefinition;
+    }
 
+    /**
+     * 此实现返回长描述。可以被重写以返回简短描述或任何类型的自定义描述。
+     * @see #getLongDescription()
+     * @see #getShortDescription()
+     */
+    @Override
+    public String toString() {
+        return getLongDescription();
+    }
 
-	/**
-	 * Return a friendly, short description for the bean, stating name and aliases.
-	 * @see #getBeanName()
-	 * @see #getAliases()
-	 */
-	public String getShortDescription() {
-		if (this.aliases == null) {
-			return "Bean definition with name '" + this.beanName + "'";
-		}
-		return "Bean definition with name '" + this.beanName + "' and aliases [" + StringUtils.arrayToCommaDelimitedString(this.aliases) + ']';
-	}
+    @Override
+    public boolean equals(@Nullable Object other) {
+        return (this == other || (other instanceof BeanDefinitionHolder that && this.beanDefinition.equals(that.beanDefinition) && this.beanName.equals(that.beanName) && ObjectUtils.nullSafeEquals(this.aliases, that.aliases)));
+    }
 
-	/**
-	 * Return a long description for the bean, including name and aliases
-	 * as well as a description of the contained {@link BeanDefinition}.
-	 * @see #getShortDescription()
-	 * @see #getBeanDefinition()
-	 */
-	public String getLongDescription() {
-		return getShortDescription() + ": " + this.beanDefinition;
-	}
-
-	/**
-	 * This implementation returns the long description. Can be overridden
-	 * to return the short description or any kind of custom description instead.
-	 * @see #getLongDescription()
-	 * @see #getShortDescription()
-	 */
-	@Override
-	public String toString() {
-		return getLongDescription();
-	}
-
-
-	@Override
-	public boolean equals(@Nullable Object other) {
-		return (this == other || (other instanceof BeanDefinitionHolder that &&
-				this.beanDefinition.equals(that.beanDefinition) &&
-				this.beanName.equals(that.beanName) &&
-				ObjectUtils.nullSafeEquals(this.aliases, that.aliases)));
-	}
-
-	@Override
-	public int hashCode() {
-		int hashCode = this.beanDefinition.hashCode();
-		hashCode = 29 * hashCode + this.beanName.hashCode();
-		hashCode = 29 * hashCode + ObjectUtils.nullSafeHashCode(this.aliases);
-		return hashCode;
-	}
-
+    @Override
+    public int hashCode() {
+        int hashCode = this.beanDefinition.hashCode();
+        hashCode = 29 * hashCode + this.beanName.hashCode();
+        hashCode = 29 * hashCode + ObjectUtils.nullSafeHashCode(this.aliases);
+        return hashCode;
+    }
 }

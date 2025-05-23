@@ -1,19 +1,14 @@
-/*
- * Copyright 2002-2014 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2014 原作者或作者。
+*
+* 根据 Apache License 2.0（“许可证”），除非适用法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件按“原样”提供，
+* 不提供任何形式的明示或暗示保证，包括但不限于适销性、适用于特定目的和不侵犯知识产权。
+* 请参阅许可证了解具体管理许可权限和限制的语言。*/
 package org.springframework.beans.factory.annotation;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -22,9 +17,9 @@ import org.springframework.core.type.MethodMetadata;
 import org.springframework.lang.Nullable;
 
 /**
- * Extended {@link org.springframework.beans.factory.config.BeanDefinition}
- * interface that exposes {@link org.springframework.core.type.AnnotationMetadata}
- * about its bean class - without requiring the class to be loaded yet.
+ * 扩展了 {@link org.springframework.beans.factory.config.BeanDefinition} 接口，
+ * 该接口公开了关于其 bean 类的 {@link org.springframework.core.type.AnnotationMetadata} 信息，
+ * 而无需加载类。
  *
  * @author Juergen Hoeller
  * @since 2.5
@@ -33,19 +28,17 @@ import org.springframework.lang.Nullable;
  */
 public interface AnnotatedBeanDefinition extends BeanDefinition {
 
-	/**
-	 * Obtain the annotation metadata (as well as basic class metadata)
-	 * for this bean definition's bean class.
-	 * @return the annotation metadata object (never {@code null})
-	 */
-	AnnotationMetadata getMetadata();
+    /**
+     * 获取此bean定义的bean类的注解元数据（以及基本类元数据）。
+     * @return 注解元数据对象（永远不会为{@code null}）
+     */
+    AnnotationMetadata getMetadata();
 
-	/**
-	 * Obtain metadata for this bean definition's factory method, if any.
-	 * @return the factory method metadata, or {@code null} if none
-	 * @since 4.1.1
-	 */
-	@Nullable
-	MethodMetadata getFactoryMethodMetadata();
-
+    /**
+     * 获取此bean定义的工厂方法的元数据（如果有的话）。
+     * @return 工厂方法元数据，如果没有则为{@code null}
+     * @since 4.1.1
+     */
+    @Nullable
+    MethodMetadata getFactoryMethodMetadata();
 }

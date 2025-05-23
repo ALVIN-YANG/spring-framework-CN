@@ -1,32 +1,23 @@
-/*
- * Copyright 2002-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2016 原作者或作者。
+*
+* 根据Apache License，版本2.0（以下简称“许可证”）；除非遵守许可证，否则您不得使用此文件。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，
+* 不提供任何形式的明示或暗示保证，包括但不限于适销性、特定用途的适用性。
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.beans.factory.parsing;
 
 import org.springframework.core.io.Resource;
 import org.springframework.lang.Nullable;
 
 /**
- * Simple strategy allowing tools to control how source metadata is attached
- * to the bean definition metadata.
+ * 简单策略，允许工具控制源元数据如何附加到bean定义元数据上。
  *
- * <p>Configuration parsers <strong>may</strong> provide the ability to attach
- * source metadata during the parse phase. They will offer this metadata in a
- * generic format which can be further modified by a {@link SourceExtractor}
- * before being attached to the bean definition metadata.
+ * <p>配置解析器<strong>可能</strong>在解析阶段提供附加源元数据的能力。它们将以通用的格式提供此元数据，该元数据在附加到bean定义元数据之前可以被一个{@link SourceExtractor}进一步修改。
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
@@ -37,15 +28,12 @@ import org.springframework.lang.Nullable;
 @FunctionalInterface
 public interface SourceExtractor {
 
-	/**
-	 * Extract the source metadata from the candidate object supplied
-	 * by the configuration parser.
-	 * @param sourceCandidate the original source metadata (never {@code null})
-	 * @param definingResource the resource that defines the given source object
-	 * (may be {@code null})
-	 * @return the source metadata object to store (may be {@code null})
-	 */
-	@Nullable
-	Object extractSource(Object sourceCandidate, @Nullable Resource definingResource);
-
+    /**
+     * 从配置解析器提供的候选对象中提取源元数据
+     * @param sourceCandidate 原始源元数据（永远不会为 {@code null}）
+     * @param definingResource 定义给定源对象的资源（可能为 {@code null}）
+     * @return 要存储的源元数据对象（可能为 {@code null}）
+     */
+    @Nullable
+    Object extractSource(Object sourceCandidate, @Nullable Resource definingResource);
 }

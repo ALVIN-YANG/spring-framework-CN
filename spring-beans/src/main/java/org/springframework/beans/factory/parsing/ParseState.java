@@ -1,32 +1,23 @@
-/*
- * Copyright 2002-2020 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2020 原作者或作者们。
+*
+* 根据 Apache License 2.0（“许可证”）许可，除非适用法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件按照“原样”分发，
+* 不提供任何形式的明示或暗示保证，包括但不限于适销性、特定用途的适用性或不侵犯第三方权利。
+* 请参阅许可证了解管理许可权限和限制的特定语言。*/
 package org.springframework.beans.factory.parsing;
 
 import java.util.ArrayDeque;
-
 import org.springframework.lang.Nullable;
 
 /**
- * Simple {@link ArrayDeque}-based structure for tracking the logical position during
- * a parsing process. {@link Entry entries} are added to the ArrayDeque at each point
- * during the parse phase in a reader-specific manner.
+ * 基于简单 {@link ArrayDeque} 的结构，用于在解析过程中跟踪逻辑位置。在解析阶段的每个点上，以特定于读取器的方式将 {@link Entry entries} 添加到 ArrayDeque 中。
  *
- * <p>Calling {@link #toString()} will render a tree-style view of the current logical
- * position in the parse phase. This representation is intended for use in error messages.
+ * <p>调用 {@link #toString()} 将渲染解析阶段当前逻辑位置的树形视图。这种表示方式旨在用于错误消息。
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
@@ -34,86 +25,78 @@ import org.springframework.lang.Nullable;
  */
 public final class ParseState {
 
-	/**
-	 * Internal {@link ArrayDeque} storage.
-	 */
-	private final ArrayDeque<Entry> state;
+    /**
+     * 内部存储，使用 {@link ArrayDeque}。
+     */
+    private final ArrayDeque<Entry> state;
 
+    /**
+     * 创建一个新的 {@code ParseState}，并使用一个空的 {@link ArrayDeque}。
+     */
+    public ParseState() {
+        this.state = new ArrayDeque<>();
+    }
 
-	/**
-	 * Create a new {@code ParseState} with an empty {@link ArrayDeque}.
-	 */
-	public ParseState() {
-		this.state = new ArrayDeque<>();
-	}
+    /**
+     * 创建一个新的 {@code ParseState}，其内部的 {@link ArrayDeque} 是传入的 {@code ParseState} 中状态的克隆
+     */
+    private ParseState(ParseState other) {
+        this.state = other.state.clone();
+    }
 
-	/**
-	 * Create a new {@code ParseState} whose {@link ArrayDeque} is a clone
-	 * of the state in the passed-in {@code ParseState}.
-	 */
-	private ParseState(ParseState other) {
-		this.state = other.state.clone();
-	}
+    /**
+     * 向 {@link ArrayDeque} 中添加一个新的 {@link Entry}。
+     */
+    public void push(Entry entry) {
+        this.state.push(entry);
+    }
 
+    /**
+     * 从 {@link ArrayDeque} 中移除一个 {@link Entry}。
+     */
+    public void pop() {
+        this.state.pop();
+    }
 
-	/**
-	 * Add a new {@link Entry} to the {@link ArrayDeque}.
-	 */
-	public void push(Entry entry) {
-		this.state.push(entry);
-	}
+    /**
+     * 返回当前位于 {@link ArrayDeque} 顶部的 {@link Entry}，或者如果 {@link ArrayDeque} 为空，则返回 {@code null}。
+     */
+    @Nullable
+    public Entry peek() {
+        return this.state.peek();
+    }
 
-	/**
-	 * Remove an {@link Entry} from the {@link ArrayDeque}.
-	 */
-	public void pop() {
-		this.state.pop();
-	}
+    /**
+     * 创建一个新实例的 {@link ParseState}，它是此实例的一个独立快照。
+     */
+    public ParseState snapshot() {
+        return new ParseState(this);
+    }
 
-	/**
-	 * Return the {@link Entry} currently at the top of the {@link ArrayDeque} or
-	 * {@code null} if the {@link ArrayDeque} is empty.
-	 */
-	@Nullable
-	public Entry peek() {
-		return this.state.peek();
-	}
+    /**
+     * 返回当前 {@code ParseState} 的树形表示。
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(64);
+        int i = 0;
+        for (ParseState.Entry entry : this.state) {
+            if (i > 0) {
+                sb.append('\n');
+                for (int j = 0; j < i; j++) {
+                    sb.append('\t');
+                }
+                sb.append("-> ");
+            }
+            sb.append(entry);
+            i++;
+        }
+        return sb.toString();
+    }
 
-	/**
-	 * Create a new instance of {@link ParseState} which is an independent snapshot
-	 * of this instance.
-	 */
-	public ParseState snapshot() {
-		return new ParseState(this);
-	}
-
-
-	/**
-	 * Returns a tree-style representation of the current {@code ParseState}.
-	 */
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder(64);
-		int i = 0;
-		for (ParseState.Entry entry : this.state) {
-			if (i > 0) {
-				sb.append('\n');
-				for (int j = 0; j < i; j++) {
-					sb.append('\t');
-				}
-				sb.append("-> ");
-			}
-			sb.append(entry);
-			i++;
-		}
-		return sb.toString();
-	}
-
-
-	/**
-	 * Marker interface for entries into the {@link ParseState}.
-	 */
-	public interface Entry {
-	}
-
+    /**
+     * 用于进入 {@link ParseState} 的标记接口。
+     */
+    public interface Entry {
+    }
 }

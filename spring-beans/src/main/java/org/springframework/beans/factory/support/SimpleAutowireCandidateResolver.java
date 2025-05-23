@@ -1,19 +1,15 @@
-/*
- * Copyright 2002-2022 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2022 原作者或作者。
+*
+* 根据 Apache License, Version 2.0 ("许可证") 许可；
+* 除非符合许可证规定，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非法律要求或书面同意，否则在许可证下分发的软件
+* 是按“现状”提供的，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.beans.factory.support;
 
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -21,8 +17,7 @@ import org.springframework.beans.factory.config.DependencyDescriptor;
 import org.springframework.lang.Nullable;
 
 /**
- * {@link AutowireCandidateResolver} implementation to use when no annotation
- * support is available. This implementation checks the bean definition only.
+ * 当没有注解支持时使用的 `@AutowireCandidateResolver` 实现。此实现仅检查Bean定义。
  *
  * @author Mark Fisher
  * @author Juergen Hoeller
@@ -30,53 +25,51 @@ import org.springframework.lang.Nullable;
  */
 public class SimpleAutowireCandidateResolver implements AutowireCandidateResolver {
 
-	/**
-	 * Shared instance of {@code SimpleAutowireCandidateResolver}.
-	 * @since 5.2.7
-	 */
-	public static final SimpleAutowireCandidateResolver INSTANCE = new SimpleAutowireCandidateResolver();
+    /**
+     * 共享的 {@code SimpleAutowireCandidateResolver} 实例。
+     * @since 5.2.7
+     */
+    public static final SimpleAutowireCandidateResolver INSTANCE = new SimpleAutowireCandidateResolver();
 
+    @Override
+    public boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
+        return bdHolder.getBeanDefinition().isAutowireCandidate();
+    }
 
-	@Override
-	public boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
-		return bdHolder.getBeanDefinition().isAutowireCandidate();
-	}
+    @Override
+    public boolean isRequired(DependencyDescriptor descriptor) {
+        return descriptor.isRequired();
+    }
 
-	@Override
-	public boolean isRequired(DependencyDescriptor descriptor) {
-		return descriptor.isRequired();
-	}
+    @Override
+    public boolean hasQualifier(DependencyDescriptor descriptor) {
+        return false;
+    }
 
-	@Override
-	public boolean hasQualifier(DependencyDescriptor descriptor) {
-		return false;
-	}
+    @Override
+    @Nullable
+    public Object getSuggestedValue(DependencyDescriptor descriptor) {
+        return null;
+    }
 
-	@Override
-	@Nullable
-	public Object getSuggestedValue(DependencyDescriptor descriptor) {
-		return null;
-	}
+    @Override
+    @Nullable
+    public Object getLazyResolutionProxyIfNecessary(DependencyDescriptor descriptor, @Nullable String beanName) {
+        return null;
+    }
 
-	@Override
-	@Nullable
-	public Object getLazyResolutionProxyIfNecessary(DependencyDescriptor descriptor, @Nullable String beanName) {
-		return null;
-	}
+    @Override
+    @Nullable
+    public Class<?> getLazyResolutionProxyClass(DependencyDescriptor descriptor, @Nullable String beanName) {
+        return null;
+    }
 
-	@Override
-	@Nullable
-	public Class<?> getLazyResolutionProxyClass(DependencyDescriptor descriptor, @Nullable String beanName) {
-		return null;
-	}
-
-	/**
-	 * This implementation returns {@code this} as-is.
-	 * @see #INSTANCE
-	 */
-	@Override
-	public AutowireCandidateResolver cloneIfNecessary() {
-		return this;
-	}
-
+    /**
+     * 此实现直接返回 {@code this}。
+     * @see #INSTANCE
+     */
+    @Override
+    public AutowireCandidateResolver cloneIfNecessary() {
+        return this;
+    }
 }

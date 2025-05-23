@@ -1,30 +1,21 @@
-/*
- * Copyright 2002-2009 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2009 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非根据法律规定或书面同意，否则在许可证下分发的软件按“现状”提供，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体管理许可和限制的条款。*/
 package org.springframework.beans.factory.annotation;
 
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 
 /**
- * Enumeration determining autowiring status: that is, whether a bean should
- * have its dependencies automatically injected by the Spring container using
- * setter injection. This is a core concept in Spring DI.
+ * 用于确定自动装配状态的枚举：即是否应该由 Spring 容器通过setter注入自动注入bean的依赖项。这是 Spring DI 的核心概念。
  *
- * <p>Available for use in annotation-based configurations, such as for the
- * AspectJ AnnotationBeanConfigurer aspect.
+ * <p>可用于基于注解的配置，例如 AspectJ AnnotationBeanConfigurer aspect。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -34,40 +25,34 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
  */
 public enum Autowire {
 
-	/**
-	 * Constant that indicates no autowiring at all.
-	 */
-	NO(AutowireCapableBeanFactory.AUTOWIRE_NO),
+    /**
+     * 表示完全不进行自动装配的常量。
+     */
+    NO(AutowireCapableBeanFactory.AUTOWIRE_NO),
+    /**
+     * 表示通过名称自动装配 Bean 属性的常量。
+     */
+    BY_NAME(AutowireCapableBeanFactory.AUTOWIRE_BY_NAME),
+    /**
+     * 表示通过类型自动装配bean属性的常量。
+     */
+    BY_TYPE(AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE);
 
-	/**
-	 * Constant that indicates autowiring bean properties by name.
-	 */
-	BY_NAME(AutowireCapableBeanFactory.AUTOWIRE_BY_NAME),
+    private final int value;
 
-	/**
-	 * Constant that indicates autowiring bean properties by type.
-	 */
-	BY_TYPE(AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE);
+    Autowire(int value) {
+        this.value = value;
+    }
 
+    public int value() {
+        return this.value;
+    }
 
-	private final int value;
-
-
-	Autowire(int value) {
-		this.value = value;
-	}
-
-	public int value() {
-		return this.value;
-	}
-
-	/**
-	 * Return whether this represents an actual autowiring value.
-	 * @return whether actual autowiring was specified
-	 * (either BY_NAME or BY_TYPE)
-	 */
-	public boolean isAutowire() {
-		return (this == BY_NAME || this == BY_TYPE);
-	}
-
+    /**
+     * 返回此是否代表实际的自动装配值。
+     * @return 是否指定了实际的自动装配（无论是BY_NAME还是BY_TYPE）
+     */
+    public boolean isAutowire() {
+        return (this == BY_NAME || this == BY_TYPE);
+    }
 }

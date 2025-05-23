@@ -1,6 +1,7 @@
+// 翻译完成 glm-4-flash
 /**
- * Classes supporting the org.springframework.beans package,
- * such as utility classes for sorting and holding lists of beans.
+ * 支持org.springframework.beans包的类，
+ * 例如用于排序和持有bean列表的实用类。
  */
 @NonNullApi
 @NonNullFields
@@ -8,3 +9,4 @@ package org.springframework.beans.support;
 
 import org.springframework.lang.NonNullApi;
 import org.springframework.lang.NonNullFields;
+

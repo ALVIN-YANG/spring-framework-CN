@@ -1,39 +1,27 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2023 原作者或作者们。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，除非法律要求或经书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”提供，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体管理许可和限制的条款。*/
 package org.springframework.beans.factory.config;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.lang.Nullable;
 
 /**
- * Factory for a {@code Map} that reads from a YAML source, preserving the
- * YAML-declared value types and their structure.
+ * 用于从 YAML 源读取的 {@code Map} 工厂，保留 YAML 声明的值类型及其结构。
  *
- * <p>YAML is a nice human-readable format for configuration, and it has some
- * useful hierarchical properties. It's more or less a superset of JSON, so it
- * has a lot of similar features.
+ * <p>YAML 是一种便于人类阅读的配置格式，它具有一些有用的层次属性。它大致上是 JSON 的超集，因此它具有许多类似的功能。
  *
- * <p>If multiple resources are provided the later ones will override entries in
- * the earlier ones hierarchically; that is, all entries with the same nested key
- * of type {@code Map} at any depth are merged. For example:
+ * <p>如果提供了多个资源，则后续的资源将按层次覆盖早期资源中的条目；也就是说，任何深度的具有相同嵌套键（类型为 {@code Map}）的所有条目都将合并。例如：
  *
  * <pre class="code">
  * foo:
@@ -42,7 +30,7 @@ import org.springframework.lang.Nullable;
  * three: four
  * </pre>
  *
- * plus (later in the list)
+ * 加上（在列表中的后续部分）
  *
  * <pre class="code">
  * foo:
@@ -51,7 +39,7 @@ import org.springframework.lang.Nullable;
  * five: six
  * </pre>
  *
- * results in an effective input of
+ * 结果是有效的输入
  *
  * <pre class="code">
  * foo:
@@ -61,10 +49,9 @@ import org.springframework.lang.Nullable;
  * five: six
  * </pre>
  *
- * Note that the value of "foo" in the first document is not simply replaced
- * with the value in the second, but its nested values are merged.
+ * 注意，在第一个文档中 "foo" 的值并不是简单地被第二个文档中的值替换，而是其嵌套值被合并。
  *
- * <p>Requires SnakeYAML 1.18 or higher, as of Spring Framework 5.0.6.
+ * <p>需要 SnakeYAML 1.18 或更高版本，自 Spring Framework 5.0.6 以来。
  *
  * @author Dave Syer
  * @author Juergen Hoeller
@@ -72,72 +59,65 @@ import org.springframework.lang.Nullable;
  */
 public class YamlMapFactoryBean extends YamlProcessor implements FactoryBean<Map<String, Object>>, InitializingBean {
 
-	private boolean singleton = true;
+    private boolean singleton = true;
 
-	@Nullable
-	private Map<String, Object> map;
+    @Nullable
+    private Map<String, Object> map;
 
+    /**
+     * 设置是否创建单例，还是在每次请求时创建新对象。默认为 {@code true}（单例）。
+     */
+    public void setSingleton(boolean singleton) {
+        this.singleton = singleton;
+    }
 
-	/**
-	 * Set if a singleton should be created, or a new object on each request
-	 * otherwise. Default is {@code true} (a singleton).
-	 */
-	public void setSingleton(boolean singleton) {
-		this.singleton = singleton;
-	}
+    @Override
+    public boolean isSingleton() {
+        return this.singleton;
+    }
 
-	@Override
-	public boolean isSingleton() {
-		return this.singleton;
-	}
+    @Override
+    public void afterPropertiesSet() {
+        if (isSingleton()) {
+            this.map = createMap();
+        }
+    }
 
-	@Override
-	public void afterPropertiesSet() {
-		if (isSingleton()) {
-			this.map = createMap();
-		}
-	}
+    @Override
+    @Nullable
+    public Map<String, Object> getObject() {
+        return (this.map != null ? this.map : createMap());
+    }
 
-	@Override
-	@Nullable
-	public Map<String, Object> getObject() {
-		return (this.map != null ? this.map : createMap());
-	}
+    @Override
+    public Class<?> getObjectType() {
+        return Map.class;
+    }
 
-	@Override
-	public Class<?> getObjectType() {
-		return Map.class;
-	}
+    /**
+     * 模板方法，子类可以重写此方法来构建由该工厂返回的对象。
+     * <p>在首次调用{@link #getObject()}时，对于共享的单例，该方法会延迟调用；否则，在每次调用{@link #getObject()}时调用。
+     * <p>默认实现返回合并的{@code Map}实例。
+     * @return 由该工厂返回的对象
+     * @see #process(MatchCallback)
+     */
+    protected Map<String, Object> createMap() {
+        Map<String, Object> result = new LinkedHashMap<>();
+        process((properties, map) -> merge(result, map));
+        return result;
+    }
 
-
-	/**
-	 * Template method that subclasses may override to construct the object
-	 * returned by this factory.
-	 * <p>Invoked lazily the first time {@link #getObject()} is invoked in
-	 * case of a shared singleton; else, on each {@link #getObject()} call.
-	 * <p>The default implementation returns the merged {@code Map} instance.
-	 * @return the object returned by this factory
-	 * @see #process(MatchCallback)
-	 */
-	protected Map<String, Object> createMap() {
-		Map<String, Object> result = new LinkedHashMap<>();
-		process((properties, map) -> merge(result, map));
-		return result;
-	}
-
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	private void merge(Map<String, Object> output, Map<String, Object> map) {
-		map.forEach((key, value) -> {
-			Object existing = output.get(key);
-			if (value instanceof Map valueMap && existing instanceof Map existingMap) {
-				Map<String, Object> result = new LinkedHashMap<>(existingMap);
-				merge(result, valueMap);
-				output.put(key, result);
-			}
-			else {
-				output.put(key, value);
-			}
-		});
-	}
-
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void merge(Map<String, Object> output, Map<String, Object> map) {
+        map.forEach((key, value) -> {
+            Object existing = output.get(key);
+            if (value instanceof Map valueMap && existing instanceof Map existingMap) {
+                Map<String, Object> result = new LinkedHashMap<>(existingMap);
+                merge(result, valueMap);
+                output.put(key, result);
+            } else {
+                output.put(key, value);
+            }
+        });
+    }
 }

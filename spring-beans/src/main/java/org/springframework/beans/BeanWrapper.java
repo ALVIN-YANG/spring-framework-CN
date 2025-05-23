@@ -1,40 +1,31 @@
-/*
- * Copyright 2002-2017 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2017 原作者或作者。
+*
+* 根据 Apache License 2.0 ("许可证") 许可使用；
+* 除非遵守许可证，否则不得使用此文件。
+* 您可以在以下链接处获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件
+* 是按“原样”分发的，不提供任何形式的保证或条件，无论是明示的还是暗示的。
+* 请参阅许可证了解具体规定许可权和限制。*/
 package org.springframework.beans;
 
 import java.beans.PropertyDescriptor;
 
 /**
- * The central interface of Spring's low-level JavaBeans infrastructure.
+ * Spring 低级 JavaBeans 基础设施的核心接口。
  *
- * <p>Typically not used directly but rather implicitly via a
- * {@link org.springframework.beans.factory.BeanFactory} or a
- * {@link org.springframework.validation.DataBinder}.
+ * <p>通常不直接使用，而是通过一个
+ * {@link org.springframework.beans.factory.BeanFactory} 或一个
+ * {@link org.springframework.validation.DataBinder} 间接使用。
  *
- * <p>Provides operations to analyze and manipulate standard JavaBeans:
- * the ability to get and set property values (individually or in bulk),
- * get property descriptors, and query the readability/writability of properties.
+ * <p>提供操作来分析和操作标准 JavaBeans：获取和设置属性值（单个或批量）、获取属性描述符以及查询属性的可读性和可写性。
  *
- * <p>This interface supports <b>nested properties</b> enabling the setting
- * of properties on subproperties to an unlimited depth.
+ * <p>此接口支持 <b>嵌套属性</b>，允许对子属性的属性设置进行无限深度的设置。
  *
- * <p>A BeanWrapper's default for the "extractOldValueForEditor" setting
- * is "false", to avoid side effects caused by getter method invocations.
- * Turn this to "true" to expose present property values to custom editors.
+ * <p>BeanWrapper 的 "extractOldValueForEditor" 设置默认为 "false"，以避免因调用getter方法而引起的副作用。将其设置为 "true" 以将当前属性值暴露给自定义编辑器。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -48,44 +39,41 @@ import java.beans.PropertyDescriptor;
  */
 public interface BeanWrapper extends ConfigurablePropertyAccessor {
 
-	/**
-	 * Specify a limit for array and collection auto-growing.
-	 * <p>Default is unlimited on a plain BeanWrapper.
-	 * @since 4.1
-	 */
-	void setAutoGrowCollectionLimit(int autoGrowCollectionLimit);
+    /**
+     * 指定数组和集合自动增长的限制。
+     * <p>默认情况下，在普通的BeanWrapper上是无限制的。
+     * @since 4.1
+     */
+    void setAutoGrowCollectionLimit(int autoGrowCollectionLimit);
 
-	/**
-	 * Return the limit for array and collection auto-growing.
-	 * @since 4.1
-	 */
-	int getAutoGrowCollectionLimit();
+    /**
+     * 返回数组和集合自动增长的限制。
+     * @since 4.1
+     */
+    int getAutoGrowCollectionLimit();
 
-	/**
-	 * Return the bean instance wrapped by this object.
-	 */
-	Object getWrappedInstance();
+    /**
+     * 返回由该对象包装的 bean 实例。
+     */
+    Object getWrappedInstance();
 
-	/**
-	 * Return the type of the wrapped bean instance.
-	 */
-	Class<?> getWrappedClass();
+    /**
+     * 返回包装的bean实例的类型。
+     */
+    Class<?> getWrappedClass();
 
-	/**
-	 * Obtain the PropertyDescriptors for the wrapped object
-	 * (as determined by standard JavaBeans introspection).
-	 * @return the PropertyDescriptors for the wrapped object
-	 */
-	PropertyDescriptor[] getPropertyDescriptors();
+    /**
+     * 获取包装对象的属性描述符（通过标准的JavaBeans反射机制确定）。
+     * @return 包装对象的属性描述符
+     */
+    PropertyDescriptor[] getPropertyDescriptors();
 
-	/**
-	 * Obtain the property descriptor for a specific property
-	 * of the wrapped object.
-	 * @param propertyName the property to obtain the descriptor for
-	 * (may be a nested path, but not an indexed/mapped property)
-	 * @return the property descriptor for the specified property
-	 * @throws InvalidPropertyException if there is no such property
-	 */
-	PropertyDescriptor getPropertyDescriptor(String propertyName) throws InvalidPropertyException;
-
+    /**
+     * 获取包装对象的特定属性的属性描述符
+     * @param propertyName 要获取描述符的属性名称
+     * (可能是一个嵌套路径，但不能是一个索引/映射属性)
+     * @return 指定属性的属性描述符
+     * @throws InvalidPropertyException 如果不存在该属性
+     */
+    PropertyDescriptor getPropertyDescriptor(String propertyName) throws InvalidPropertyException;
 }

@@ -1,19 +1,16 @@
-/*
- * Copyright 2002-2020 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2020 原作者或作者。
+*
+* 根据 Apache License 2.0（“许可证”）许可；
+* 除非遵守许可证，否则不得使用此文件。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，
+* 在许可证下分发的软件按“原样”分发，
+* 不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体管理许可和限制的语言。*/
 package org.springframework.beans.factory.annotation;
 
 import java.lang.annotation.Documented;
@@ -23,31 +20,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation that indicates 'lookup' methods, to be overridden by the container
- * to redirect them back to the {@link org.springframework.beans.factory.BeanFactory}
- * for a {@code getBean} call. This is essentially an annotation-based version of the
- * XML {@code lookup-method} attribute, resulting in the same runtime arrangement.
+ *  表示“查找”方法的注解，由容器重写以将它们重定向回 {@link org.springframework.beans.factory.BeanFactory} 进行 {@code getBean} 调用。这本质上是一个基于注解的 XML 中 {@code lookup-method} 属性版本，导致相同的运行时安排。
  *
- * <p>The resolution of the target bean can either be based on the return type
- * ({@code getBean(Class)}) or on a suggested bean name ({@code getBean(String)}),
- * in both cases passing the method's arguments to the {@code getBean} call
- * for applying them as target factory method arguments or constructor arguments.
+ * <p>目标 Bean 的解析可以基于返回类型（{@code getBean(Class)}）或基于建议的 Bean 名称（{@code getBean(String)}），在两种情况下都将方法的参数传递给 {@code getBean} 调用，以将它们应用于目标工厂方法参数或构造函数参数。
  *
- * <p>Such lookup methods can have default (stub) implementations that will simply
- * get replaced by the container, or they can be declared as abstract - for the
- * container to fill them in at runtime. In both cases, the container will generate
- * runtime subclasses of the method's containing class via CGLIB, which is why such
- * lookup methods can only work on beans that the container instantiates through
- * regular constructors: i.e. lookup methods cannot get replaced on beans returned
- * from factory methods where we cannot dynamically provide a subclass for them.
+ * <p>这样的查找方法可以有默认（占位符）实现，这些实现将被容器替换，或者它们可以声明为抽象的——由容器在运行时填充。在两种情况下，容器将通过 CGLIB 生成方法所在类的运行时子类，这就是为什么这样的查找方法只能用于容器通过常规构造函数实例化的 Bean：即查找方法不能替换从工厂方法返回的 Bean，因为在这些情况下我们不能为它们动态提供一个子类。
  *
- * <p><b>Recommendations for typical Spring configuration scenarios:</b>
- * When a concrete class may be needed in certain scenarios, consider providing stub
- * implementations of your lookup methods. And please remember that lookup methods
- * won't work on beans returned from {@code @Bean} methods in configuration classes;
- * you'll have to resort to {@code @Inject Provider<TargetBean>} or the like instead.
+ * <p><b>典型 Spring 配置场景的建议：</b>当在特定场景下可能需要具体类时，请考虑提供查找方法的占位符实现。并且请记住，查找方法不会在配置类中从 {@code @Bean} 方法返回的 Bean 上工作；您将不得不求助于 {@code @Inject Provider<TargetBean>} 或类似的方法。
  *
- * @author Juergen Hoeller
  * @since 4.1
  * @see org.springframework.beans.factory.BeanFactory#getBean(Class, Object...)
  * @see org.springframework.beans.factory.BeanFactory#getBean(String, Object...)
@@ -57,11 +37,9 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Lookup {
 
-	/**
-	 * This annotation attribute may suggest a target bean name to look up.
-	 * If not specified, the target bean will be resolved based on the
-	 * annotated method's return type declaration.
-	 */
-	String value() default "";
-
+    /**
+     * 此注解属性可能建议一个目标 Bean 名称以进行查找。
+     * 如果未指定，则将根据注解方法的返回类型声明来解析目标 Bean。
+     */
+    String value() default "";
 }

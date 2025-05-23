@@ -1,50 +1,44 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2018 原作者或作者。
+*
+* 根据 Apache License, Version 2.0 ("许可证") 进行许可；
+* 除非遵守许可证，否则不得使用此文件。
+* 您可以在以下链接处获得许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件
+* 是按“现状”提供的，不提供任何形式的明示或暗示保证，
+* 无论是否明确声明或暗示。有关许可权的具体语言和限制，
+* 请参阅许可证。*/
 package org.springframework.beans;
 
 import java.beans.PropertyChangeEvent;
 
 /**
- * Thrown when a bean property getter or setter method throws an exception,
- * analogous to an InvocationTargetException.
+ * 抛出当Bean属性的getter或setter方法抛出异常时使用，类似于InvocationTargetException。
  *
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
 public class MethodInvocationException extends PropertyAccessException {
 
-	/**
-	 * Error code that a method invocation error will be registered with.
-	 */
-	public static final String ERROR_CODE = "methodInvocation";
+    /**
+     * 方法调用错误将注册的错误代码。
+     */
+    public static final String ERROR_CODE = "methodInvocation";
 
+    /**
+     * 创建一个新的 MethodInvocationException。
+     * @param propertyChangeEvent 导致异常的 PropertyChangeEvent
+     * @param cause 被调用方法抛出的 Throwable
+     */
+    public MethodInvocationException(PropertyChangeEvent propertyChangeEvent, Throwable cause) {
+        super(propertyChangeEvent, "Property '" + propertyChangeEvent.getPropertyName() + "' threw exception", cause);
+    }
 
-	/**
-	 * Create a new MethodInvocationException.
-	 * @param propertyChangeEvent the PropertyChangeEvent that resulted in an exception
-	 * @param cause the Throwable raised by the invoked method
-	 */
-	public MethodInvocationException(PropertyChangeEvent propertyChangeEvent, Throwable cause) {
-		super(propertyChangeEvent, "Property '" + propertyChangeEvent.getPropertyName() + "' threw exception", cause);
-	}
-
-	@Override
-	public String getErrorCode() {
-		return ERROR_CODE;
-	}
-
+    @Override
+    public String getErrorCode() {
+        return ERROR_CODE;
+    }
 }

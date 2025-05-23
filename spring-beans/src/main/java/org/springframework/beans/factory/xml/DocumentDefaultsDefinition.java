@@ -1,160 +1,152 @@
-/*
- * Copyright 2002-2017 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2017 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，您可能不得使用此文件除非符合许可证规定。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”分发，
+* 不提供任何形式的明示或暗示保证，包括但不限于适销性或特定用途的适用性。
+* 请参阅许可证以了解具体管理权限和限制的条款。*/
 package org.springframework.beans.factory.xml;
 
 import org.springframework.beans.factory.parsing.DefaultsDefinition;
 import org.springframework.lang.Nullable;
 
 /**
- * Simple JavaBean that holds the defaults specified at the {@code <beans>}
- * level in a standard Spring XML bean definition document:
- * {@code default-lazy-init}, {@code default-autowire}, etc.
+ * 简单的 JavaBean，用于存储在标准 Spring XML bean 定义文档中在 `<beans>` 级别指定的默认值：
+ * 例如：`default-lazy-init`、`default-autowire` 等。
  *
  * @author Juergen Hoeller
  * @since 2.0.2
  */
 public class DocumentDefaultsDefinition implements DefaultsDefinition {
 
-	@Nullable
-	private String lazyInit;
+    @Nullable
+    private String lazyInit;
 
-	@Nullable
-	private String merge;
+    @Nullable
+    private String merge;
 
-	@Nullable
-	private String autowire;
+    @Nullable
+    private String autowire;
 
-	@Nullable
-	private String autowireCandidates;
+    @Nullable
+    private String autowireCandidates;
 
-	@Nullable
-	private String initMethod;
+    @Nullable
+    private String initMethod;
 
-	@Nullable
-	private String destroyMethod;
+    @Nullable
+    private String destroyMethod;
 
-	@Nullable
-	private Object source;
+    @Nullable
+    private Object source;
 
+    /**
+     * 设置当前解析的文档的默认懒加载标志。
+     */
+    public void setLazyInit(@Nullable String lazyInit) {
+        this.lazyInit = lazyInit;
+    }
 
-	/**
-	 * Set the default lazy-init flag for the document that's currently parsed.
-	 */
-	public void setLazyInit(@Nullable String lazyInit) {
-		this.lazyInit = lazyInit;
-	}
+    /**
+     * 返回当前解析的文档的默认懒加载标志。
+     */
+    @Nullable
+    public String getLazyInit() {
+        return this.lazyInit;
+    }
 
-	/**
-	 * Return the default lazy-init flag for the document that's currently parsed.
-	 */
-	@Nullable
-	public String getLazyInit() {
-		return this.lazyInit;
-	}
+    /**
+     * 设置当前解析的文档的默认合并设置。
+     */
+    public void setMerge(@Nullable String merge) {
+        this.merge = merge;
+    }
 
-	/**
-	 * Set the default merge setting for the document that's currently parsed.
-	 */
-	public void setMerge(@Nullable String merge) {
-		this.merge = merge;
-	}
+    /**
+     * 返回当前解析的文档的默认合并设置。
+     */
+    @Nullable
+    public String getMerge() {
+        return this.merge;
+    }
 
-	/**
-	 * Return the default merge setting for the document that's currently parsed.
-	 */
-	@Nullable
-	public String getMerge() {
-		return this.merge;
-	}
+    /**
+     * 设置当前解析的文档的默认自动装配设置。
+     */
+    public void setAutowire(@Nullable String autowire) {
+        this.autowire = autowire;
+    }
 
-	/**
-	 * Set the default autowire setting for the document that's currently parsed.
-	 */
-	public void setAutowire(@Nullable String autowire) {
-		this.autowire = autowire;
-	}
+    /**
+     * 返回当前解析的文档的默认自动装配设置。
+     */
+    @Nullable
+    public String getAutowire() {
+        return this.autowire;
+    }
 
-	/**
-	 * Return the default autowire setting for the document that's currently parsed.
-	 */
-	@Nullable
-	public String getAutowire() {
-		return this.autowire;
-	}
+    /**
+     * 设置当前解析的文档的默认autowire-candidate模式。
+     * 同时接受以逗号分隔的模式列表。
+     */
+    public void setAutowireCandidates(@Nullable String autowireCandidates) {
+        this.autowireCandidates = autowireCandidates;
+    }
 
-	/**
-	 * Set the default autowire-candidate pattern for the document that's currently parsed.
-	 * Also accepts a comma-separated list of patterns.
-	 */
-	public void setAutowireCandidates(@Nullable String autowireCandidates) {
-		this.autowireCandidates = autowireCandidates;
-	}
+    /**
+     * 返回当前解析的文档的默认自动装配候选模式。
+     * 也可能返回以逗号分隔的模式列表。
+     */
+    @Nullable
+    public String getAutowireCandidates() {
+        return this.autowireCandidates;
+    }
 
-	/**
-	 * Return the default autowire-candidate pattern for the document that's currently parsed.
-	 * May also return a comma-separated list of patterns.
-	 */
-	@Nullable
-	public String getAutowireCandidates() {
-		return this.autowireCandidates;
-	}
+    /**
+     * 设置当前解析文档的默认初始化方法设置。
+     */
+    public void setInitMethod(@Nullable String initMethod) {
+        this.initMethod = initMethod;
+    }
 
-	/**
-	 * Set the default init-method setting for the document that's currently parsed.
-	 */
-	public void setInitMethod(@Nullable String initMethod) {
-		this.initMethod = initMethod;
-	}
+    /**
+     * 返回当前解析的文档的默认初始化方法设置。
+     */
+    @Nullable
+    public String getInitMethod() {
+        return this.initMethod;
+    }
 
-	/**
-	 * Return the default init-method setting for the document that's currently parsed.
-	 */
-	@Nullable
-	public String getInitMethod() {
-		return this.initMethod;
-	}
+    /**
+     * 设置当前解析的文档的默认destroy-method设置。
+     */
+    public void setDestroyMethod(@Nullable String destroyMethod) {
+        this.destroyMethod = destroyMethod;
+    }
 
-	/**
-	 * Set the default destroy-method setting for the document that's currently parsed.
-	 */
-	public void setDestroyMethod(@Nullable String destroyMethod) {
-		this.destroyMethod = destroyMethod;
-	}
+    /**
+     * 返回当前解析的文档的默认destroy-method设置。
+     */
+    @Nullable
+    public String getDestroyMethod() {
+        return this.destroyMethod;
+    }
 
-	/**
-	 * Return the default destroy-method setting for the document that's currently parsed.
-	 */
-	@Nullable
-	public String getDestroyMethod() {
-		return this.destroyMethod;
-	}
+    /**
+     * 设置此元数据元素的配置源对象。
+     * <p>对象的准确类型将取决于所使用的配置机制。
+     */
+    public void setSource(@Nullable Object source) {
+        this.source = source;
+    }
 
-	/**
-	 * Set the configuration source {@code Object} for this metadata element.
-	 * <p>The exact type of the object will depend on the configuration mechanism used.
-	 */
-	public void setSource(@Nullable Object source) {
-		this.source = source;
-	}
-
-	@Override
-	@Nullable
-	public Object getSource() {
-		return this.source;
-	}
-
+    @Override
+    @Nullable
+    public Object getSource() {
+        return this.source;
+    }
 }

@@ -1,28 +1,23 @@
-/*
- * Copyright 2002-2017 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2017 原作者或作者。
+*
+* 根据 Apache License, Version 2.0 ("许可证") 许可；
+* 除非遵守许可证，否则不得使用此文件。
+* 您可以在以下链接处获得许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件
+* 是按“原样”分发的，不提供任何形式的明示或暗示保证。
+* 请参阅许可证了解具体管理权限和限制的条款。*/
 package org.springframework.beans;
 
 import org.springframework.core.AttributeAccessorSupport;
 import org.springframework.lang.Nullable;
 
 /**
- * Extension of {@link org.springframework.core.AttributeAccessorSupport},
- * holding attributes as {@link BeanMetadataAttribute} objects in order
- * to keep track of the definition source.
+ * 扩展自 {@link org.springframework.core.AttributeAccessorSupport}，
+ * 将属性以 {@link BeanMetadataAttribute} 对象的形式持有，以便跟踪定义源。
  *
  * @author Juergen Hoeller
  * @since 2.5
@@ -30,61 +25,58 @@ import org.springframework.lang.Nullable;
 @SuppressWarnings("serial")
 public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport implements BeanMetadataElement {
 
-	@Nullable
-	private Object source;
+    @Nullable
+    private Object source;
 
+    /**
+     * 为此元数据元素设置配置源 {@code Object}。
+     * <p>对象的准确类型将取决于所使用的配置机制。
+     */
+    public void setSource(@Nullable Object source) {
+        this.source = source;
+    }
 
-	/**
-	 * Set the configuration source {@code Object} for this metadata element.
-	 * <p>The exact type of the object will depend on the configuration mechanism used.
-	 */
-	public void setSource(@Nullable Object source) {
-		this.source = source;
-	}
+    @Override
+    @Nullable
+    public Object getSource() {
+        return this.source;
+    }
 
-	@Override
-	@Nullable
-	public Object getSource() {
-		return this.source;
-	}
+    /**
+     * 将给定的BeanMetadataAttribute添加到这个访问器的属性集中。
+     * @param attribute 要注册的BeanMetadataAttribute对象
+     */
+    public void addMetadataAttribute(BeanMetadataAttribute attribute) {
+        super.setAttribute(attribute.getName(), attribute);
+    }
 
+    /**
+     * 在此访问器的属性集中查找给定的 BeanMetadataAttribute。
+     * @param name 属性的名称
+     * @return 对应的 BeanMetadataAttribute 对象，
+     * 或者在没有定义此类属性时返回 {@code null}
+     */
+    @Nullable
+    public BeanMetadataAttribute getMetadataAttribute(String name) {
+        return (BeanMetadataAttribute) super.getAttribute(name);
+    }
 
-	/**
-	 * Add the given BeanMetadataAttribute to this accessor's set of attributes.
-	 * @param attribute the BeanMetadataAttribute object to register
-	 */
-	public void addMetadataAttribute(BeanMetadataAttribute attribute) {
-		super.setAttribute(attribute.getName(), attribute);
-	}
+    @Override
+    public void setAttribute(String name, @Nullable Object value) {
+        super.setAttribute(name, new BeanMetadataAttribute(name, value));
+    }
 
-	/**
-	 * Look up the given BeanMetadataAttribute in this accessor's set of attributes.
-	 * @param name the name of the attribute
-	 * @return the corresponding BeanMetadataAttribute object,
-	 * or {@code null} if no such attribute defined
-	 */
-	@Nullable
-	public BeanMetadataAttribute getMetadataAttribute(String name) {
-		return (BeanMetadataAttribute) super.getAttribute(name);
-	}
+    @Override
+    @Nullable
+    public Object getAttribute(String name) {
+        BeanMetadataAttribute attribute = (BeanMetadataAttribute) super.getAttribute(name);
+        return (attribute != null ? attribute.getValue() : null);
+    }
 
-	@Override
-	public void setAttribute(String name, @Nullable Object value) {
-		super.setAttribute(name, new BeanMetadataAttribute(name, value));
-	}
-
-	@Override
-	@Nullable
-	public Object getAttribute(String name) {
-		BeanMetadataAttribute attribute = (BeanMetadataAttribute) super.getAttribute(name);
-		return (attribute != null ? attribute.getValue() : null);
-	}
-
-	@Override
-	@Nullable
-	public Object removeAttribute(String name) {
-		BeanMetadataAttribute attribute = (BeanMetadataAttribute) super.removeAttribute(name);
-		return (attribute != null ? attribute.getValue() : null);
-	}
-
+    @Override
+    @Nullable
+    public Object removeAttribute(String name) {
+        BeanMetadataAttribute attribute = (BeanMetadataAttribute) super.removeAttribute(name);
+        return (attribute != null ? attribute.getValue() : null);
+    }
 }

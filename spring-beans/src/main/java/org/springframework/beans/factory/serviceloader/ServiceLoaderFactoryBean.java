@@ -1,28 +1,22 @@
-/*
- * Copyright 2002-2007 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2007 原作者或作者。
+*
+* 根据 Apache License 2.0 版本（以下简称“许可证”）授权；
+* 除非符合许可证规定，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件
+* 是按“现状”提供的，不提供任何形式的明示或暗示保证，
+* 无论明示还是暗示。有关权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.beans.factory.serviceloader;
 
 import java.util.ServiceLoader;
-
 import org.springframework.beans.factory.BeanClassLoaderAware;
 
 /**
- * {@link org.springframework.beans.factory.FactoryBean} that exposes the
- * JDK 1.6 {@link java.util.ServiceLoader} for the configured service class.
+ * 一个实现 {@link org.springframework.beans.factory.FactoryBean} 的类，用于暴露配置的服务类的 JDK 1.6 版本 {@link java.util.ServiceLoader}。
  *
  * @author Juergen Hoeller
  * @since 2.5
@@ -30,14 +24,13 @@ import org.springframework.beans.factory.BeanClassLoaderAware;
  */
 public class ServiceLoaderFactoryBean extends AbstractServiceLoaderBasedFactoryBean implements BeanClassLoaderAware {
 
-	@Override
-	protected Object getObjectToExpose(ServiceLoader<?> serviceLoader) {
-		return serviceLoader;
-	}
+    @Override
+    protected Object getObjectToExpose(ServiceLoader<?> serviceLoader) {
+        return serviceLoader;
+    }
 
-	@Override
-	public Class<?> getObjectType() {
-		return ServiceLoader.class;
-	}
-
+    @Override
+    public Class<?> getObjectType() {
+        return ServiceLoader.class;
+    }
 }

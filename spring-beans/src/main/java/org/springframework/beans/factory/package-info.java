@@ -1,13 +1,10 @@
+// 翻译完成 glm-4-flash
 /**
- * The core package implementing Spring's lightweight Inversion of Control (IoC) container.
+ * 实现Spring轻量级控制反转（IoC）容器的核心包。
  *
- * <p>Provides an alternative to the Singleton and Prototype design
- * patterns, including a consistent approach to configuration management.
- * Builds on the org.springframework.beans package.
+ * <p>提供对单例（Singleton）和原型（Prototype）设计模式的替代方案，包括一致的配置管理方法。建立在org.springframework.beans包之上。
  *
- * <p>This package and related packages are discussed in Chapter 11 of
- * <a href="https://www.amazon.com/exec/obidos/tg/detail/-/0764543857/">Expert One-On-One J2EE Design and Development</a>
- * by Rod Johnson (Wrox, 2002).
+ * <p>本包及其相关包在Rod Johnson所著的《Expert One-On-One J2EE Design and Development》（Wrox，2002年）的第11章中有详细讨论。[链接](https://www.amazon.com/exec/obidos/tg/detail/-/0764543857/)
  */
 @NonNullApi
 @NonNullFields
@@ -15,3 +12,4 @@ package org.springframework.beans.factory;
 
 import org.springframework.lang.NonNullApi;
 import org.springframework.lang.NonNullFields;
+

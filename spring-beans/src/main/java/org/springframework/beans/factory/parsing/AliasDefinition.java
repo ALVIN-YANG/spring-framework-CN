@@ -1,19 +1,14 @@
-/*
- * Copyright 2002-2017 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2017 原作者或作者。
+*
+* 根据 Apache License 2.0（“许可证”）许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下链接处获得许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非根据适用法律或书面同意，否则在许可证下分发的软件按“原样”提供，
+* 不提供任何形式的明示或暗示保证，包括但不限于对适销性、特定用途的适用性或不侵犯他人权利的保证。
+* 请参阅许可证以获取具体规定许可权和限制的内容。*/
 package org.springframework.beans.factory.parsing;
 
 import org.springframework.beans.BeanMetadataElement;
@@ -21,7 +16,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Representation of an alias that has been registered during the parsing process.
+ * 表示在解析过程中已注册的别名。
  *
  * @author Juergen Hoeller
  * @since 2.0
@@ -29,56 +24,53 @@ import org.springframework.util.Assert;
  */
 public class AliasDefinition implements BeanMetadataElement {
 
-	private final String beanName;
+    private final String beanName;
 
-	private final String alias;
+    private final String alias;
 
-	@Nullable
-	private final Object source;
+    @Nullable
+    private final Object source;
 
+    /**
+     * 创建一个新的AliasDefinition。
+     * @param beanName bean的规范名称
+     * @param alias 为bean注册的别名
+     */
+    public AliasDefinition(String beanName, String alias) {
+        this(beanName, alias, null);
+    }
 
-	/**
-	 * Create a new AliasDefinition.
-	 * @param beanName the canonical name of the bean
-	 * @param alias the alias registered for the bean
-	 */
-	public AliasDefinition(String beanName, String alias) {
-		this(beanName, alias, null);
-	}
+    /**
+     * 创建一个新的 AliasDefinition。
+     * @param beanName Bean的规范名称
+     * @param alias 为Bean注册的别名
+     * @param source 源对象（可能为{@code null}）
+     */
+    public AliasDefinition(String beanName, String alias, @Nullable Object source) {
+        Assert.notNull(beanName, "Bean name must not be null");
+        Assert.notNull(alias, "Alias must not be null");
+        this.beanName = beanName;
+        this.alias = alias;
+        this.source = source;
+    }
 
-	/**
-	 * Create a new AliasDefinition.
-	 * @param beanName the canonical name of the bean
-	 * @param alias the alias registered for the bean
-	 * @param source the source object (may be {@code null})
-	 */
-	public AliasDefinition(String beanName, String alias, @Nullable Object source) {
-		Assert.notNull(beanName, "Bean name must not be null");
-		Assert.notNull(alias, "Alias must not be null");
-		this.beanName = beanName;
-		this.alias = alias;
-		this.source = source;
-	}
+    /**
+     * 返回该bean的规范名称。
+     */
+    public final String getBeanName() {
+        return this.beanName;
+    }
 
+    /**
+     * 返回注册的 Bean 的别名。
+     */
+    public final String getAlias() {
+        return this.alias;
+    }
 
-	/**
-	 * Return the canonical name of the bean.
-	 */
-	public final String getBeanName() {
-		return this.beanName;
-	}
-
-	/**
-	 * Return the alias registered for the bean.
-	 */
-	public final String getAlias() {
-		return this.alias;
-	}
-
-	@Override
-	@Nullable
-	public final Object getSource() {
-		return this.source;
-	}
-
+    @Override
+    @Nullable
+    public final Object getSource() {
+        return this.source;
+    }
 }

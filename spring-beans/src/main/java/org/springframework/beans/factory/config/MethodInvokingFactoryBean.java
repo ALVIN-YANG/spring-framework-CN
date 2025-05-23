@@ -1,19 +1,16 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2018 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可；
+* 除非遵守许可证，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件
+* 是按“原样”分发的，不提供任何形式的明示或暗示保证，
+* 无论是否明示或暗示。有关许可的具体语言、权限和限制，
+* 请参阅许可证。*/
 package org.springframework.beans.factory.config;
 
 import org.springframework.beans.factory.FactoryBean;
@@ -21,47 +18,24 @@ import org.springframework.beans.factory.FactoryBeanNotInitializedException;
 import org.springframework.lang.Nullable;
 
 /**
- * {@link FactoryBean} which returns a value which is the result of a static or instance
- * method invocation. For most use cases it is better to just use the container's
- * built-in factory method support for the same purpose, since that is smarter at
- * converting arguments. This factory bean is still useful though when you need to
- * call a method which doesn't return any value (for example, a static class method
- * to force some sort of initialization to happen). This use case is not supported
- * by factory methods, since a return value is needed to obtain the bean instance.
+ *  实现了 {@link FactoryBean} 接口，通过调用静态方法或实例方法返回一个值。对于大多数用例，直接使用容器内建的工厂方法支持可能更好，因为这样可以更智能地转换参数。尽管如此，当需要调用不返回任何值的方法（例如，用于强制执行某种初始化的静态类方法）时，这个工厂bean仍然很有用。由于需要返回值以获取bean实例，因此这种用例不支持工厂方法。
  *
- * <p>Note that as it is expected to be used mostly for accessing factory methods,
- * this factory by default operates in a <b>singleton</b> fashion. The first request
- * to {@link #getObject} by the owning bean factory will cause a method invocation,
- * whose return value will be cached for subsequent requests. An internal
- * {@link #setSingleton singleton} property may be set to "false", to cause this
- * factory to invoke the target method each time it is asked for an object.
+ * <p>请注意，由于预期主要用于访问工厂方法，这个工厂默认以 <b>单例</b> 模式运行。第一次由拥有bean工厂调用 {@link #getObject} 会导致方法调用，其返回值将被缓存以供后续请求使用。可以通过设置内部 {@link #setSingleton singleton} 属性为 "false"，使这个工厂每次被请求对象时都调用目标方法。
  *
- * <p><b>NOTE: If your target method does not produce a result to expose, consider
- * {@link MethodInvokingBean} instead, which avoids the type determination and
- * lifecycle limitations that this {@link MethodInvokingFactoryBean} comes with.</b>
+ * <p><b>注意：如果目标方法不产生要公开的结果，请考虑使用 {@link MethodInvokingBean}，它避免了此 {@link MethodInvokingFactoryBean} 带来的类型确定和生命周期限制。</b>
  *
- * <p>This invoker supports any kind of target method. A static method may be specified
- * by setting the {@link #setTargetMethod targetMethod} property to a String representing
- * the static method name, with {@link #setTargetClass targetClass} specifying the Class
- * that the static method is defined on. Alternatively, a target instance method may be
- * specified, by setting the {@link #setTargetObject targetObject} property as the target
- * object, and the {@link #setTargetMethod targetMethod} property as the name of the
- * method to call on that target object. Arguments for the method invocation may be
- * specified by setting the {@link #setArguments arguments} property.
+ * <p>此调用器支持任何类型的目标方法。可以通过将 {@link #setTargetMethod targetMethod} 属性设置为表示静态方法名称的字符串来指定静态方法，并通过设置 {@link #setTargetClass targetClass} 指定定义静态方法 的类。或者，可以通过设置 {@link #setTargetObject targetObject} 属性为目标对象，将 {@link #setTargetMethod targetMethod} 属性设置为要调用的目标对象上的方法名称来指定目标实例方法。可以通过设置 {@link #setArguments arguments} 属性来指定方法调用的参数。
  *
- * <p>This class depends on {@link #afterPropertiesSet()} being called once
- * all properties have been set, as per the InitializingBean contract.
+ * <p>此类依赖于按照 InitializingBean 协议调用一次所有属性都设置后的 {@link #afterPropertiesSet()}。
  *
- * <p>An example (in an XML based bean factory definition) of a bean definition
- * which uses this class to call a static factory method:
+ * <p>以下是一个使用此类调用静态工厂方法的bean定义示例（基于XML的bean工厂定义）：
  *
  * <pre class="code">
  * &lt;bean id="myObject" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"&gt;
  *   &lt;property name="staticMethod" value="com.whatever.MyClassFactory.getInstance"/&gt;
  * &lt;/bean&gt;</pre>
  *
- * <p>An example of calling a static method then an instance method to get at a
- * Java system property. Somewhat verbose, but it works.
+ * <p>以下是一个调用静态方法然后实例方法以获取Java系统属性的示例。虽然有些啰嗦，但它是有效的。
  *
  * <pre class="code">
  * &lt;bean id="sysProps" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"&gt;
@@ -83,70 +57,66 @@ import org.springframework.lang.Nullable;
  */
 public class MethodInvokingFactoryBean extends MethodInvokingBean implements FactoryBean<Object> {
 
-	private boolean singleton = true;
+    private boolean singleton = true;
 
-	private boolean initialized = false;
+    private boolean initialized = false;
 
-	/** Method call result in the singleton case. */
-	@Nullable
-	private Object singletonObject;
+    /**
+     * 单例模式中的方法调用结果。
+     */
+    @Nullable
+    private Object singletonObject;
 
+    /**
+     * 设置是否创建单例，或者在每个
+     * `#getObject()` 请求时创建一个新的对象。默认值为 "true"。
+     */
+    public void setSingleton(boolean singleton) {
+        this.singleton = singleton;
+    }
 
-	/**
-	 * Set if a singleton should be created, or a new object on each
-	 * {@link #getObject()} request otherwise. Default is "true".
-	 */
-	public void setSingleton(boolean singleton) {
-		this.singleton = singleton;
-	}
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        prepare();
+        if (this.singleton) {
+            this.initialized = true;
+            this.singletonObject = invokeWithTargetException();
+        }
+    }
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		prepare();
-		if (this.singleton) {
-			this.initialized = true;
-			this.singletonObject = invokeWithTargetException();
-		}
-	}
+    /**
+     * 如果将单例属性设置为 "true"，则每次都返回相同的值；否则，在运行时调用指定方法并返回其返回值。
+     */
+    @Override
+    @Nullable
+    public Object getObject() throws Exception {
+        if (this.singleton) {
+            if (!this.initialized) {
+                throw new FactoryBeanNotInitializedException();
+            }
+            // 单例：返回共享对象。
+            return this.singletonObject;
+        } else {
+            // 原型：每次调用时创建一个新对象。
+            return invokeWithTargetException();
+        }
+    }
 
+    /**
+     * 返回此FactoryBean创建的对象类型，
+     * 或如果事先不知道，则返回{@code null}。
+     */
+    @Override
+    public Class<?> getObjectType() {
+        if (!isPrepared()) {
+            // 尚未完全初始化 -> 返回 null 以指示“尚不知道”。
+            return null;
+        }
+        return getPreparedMethod().getReturnType();
+    }
 
-	/**
-	 * Returns the same value each time if the singleton property is set
-	 * to "true", otherwise returns the value returned from invoking the
-	 * specified method on the fly.
-	 */
-	@Override
-	@Nullable
-	public Object getObject() throws Exception {
-		if (this.singleton) {
-			if (!this.initialized) {
-				throw new FactoryBeanNotInitializedException();
-			}
-			// Singleton: return shared object.
-			return this.singletonObject;
-		}
-		else {
-			// Prototype: new object on each call.
-			return invokeWithTargetException();
-		}
-	}
-
-	/**
-	 * Return the type of object that this FactoryBean creates,
-	 * or {@code null} if not known in advance.
-	 */
-	@Override
-	public Class<?> getObjectType() {
-		if (!isPrepared()) {
-			// Not fully initialized yet -> return null to indicate "not known yet".
-			return null;
-		}
-		return getPreparedMethod().getReturnType();
-	}
-
-	@Override
-	public boolean isSingleton() {
-		return this.singleton;
-	}
-
+    @Override
+    public boolean isSingleton() {
+        return this.singleton;
+    }
 }

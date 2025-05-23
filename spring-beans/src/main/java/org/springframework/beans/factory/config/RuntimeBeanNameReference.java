@@ -1,27 +1,21 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2023 原作者或作者。
+*
+* 根据 Apache License 2.0（“许可证”），您可能不得使用此文件除非遵守许可证。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则根据许可证分发的软件按“原样”提供，
+* 不提供任何形式的明示或暗示保证，包括但不限于适销性或特定用途的适用性。
+* 请参阅许可证了解管理许可权限和限制的特定语言。*/
 package org.springframework.beans.factory.config;
 
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Immutable placeholder class used for a property value object when it's a
- * reference to another bean name in the factory, to be resolved at runtime.
+ * 不可变占位符类，用于在工厂中引用其他bean名称的属性值对象时，在运行时进行解析。
  *
  * @author Juergen Hoeller
  * @since 2.0
@@ -31,55 +25,51 @@ import org.springframework.util.Assert;
  */
 public class RuntimeBeanNameReference implements BeanReference {
 
-	private final String beanName;
+    private final String beanName;
 
-	@Nullable
-	private Object source;
+    @Nullable
+    private Object source;
 
+    /**
+     * 创建一个新的 RuntimeBeanNameReference 对象，指向给定的 bean 名称。
+     * @param beanName 目标 bean 的名称
+     */
+    public RuntimeBeanNameReference(String beanName) {
+        Assert.hasText(beanName, "'beanName' must not be empty");
+        this.beanName = beanName;
+    }
 
-	/**
-	 * Create a new RuntimeBeanNameReference to the given bean name.
-	 * @param beanName name of the target bean
-	 */
-	public RuntimeBeanNameReference(String beanName) {
-		Assert.hasText(beanName, "'beanName' must not be empty");
-		this.beanName = beanName;
-	}
+    @Override
+    public String getBeanName() {
+        return this.beanName;
+    }
 
-	@Override
-	public String getBeanName() {
-		return this.beanName;
-	}
+    /**
+     * 为此元数据元素设置配置源 {@code Object}。
+     * <p>该对象的确切类型将取决于所使用的配置机制。
+     */
+    public void setSource(@Nullable Object source) {
+        this.source = source;
+    }
 
-	/**
-	 * Set the configuration source {@code Object} for this metadata element.
-	 * <p>The exact type of the object will depend on the configuration mechanism used.
-	 */
-	public void setSource(@Nullable Object source) {
-		this.source = source;
-	}
+    @Override
+    @Nullable
+    public Object getSource() {
+        return this.source;
+    }
 
-	@Override
-	@Nullable
-	public Object getSource() {
-		return this.source;
-	}
+    @Override
+    public boolean equals(@Nullable Object other) {
+        return (this == other || (other instanceof RuntimeBeanNameReference that && this.beanName.equals(that.beanName)));
+    }
 
+    @Override
+    public int hashCode() {
+        return this.beanName.hashCode();
+    }
 
-	@Override
-	public boolean equals(@Nullable Object other) {
-		return (this == other || (other instanceof RuntimeBeanNameReference that &&
-				this.beanName.equals(that.beanName)));
-	}
-
-	@Override
-	public int hashCode() {
-		return this.beanName.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return '<' + getBeanName() + '>';
-	}
-
+    @Override
+    public String toString() {
+        return '<' + getBeanName() + '>';
+    }
 }

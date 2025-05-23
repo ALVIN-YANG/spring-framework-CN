@@ -1,31 +1,26 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012 原作者或作者。
+*
+* 根据 Apache License, Version 2.0 ("许可证") 许可；
+* 除非遵守许可证，否则不得使用此文件。
+* 您可以在以下链接处获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件
+* 是按“原样”分发的，不提供任何形式的明示或暗示保证，
+* 无论是否明确声明或暗示。有关许可权限和限制的具体语言，
+* 请参阅许可证。*/
 package org.springframework.beans;
 
 import java.beans.PropertyEditor;
-
 import org.springframework.lang.Nullable;
 
 /**
- * Encapsulates methods for registering JavaBeans {@link PropertyEditor PropertyEditors}.
- * This is the central interface that a {@link PropertyEditorRegistrar} operates on.
+ * 封装了注册 JavaBeans 属性编辑器（PropertyEditor）的方法。
+ * 这是 PropertyEditorRegistrar 操作的核心接口。
  *
- * <p>Extended by {@link BeanWrapper}; implemented by {@link BeanWrapperImpl}
- * and {@link org.springframework.validation.DataBinder}.
+ * <p>由 BeanWrapper 扩展；由 BeanWrapperImpl 和 org.springframework.validation.DataBinder 实现。
  *
  * @author Juergen Hoeller
  * @since 1.2.6
@@ -36,47 +31,33 @@ import org.springframework.lang.Nullable;
  */
 public interface PropertyEditorRegistry {
 
-	/**
-	 * Register the given custom property editor for all properties of the given type.
-	 * @param requiredType the type of the property
-	 * @param propertyEditor the editor to register
-	 */
-	void registerCustomEditor(Class<?> requiredType, PropertyEditor propertyEditor);
+    /**
+     * 为给定类型的所有属性注册指定的自定义属性编辑器。
+     * @param requiredType 属性的类型
+     * @param propertyEditor 要注册的编辑器
+     */
+    void registerCustomEditor(Class<?> requiredType, PropertyEditor propertyEditor);
 
-	/**
-	 * Register the given custom property editor for the given type and
-	 * property, or for all properties of the given type.
-	 * <p>If the property path denotes an array or Collection property,
-	 * the editor will get applied either to the array/Collection itself
-	 * (the {@link PropertyEditor} has to create an array or Collection value) or
-	 * to each element (the {@code PropertyEditor} has to create the element type),
-	 * depending on the specified required type.
-	 * <p>Note: Only one single registered custom editor per property path
-	 * is supported. In the case of a Collection/array, do not register an editor
-	 * for both the Collection/array and each element on the same property.
-	 * <p>For example, if you wanted to register an editor for "items[n].quantity"
-	 * (for all values n), you would use "items.quantity" as the value of the
-	 * 'propertyPath' argument to this method.
-	 * @param requiredType the type of the property. This may be {@code null}
-	 * if a property is given but should be specified in any case, in particular in
-	 * case of a Collection - making clear whether the editor is supposed to apply
-	 * to the entire Collection itself or to each of its entries. So as a general rule:
-	 * <b>Do not specify {@code null} here in case of a Collection/array!</b>
-	 * @param propertyPath the path of the property (name or nested path), or
-	 * {@code null} if registering an editor for all properties of the given type
-	 * @param propertyEditor editor to register
-	 */
-	void registerCustomEditor(@Nullable Class<?> requiredType, @Nullable String propertyPath, PropertyEditor propertyEditor);
+    /**
+     * 为给定类型和属性注册指定的自定义属性编辑器，或者为给定类型的所有属性注册。
+     * <p>如果属性路径表示数组或集合属性，则编辑器将应用于数组/集合本身（属性编辑器必须创建数组或集合值）或每个元素（属性编辑器必须创建元素类型），具体取决于指定的所需类型。
+     * <p>注意：每个属性路径只支持一个已注册的自定义编辑器。在集合/数组的情况下，不要为集合/数组和同一属性的每个元素注册编辑器。
+     * <p>例如，如果您想为 "items[n].quantity"（对于所有值 n）注册编辑器，您将使用 "items.quantity" 作为此方法的 'propertyPath' 参数的值。
+     * @param requiredType 属性的类型。如果给出了属性但应该指定，则此值可以为 {@code null}，特别是在集合的情况下 - 明确编辑器是应用于整个集合本身还是应用于其每个条目。因此，作为一般规则：
+     * <b>在集合/数组的情况下，不要指定 {@code null}！</b>
+     * @param propertyPath 属性的路径（名称或嵌套路径），或如果为给定类型的所有属性注册编辑器，则为 {@code null}
+     * @param propertyEditor 要注册的编辑器
+     */
+    void registerCustomEditor(@Nullable Class<?> requiredType, @Nullable String propertyPath, PropertyEditor propertyEditor);
 
-	/**
-	 * Find a custom property editor for the given type and property.
-	 * @param requiredType the type of the property (can be {@code null} if a property
-	 * is given but should be specified in any case for consistency checking)
-	 * @param propertyPath the path of the property (name or nested path), or
-	 * {@code null} if looking for an editor for all properties of the given type
-	 * @return the registered editor, or {@code null} if none
-	 */
-	@Nullable
-	PropertyEditor findCustomEditor(@Nullable Class<?> requiredType, @Nullable String propertyPath);
-
+    /**
+     * 查找给定类型和属性的定制属性编辑器。
+     * @param requiredType 属性的类型（如果给定属性但类型可以为null，则应始终指定以进行一致性检查）
+     * @param propertyPath 属性的路径（名称或嵌套路径），或
+     * {@code null} 如果正在寻找给定类型的所有属性的编辑器
+     * @return 已注册的编辑器，或
+     * {@code null} 如果没有找到
+     */
+    @Nullable
+    PropertyEditor findCustomEditor(@Nullable Class<?> requiredType, @Nullable String propertyPath);
 }

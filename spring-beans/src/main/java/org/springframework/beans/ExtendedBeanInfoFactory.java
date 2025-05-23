@@ -1,65 +1,55 @@
-/*
- * Copyright 2002-2022 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2022 原作者或作者。
+*
+* 根据 Apache License 2.0 许可协议（以下简称“协议”）进行许可；
+* 您不得使用此文件除非遵守该协议。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在协议下分发的软件
+* 是按“现状”提供的，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证以了解具体管理权限和限制的条款。*/
 package org.springframework.beans;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
-
 import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
 
 /**
- * Extension of {@link StandardBeanInfoFactory} that supports "non-standard"
- * JavaBeans setter methods through introspection by Spring's
- * (package-visible) {@code ExtendedBeanInfo} implementation.
+ *  对 {@link StandardBeanInfoFactory} 的扩展，该扩展通过 Spring 的（包可见的）{@code ExtendedBeanInfo} 实现通过反射支持“非标准”JavaBeans 的设置方法。
  *
- * <p>To be configured via a {@code META-INF/spring.factories} file with the following content:
- * {@code org.springframework.beans.BeanInfoFactory=org.springframework.beans.ExtendedBeanInfoFactory}
+ * <p>通过以下内容的 {@code META-INF/spring.factories} 文件进行配置：
+ *  {@code org.springframework.beans.BeanInfoFactory=org.springframework.beans.ExtendedBeanInfoFactory}
  *
- * <p>Ordered at {@link Ordered#LOWEST_PRECEDENCE} to allow other user-defined
- * {@link BeanInfoFactory} types to take precedence.
+ * <p>按 {@link Ordered#LOWEST_PRECEDENCE} 排序，以允许其他用户定义的 {@link BeanInfoFactory} 类型具有优先权。
  *
- * @author Chris Beams
- * @author Juergen Hoeller
- * @since 3.2
- * @see StandardBeanInfoFactory
- * @see CachedIntrospectionResults
+ *  @author Chris Beams
+ *  @author Juergen Hoeller
+ *  @since 3.2
+ *  @see StandardBeanInfoFactory
+ *  @see CachedIntrospectionResults
  */
 public class ExtendedBeanInfoFactory extends StandardBeanInfoFactory {
 
-	@Override
-	@NonNull
-	public BeanInfo getBeanInfo(Class<?> beanClass) throws IntrospectionException {
-		BeanInfo beanInfo = super.getBeanInfo(beanClass);
-		return (supports(beanClass) ? new ExtendedBeanInfo(beanInfo) : beanInfo);
-	}
+    @Override
+    @NonNull
+    public BeanInfo getBeanInfo(Class<?> beanClass) throws IntrospectionException {
+        BeanInfo beanInfo = super.getBeanInfo(beanClass);
+        return (supports(beanClass) ? new ExtendedBeanInfo(beanInfo) : beanInfo);
+    }
 
-	/**
-	 * Return whether the given bean class declares or inherits any non-void
-	 * returning bean property or indexed property setter methods.
-	 */
-	private boolean supports(Class<?> beanClass) {
-		for (Method method : beanClass.getMethods()) {
-			if (ExtendedBeanInfo.isCandidateWriteMethod(method)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
+    /**
+     * 返回给定的 Bean 类是否声明或继承任何非 void 返回的 Bean 属性或索引属性设置方法。
+     */
+    private boolean supports(Class<?> beanClass) {
+        for (Method method : beanClass.getMethods()) {
+            if (ExtendedBeanInfo.isCandidateWriteMethod(method)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

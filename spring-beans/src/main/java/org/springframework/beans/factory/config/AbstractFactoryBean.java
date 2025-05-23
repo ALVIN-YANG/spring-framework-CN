@@ -1,29 +1,21 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2023 原作者或作者。
+*
+* 根据 Apache License 2.0（“许可协议”）许可，除非法律要求或书面同意，否则您不得使用此文件。
+* 您可以在以下地址获取许可协议副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可协议下分发的软件按“原样”分发，
+* 不提供任何明示或暗示的保证或条件。有关权限和限制的具体语言，请参阅许可协议。*/
 package org.springframework.beans.factory.config;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.SimpleTypeConverter;
 import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.BeanClassLoaderAware;
@@ -40,244 +32,214 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Simple template superclass for {@link FactoryBean} implementations that
- * creates a singleton or a prototype object, depending on a flag.
+ * 简单的模板超类，用于实现依赖于标志位创建单例或原型对象的 {@link FactoryBean}。
  *
- * <p>If the "singleton" flag is {@code true} (the default),
- * this class will create the object that it creates exactly once
- * on initialization and subsequently return said singleton instance
- * on all calls to the {@link #getObject()} method.
+ * <p>如果“singleton”标志位为 {@code true}（默认值），
+ * 此类将在初始化时创建对象一次，并在后续所有调用 {@link #getObject()} 方法时返回该单例实例。
  *
- * <p>Else, this class will create a new instance every time the
- * {@link #getObject()} method is invoked. Subclasses are responsible
- * for implementing the abstract {@link #createInstance()} template
- * method to actually create the object(s) to expose.
+ * <p>否则，每次调用 {@link #getObject()} 方法时，此类都将创建一个新实例。子类负责实现抽象的 {@link #createInstance()} 模板方法来实际创建要公开的对象。
  *
  * @author Juergen Hoeller
  * @author Keith Donald
  * @since 1.0.2
- * @param <T> the bean type
+ * @param <T> bean 类型
  * @see #setSingleton
  * @see #createInstance()
  */
-public abstract class AbstractFactoryBean<T>
-		implements FactoryBean<T>, BeanClassLoaderAware, BeanFactoryAware, InitializingBean, DisposableBean {
+public abstract class AbstractFactoryBean<T> implements FactoryBean<T>, BeanClassLoaderAware, BeanFactoryAware, InitializingBean, DisposableBean {
 
-	/** Logger available to subclasses. */
-	protected final Log logger = LogFactory.getLog(getClass());
+    /**
+     * 日志记录器可供子类使用。
+     */
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	private boolean singleton = true;
+    private boolean singleton = true;
 
-	@Nullable
-	private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+    @Nullable
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
-	@Nullable
-	private BeanFactory beanFactory;
+    @Nullable
+    private BeanFactory beanFactory;
 
-	private boolean initialized = false;
+    private boolean initialized = false;
 
-	@Nullable
-	private T singletonInstance;
+    @Nullable
+    private T singletonInstance;
 
-	@Nullable
-	private T earlySingletonInstance;
+    @Nullable
+    private T earlySingletonInstance;
 
+    /**
+     * 设置是否应该创建单例，还是每次请求时创建一个新对象。默认为 {@code true}（单例）。
+     */
+    public void setSingleton(boolean singleton) {
+        this.singleton = singleton;
+    }
 
-	/**
-	 * Set if a singleton should be created, or a new object on each request
-	 * otherwise. Default is {@code true} (a singleton).
-	 */
-	public void setSingleton(boolean singleton) {
-		this.singleton = singleton;
-	}
+    @Override
+    public boolean isSingleton() {
+        return this.singleton;
+    }
 
-	@Override
-	public boolean isSingleton() {
-		return this.singleton;
-	}
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        this.beanClassLoader = classLoader;
+    }
 
-	@Override
-	public void setBeanClassLoader(ClassLoader classLoader) {
-		this.beanClassLoader = classLoader;
-	}
+    @Override
+    public void setBeanFactory(@Nullable BeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
+    }
 
-	@Override
-	public void setBeanFactory(@Nullable BeanFactory beanFactory) {
-		this.beanFactory = beanFactory;
-	}
+    /**
+     * 返回此 Bean 运行的 BeanFactory。
+     */
+    @Nullable
+    protected BeanFactory getBeanFactory() {
+        return this.beanFactory;
+    }
 
-	/**
-	 * Return the BeanFactory that this bean runs in.
-	 */
-	@Nullable
-	protected BeanFactory getBeanFactory() {
-		return this.beanFactory;
-	}
+    /**
+     * 从运行此Bean的BeanFactory中获取一个Bean类型转换器。这通常是对每次调用都是一个新的实例，
+     * 因为类型转换器通常<i>不是</i>线程安全的。
+     * <p>当不在BeanFactory中运行时，回退到SimpleTypeConverter。
+     * @see ConfigurableBeanFactory#getTypeConverter()
+     * @see org.springframework.beans.SimpleTypeConverter
+     */
+    protected TypeConverter getBeanTypeConverter() {
+        BeanFactory beanFactory = getBeanFactory();
+        if (beanFactory instanceof ConfigurableBeanFactory cbf) {
+            return cbf.getTypeConverter();
+        } else {
+            return new SimpleTypeConverter();
+        }
+    }
 
-	/**
-	 * Obtain a bean type converter from the BeanFactory that this bean
-	 * runs in. This is typically a fresh instance for each call,
-	 * since TypeConverters are usually <i>not</i> thread-safe.
-	 * <p>Falls back to a SimpleTypeConverter when not running in a BeanFactory.
-	 * @see ConfigurableBeanFactory#getTypeConverter()
-	 * @see org.springframework.beans.SimpleTypeConverter
-	 */
-	protected TypeConverter getBeanTypeConverter() {
-		BeanFactory beanFactory = getBeanFactory();
-		if (beanFactory instanceof ConfigurableBeanFactory cbf) {
-			return cbf.getTypeConverter();
-		}
-		else {
-			return new SimpleTypeConverter();
-		}
-	}
+    /**
+     * 如果需要，则积极创建单例实例。
+     */
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (isSingleton()) {
+            this.initialized = true;
+            this.singletonInstance = createInstance();
+            this.earlySingletonInstance = null;
+        }
+    }
 
-	/**
-	 * Eagerly create the singleton instance, if necessary.
-	 */
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		if (isSingleton()) {
-			this.initialized = true;
-			this.singletonInstance = createInstance();
-			this.earlySingletonInstance = null;
-		}
-	}
+    /**
+     * 暴露单例实例或创建一个新的原型实例。
+     * @see #createInstance()
+     * @see #getEarlySingletonInterfaces()
+     */
+    @Override
+    public final T getObject() throws Exception {
+        if (isSingleton()) {
+            return (this.initialized ? this.singletonInstance : getEarlySingletonInstance());
+        } else {
+            return createInstance();
+        }
+    }
 
+    /**
+     * 确定一个“早期单例”实例，在出现循环引用的情况下暴露出来。在非循环引用场景下不调用。
+     */
+    @SuppressWarnings("unchecked")
+    private T getEarlySingletonInstance() throws Exception {
+        Class<?>[] ifcs = getEarlySingletonInterfaces();
+        if (ifcs == null) {
+            throw new FactoryBeanNotInitializedException(getClass().getName() + " does not support circular references");
+        }
+        if (this.earlySingletonInstance == null) {
+            this.earlySingletonInstance = (T) Proxy.newProxyInstance(this.beanClassLoader, ifcs, new EarlySingletonInvocationHandler());
+        }
+        return this.earlySingletonInstance;
+    }
 
-	/**
-	 * Expose the singleton instance or create a new prototype instance.
-	 * @see #createInstance()
-	 * @see #getEarlySingletonInterfaces()
-	 */
-	@Override
-	public final T getObject() throws Exception {
-		if (isSingleton()) {
-			return (this.initialized ? this.singletonInstance : getEarlySingletonInstance());
-		}
-		else {
-			return createInstance();
-		}
-	}
+    /**
+     * 暴露单例实例（通过“早期单例”代理进行访问）。
+     * @return 由该FactoryBean持有的单例实例
+     * @throws IllegalStateException 如果单例实例未初始化
+     */
+    @Nullable
+    private T getSingletonInstance() throws IllegalStateException {
+        Assert.state(this.initialized, "Singleton instance not initialized yet");
+        return this.singletonInstance;
+    }
 
-	/**
-	 * Determine an 'early singleton' instance, exposed in case of a
-	 * circular reference. Not called in a non-circular scenario.
-	 */
-	@SuppressWarnings("unchecked")
-	private T getEarlySingletonInstance() throws Exception {
-		Class<?>[] ifcs = getEarlySingletonInterfaces();
-		if (ifcs == null) {
-			throw new FactoryBeanNotInitializedException(
-					getClass().getName() + " does not support circular references");
-		}
-		if (this.earlySingletonInstance == null) {
-			this.earlySingletonInstance = (T) Proxy.newProxyInstance(
-					this.beanClassLoader, ifcs, new EarlySingletonInvocationHandler());
-		}
-		return this.earlySingletonInstance;
-	}
+    /**
+     * 销毁单例实例（如果存在）。
+     * @see #destroyInstance(Object)
+     */
+    @Override
+    public void destroy() throws Exception {
+        if (isSingleton()) {
+            destroyInstance(this.singletonInstance);
+        }
+    }
 
-	/**
-	 * Expose the singleton instance (for access through the 'early singleton' proxy).
-	 * @return the singleton instance that this FactoryBean holds
-	 * @throws IllegalStateException if the singleton instance is not initialized
-	 */
-	@Nullable
-	private T getSingletonInstance() throws IllegalStateException {
-		Assert.state(this.initialized, "Singleton instance not initialized yet");
-		return this.singletonInstance;
-	}
+    /**
+     * 这个抽象方法声明与FactoryBean接口中的方法相对应，旨在提供一致的抽象模板方法。
+     * @see org.springframework.beans.factory.FactoryBean#getObjectType()
+     */
+    @Override
+    @Nullable
+    public abstract Class<?> getObjectType();
 
-	/**
-	 * Destroy the singleton instance, if any.
-	 * @see #destroyInstance(Object)
-	 */
-	@Override
-	public void destroy() throws Exception {
-		if (isSingleton()) {
-			destroyInstance(this.singletonInstance);
-		}
-	}
+    /**
+     * 模板方法，子类必须重写以构建
+     * 此工厂返回的对象。
+     * <p>在单例情况下，在初始化此FactoryBean时调用；否则，在每次调用{@link #getObject()}时调用。
+     * @return 此工厂返回的对象
+     * @throws Exception 如果在对象创建过程中发生异常
+     * @see #getObject()
+     */
+    protected abstract T createInstance() throws Exception;
 
+    /**
+     * 返回一个接口数组，该数组由该FactoryBean暴露的单例对象应该实现，用于与可能因循环引用而暴露的'早期单例代理'一起使用。
+     * <p>默认实现返回此FactoryBean的对象类型，前提是它是一个接口，否则返回null。后一种情况表示此FactoryBean不支持早期单例访问。
+     * 这将导致抛出FactoryBeanNotInitializedException异常。
+     * @return 用于'早期单例'的接口数组，或返回null以指示抛出FactoryBeanNotInitializedException异常
+     * @see org.springframework.beans.factory.FactoryBeanNotInitializedException
+     */
+    @Nullable
+    protected Class<?>[] getEarlySingletonInterfaces() {
+        Class<?> type = getObjectType();
+        return (type != null && type.isInterface() ? new Class<?>[] { type } : null);
+    }
 
-	/**
-	 * This abstract method declaration mirrors the method in the FactoryBean
-	 * interface, for a consistent offering of abstract template methods.
-	 * @see org.springframework.beans.factory.FactoryBean#getObjectType()
-	 */
-	@Override
-	@Nullable
-	public abstract Class<?> getObjectType();
+    /**
+     * 销毁单例实例的回调。子类可以重写此方法以销毁先前创建的实例。
+     * <p>默认实现为空。
+     * @param instance 由 {@link #createInstance()} 返回的单例实例
+     * @throws Exception 在关闭时发生错误的情况下抛出
+     * @see #createInstance()
+     */
+    protected void destroyInstance(@Nullable T instance) throws Exception {
+    }
 
-	/**
-	 * Template method that subclasses must override to construct
-	 * the object returned by this factory.
-	 * <p>Invoked on initialization of this FactoryBean in case of
-	 * a singleton; else, on each {@link #getObject()} call.
-	 * @return the object returned by this factory
-	 * @throws Exception if an exception occurred during object creation
-	 * @see #getObject()
-	 */
-	protected abstract T createInstance() throws Exception;
+    /**
+     * 用于对实际单例对象进行懒加载访问的反射调用处理器。
+     */
+    private class EarlySingletonInvocationHandler implements InvocationHandler {
 
-	/**
-	 * Return an array of interfaces that a singleton object exposed by this
-	 * FactoryBean is supposed to implement, for use with an 'early singleton
-	 * proxy' that will be exposed in case of a circular reference.
-	 * <p>The default implementation returns this FactoryBean's object type,
-	 * provided that it is an interface, or {@code null} otherwise. The latter
-	 * indicates that early singleton access is not supported by this FactoryBean.
-	 * This will lead to a FactoryBeanNotInitializedException getting thrown.
-	 * @return the interfaces to use for 'early singletons',
-	 * or {@code null} to indicate a FactoryBeanNotInitializedException
-	 * @see org.springframework.beans.factory.FactoryBeanNotInitializedException
-	 */
-	@Nullable
-	protected Class<?>[] getEarlySingletonInterfaces() {
-		Class<?> type = getObjectType();
-		return (type != null && type.isInterface() ? new Class<?>[] {type} : null);
-	}
-
-	/**
-	 * Callback for destroying a singleton instance. Subclasses may
-	 * override this to destroy the previously created instance.
-	 * <p>The default implementation is empty.
-	 * @param instance the singleton instance, as returned by
-	 * {@link #createInstance()}
-	 * @throws Exception in case of shutdown errors
-	 * @see #createInstance()
-	 */
-	protected void destroyInstance(@Nullable T instance) throws Exception {
-	}
-
-
-	/**
-	 * Reflective InvocationHandler for lazy access to the actual singleton object.
-	 */
-	private class EarlySingletonInvocationHandler implements InvocationHandler {
-
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			if (ReflectionUtils.isEqualsMethod(method)) {
-				// Only consider equal when proxies are identical.
-				return (proxy == args[0]);
-			}
-			else if (ReflectionUtils.isHashCodeMethod(method)) {
-				// Use hashCode of reference proxy.
-				return System.identityHashCode(proxy);
-			}
-			else if (!initialized && ReflectionUtils.isToStringMethod(method)) {
-				return "Early singleton proxy for interfaces " +
-						ObjectUtils.nullSafeToString(getEarlySingletonInterfaces());
-			}
-			try {
-				return method.invoke(getSingletonInstance(), args);
-			}
-			catch (InvocationTargetException ex) {
-				throw ex.getTargetException();
-			}
-		}
-	}
-
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            if (ReflectionUtils.isEqualsMethod(method)) {
+                // 仅当代理完全相同才考虑相等。
+                return (proxy == args[0]);
+            } else if (ReflectionUtils.isHashCodeMethod(method)) {
+                // 使用引用代理的hashCode。
+                return System.identityHashCode(proxy);
+            } else if (!initialized && ReflectionUtils.isToStringMethod(method)) {
+                return "Early singleton proxy for interfaces " + ObjectUtils.nullSafeToString(getEarlySingletonInterfaces());
+            }
+            try {
+                return method.invoke(getSingletonInstance(), args);
+            } catch (InvocationTargetException ex) {
+                throw ex.getTargetException();
+            }
+        }
+    }
 }

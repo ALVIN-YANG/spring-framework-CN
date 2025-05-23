@@ -1,64 +1,58 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2018 原作者或作者们。
+*
+* 根据 Apache License 2.0（以下简称“许可”）进行许可；
+* 您必须遵守该许可才能使用此文件。
+* 您可以在以下链接处获取许可副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则根据该许可分发的软件
+* 是在“现状”基础上分发的，不提供任何形式的明示或暗示保证，
+* 包括但不限于适销性、适用于特定目的和不侵权。
+* 请参阅许可了解具体规定许可权限和限制。*/
 package org.springframework.beans.factory.config;
 
 import org.springframework.beans.factory.NamedBean;
 import org.springframework.util.Assert;
 
 /**
- * A simple holder for a given bean name plus bean instance.
+ * 用于存储给定bean名称及其实例的简单容器。
  *
  * @author Juergen Hoeller
  * @since 4.3.3
- * @param <T> the bean type
+ * @param <T> bean的类型
  * @see AutowireCapableBeanFactory#resolveNamedBean(Class)
  */
 public class NamedBeanHolder<T> implements NamedBean {
 
-	private final String beanName;
+    private final String beanName;
 
-	private final T beanInstance;
+    private final T beanInstance;
 
+    /**
+     * 为给定的bean名称及其实例创建一个新的持有者。
+     * @param beanName bean的名称
+     * @param beanInstance 相应的bean实例
+     */
+    public NamedBeanHolder(String beanName, T beanInstance) {
+        Assert.notNull(beanName, "Bean name must not be null");
+        this.beanName = beanName;
+        this.beanInstance = beanInstance;
+    }
 
-	/**
-	 * Create a new holder for the given bean name plus instance.
-	 * @param beanName the name of the bean
-	 * @param beanInstance the corresponding bean instance
-	 */
-	public NamedBeanHolder(String beanName, T beanInstance) {
-		Assert.notNull(beanName, "Bean name must not be null");
-		this.beanName = beanName;
-		this.beanInstance = beanInstance;
-	}
+    /**
+     * 返回该Bean的名称。
+     */
+    @Override
+    public String getBeanName() {
+        return this.beanName;
+    }
 
-
-	/**
-	 * Return the name of the bean.
-	 */
-	@Override
-	public String getBeanName() {
-		return this.beanName;
-	}
-
-	/**
-	 * Return the corresponding bean instance.
-	 */
-	public T getBeanInstance() {
-		return this.beanInstance;
-	}
-
+    /**
+     * 返回相应的 Bean 实例。
+     */
+    public T getBeanInstance() {
+        return this.beanInstance;
+    }
 }

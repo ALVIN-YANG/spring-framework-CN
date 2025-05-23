@@ -1,36 +1,27 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2023 原作者或作者。
+*
+* 根据 Apache License 2.0 ("许可证") 许可使用，除非适用法律要求或经书面同意，否则您不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件按照 "原样" 提供分发，
+* 不提供任何形式，明示或暗示的保证或条件。
+* 请参阅许可证了解具体管理许可权限和限制的条款。*/
 package org.springframework.beans;
 
 import java.io.Serializable;
-
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 /**
- * Object to hold information and value for an individual bean property.
- * Using an object here, rather than just storing all properties in
- * a map keyed by property name, allows for more flexibility, and the
- * ability to handle indexed properties etc in an optimized way.
+ * 用于存储单个属性信息和值的对象。
+ * 使用对象，而不是仅仅通过属性名作为键在映射中存储所有属性，这提供了更多的灵活性，并且能够以优化的方式处理索引属性等。
  *
- * <p>Note that the value doesn't need to be the final required type:
- * A {@link BeanWrapper} implementation should handle any necessary conversion,
- * as this object doesn't know anything about the objects it will be applied to.
+ * <p>注意，值不需要是最终所需的类型：
+ * 一个 {@link BeanWrapper} 实现应该处理任何必要的转换，因为此对象对其将要应用的对象一无所知。
  *
  * @author Rod Johnson
  * @author Rob Harrop
@@ -42,167 +33,159 @@ import org.springframework.util.ObjectUtils;
 @SuppressWarnings("serial")
 public class PropertyValue extends BeanMetadataAttributeAccessor implements Serializable {
 
-	private final String name;
+    private final String name;
 
-	@Nullable
-	private final Object value;
+    @Nullable
+    private final Object value;
 
-	private boolean optional = false;
+    private boolean optional = false;
 
-	private boolean converted = false;
+    private boolean converted = false;
 
-	@Nullable
-	private Object convertedValue;
+    @Nullable
+    private Object convertedValue;
 
-	/** Package-visible field that indicates whether conversion is necessary. */
-	@Nullable
-	volatile Boolean conversionNecessary;
+    /**
+     * 包可见的字段，表示是否需要进行转换。
+     */
+    @Nullable
+    volatile Boolean conversionNecessary;
 
-	/** Package-visible field for caching the resolved property path tokens. */
-	@Nullable
-	transient volatile Object resolvedTokens;
+    /**
+     * 用于缓存已解析属性路径标记的包可见字段。
+     */
+    @Nullable
+    transient volatile Object resolvedTokens;
 
+    /**
+     * 创建一个新的 PropertyValue 实例。
+     * @param name 属性的名称（永不为 {@code null}）
+     * @param value 属性的值（可能在类型转换之前）
+     */
+    public PropertyValue(String name, @Nullable Object value) {
+        Assert.notNull(name, "Name must not be null");
+        this.name = name;
+        this.value = value;
+    }
 
-	/**
-	 * Create a new PropertyValue instance.
-	 * @param name the name of the property (never {@code null})
-	 * @param value the value of the property (possibly before type conversion)
-	 */
-	public PropertyValue(String name, @Nullable Object value) {
-		Assert.notNull(name, "Name must not be null");
-		this.name = name;
-		this.value = value;
-	}
+    /**
+     * 复制构造函数。
+     * @param original 要复制的 PropertyValue 对象（永不为 {@code null}）
+     */
+    public PropertyValue(PropertyValue original) {
+        Assert.notNull(original, "Original must not be null");
+        this.name = original.getName();
+        this.value = original.getValue();
+        this.optional = original.isOptional();
+        this.converted = original.converted;
+        this.convertedValue = original.convertedValue;
+        this.conversionNecessary = original.conversionNecessary;
+        this.resolvedTokens = original.resolvedTokens;
+        setSource(original.getSource());
+        copyAttributesFrom(original);
+    }
 
-	/**
-	 * Copy constructor.
-	 * @param original the PropertyValue to copy (never {@code null})
-	 */
-	public PropertyValue(PropertyValue original) {
-		Assert.notNull(original, "Original must not be null");
-		this.name = original.getName();
-		this.value = original.getValue();
-		this.optional = original.isOptional();
-		this.converted = original.converted;
-		this.convertedValue = original.convertedValue;
-		this.conversionNecessary = original.conversionNecessary;
-		this.resolvedTokens = original.resolvedTokens;
-		setSource(original.getSource());
-		copyAttributesFrom(original);
-	}
+    /**
+     * 构造函数用于公开原始值持有者的新值。
+     * 原始持有者将作为新持有者的数据源被公开。
+     * @param original 要链接的 PropertyValue（不得为 {@code null}）
+     * @param newValue 要应用的新值
+     */
+    public PropertyValue(PropertyValue original, @Nullable Object newValue) {
+        Assert.notNull(original, "Original must not be null");
+        this.name = original.getName();
+        this.value = newValue;
+        this.optional = original.isOptional();
+        this.conversionNecessary = original.conversionNecessary;
+        this.resolvedTokens = original.resolvedTokens;
+        setSource(original);
+        copyAttributesFrom(original);
+    }
 
-	/**
-	 * Constructor that exposes a new value for an original value holder.
-	 * The original holder will be exposed as source of the new holder.
-	 * @param original the PropertyValue to link to (never {@code null})
-	 * @param newValue the new value to apply
-	 */
-	public PropertyValue(PropertyValue original, @Nullable Object newValue) {
-		Assert.notNull(original, "Original must not be null");
-		this.name = original.getName();
-		this.value = newValue;
-		this.optional = original.isOptional();
-		this.conversionNecessary = original.conversionNecessary;
-		this.resolvedTokens = original.resolvedTokens;
-		setSource(original);
-		copyAttributesFrom(original);
-	}
+    /**
+     * 返回属性的名称。
+     */
+    public String getName() {
+        return this.name;
+    }
 
+    /**
+     * 返回属性的值。
+     * <p>请注意，此处不会发生类型转换。
+     * 类型转换是BeanWrapper实现的责任。
+     */
+    @Nullable
+    public Object getValue() {
+        return this.value;
+    }
 
-	/**
-	 * Return the name of the property.
-	 */
-	public String getName() {
-		return this.name;
-	}
+    /**
+     * 返回此值持有者的原始 PropertyValue 实例。
+     * @return 原始的 PropertyValue（此值持有者的来源或此值持有者本身）。
+     */
+    public PropertyValue getOriginalPropertyValue() {
+        PropertyValue original = this;
+        Object source = getSource();
+        while (source instanceof PropertyValue pv && source != original) {
+            original = pv;
+            source = original.getSource();
+        }
+        return original;
+    }
 
-	/**
-	 * Return the value of the property.
-	 * <p>Note that type conversion will <i>not</i> have occurred here.
-	 * It is the responsibility of the BeanWrapper implementation to
-	 * perform type conversion.
-	 */
-	@Nullable
-	public Object getValue() {
-		return this.value;
-	}
+    /**
+     * 设置此值是否为可选值，即当目标类上不存在相应属性时，将被忽略。
+     * @since 3.0
+     */
+    public void setOptional(boolean optional) {
+        this.optional = optional;
+    }
 
-	/**
-	 * Return the original PropertyValue instance for this value holder.
-	 * @return the original PropertyValue (either a source of this
-	 * value holder or this value holder itself).
-	 */
-	public PropertyValue getOriginalPropertyValue() {
-		PropertyValue original = this;
-		Object source = getSource();
-		while (source instanceof PropertyValue pv && source != original) {
-			original = pv;
-			source = original.getSource();
-		}
-		return original;
-	}
+    /**
+     * 返回此值是否为可选值，即当目标类上不存在相应属性时，应忽略此值。
+     * @since 3.0
+     */
+    public boolean isOptional() {
+        return this.optional;
+    }
 
-	/**
-	 * Set whether this is an optional value, that is, to be ignored
-	 * when no corresponding property exists on the target class.
-	 * @since 3.0
-	 */
-	public void setOptional(boolean optional) {
-		this.optional = optional;
-	}
+    /**
+     * 返回此持有者是否已包含转换后的值（`true`），或者值是否还需要被转换（`false`）。
+     */
+    public synchronized boolean isConverted() {
+        return this.converted;
+    }
 
-	/**
-	 * Return whether this is an optional value, that is, to be ignored
-	 * when no corresponding property exists on the target class.
-	 * @since 3.0
-	 */
-	public boolean isOptional() {
-		return this.optional;
-	}
+    /**
+     * 设置此属性值的转换后值，
+     * 在处理类型转换之后。
+     */
+    public synchronized void setConvertedValue(@Nullable Object value) {
+        this.converted = true;
+        this.convertedValue = value;
+    }
 
-	/**
-	 * Return whether this holder contains a converted value already ({@code true}),
-	 * or whether the value still needs to be converted ({@code false}).
-	 */
-	public synchronized boolean isConverted() {
-		return this.converted;
-	}
+    /**
+     * 返回此属性值的转换后值，
+     * 经过类型转换处理。
+     */
+    @Nullable
+    public synchronized Object getConvertedValue() {
+        return this.convertedValue;
+    }
 
-	/**
-	 * Set the converted value of this property value,
-	 * after processed type conversion.
-	 */
-	public synchronized void setConvertedValue(@Nullable Object value) {
-		this.converted = true;
-		this.convertedValue = value;
-	}
+    @Override
+    public boolean equals(@Nullable Object other) {
+        return (this == other || (other instanceof PropertyValue that && this.name.equals(that.name) && ObjectUtils.nullSafeEquals(this.value, that.value) && ObjectUtils.nullSafeEquals(getSource(), that.getSource())));
+    }
 
-	/**
-	 * Return the converted value of this property value,
-	 * after processed type conversion.
-	 */
-	@Nullable
-	public synchronized Object getConvertedValue() {
-		return this.convertedValue;
-	}
+    @Override
+    public int hashCode() {
+        return this.name.hashCode() * 29 + ObjectUtils.nullSafeHashCode(this.value);
+    }
 
-
-	@Override
-	public boolean equals(@Nullable Object other) {
-		return (this == other || (other instanceof PropertyValue that &&
-				this.name.equals(that.name) &&
-				ObjectUtils.nullSafeEquals(this.value, that.value) &&
-				ObjectUtils.nullSafeEquals(getSource(), that.getSource())));
-	}
-
-	@Override
-	public int hashCode() {
-		return this.name.hashCode() * 29 + ObjectUtils.nullSafeHashCode(this.value);
-	}
-
-	@Override
-	public String toString() {
-		return "bean property '" + this.name + "'";
-	}
-
+    @Override
+    public String toString() {
+        return "bean property '" + this.name + "'";
+    }
 }

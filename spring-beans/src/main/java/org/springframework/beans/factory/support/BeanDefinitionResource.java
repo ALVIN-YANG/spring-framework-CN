@@ -1,33 +1,28 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2023 原作者或作者。
+*
+* 根据 Apache License 2.0 ("许可协议") 许可使用；
+* 除非遵守许可协议，否则不得使用此文件。
+* 您可以在以下链接获取许可协议的副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可协议下分发的软件
+* 是按“原样”分发的，不提供任何明示或暗示的保证或条件。
+* 请参阅许可协议了解具体管理权限和限制的内容。*/
 package org.springframework.beans.factory.support;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.core.io.AbstractResource;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 /**
- * Descriptive {@link org.springframework.core.io.Resource} wrapper for
- * a {@link org.springframework.beans.factory.config.BeanDefinition}.
+ * 用于描述性的包装器，包装了 {@link org.springframework.core.io.Resource}，用于
+ * 表示一个 {@link org.springframework.beans.factory.config.BeanDefinition}。
  *
  * @author Juergen Hoeller
  * @since 2.5.2
@@ -35,63 +30,57 @@ import org.springframework.util.Assert;
  */
 class BeanDefinitionResource extends AbstractResource {
 
-	private final BeanDefinition beanDefinition;
+    private final BeanDefinition beanDefinition;
 
+    /**
+     * 创建一个新的 BeanDefinitionResource。
+     * @param beanDefinition 要封装的 BeanDefinition 对象
+     */
+    public BeanDefinitionResource(BeanDefinition beanDefinition) {
+        Assert.notNull(beanDefinition, "BeanDefinition must not be null");
+        this.beanDefinition = beanDefinition;
+    }
 
-	/**
-	 * Create a new BeanDefinitionResource.
-	 * @param beanDefinition the BeanDefinition object to wrap
-	 */
-	public BeanDefinitionResource(BeanDefinition beanDefinition) {
-		Assert.notNull(beanDefinition, "BeanDefinition must not be null");
-		this.beanDefinition = beanDefinition;
-	}
+    /**
+     * 返回包装的 BeanDefinition 对象。
+     */
+    public final BeanDefinition getBeanDefinition() {
+        return this.beanDefinition;
+    }
 
-	/**
-	 * Return the wrapped BeanDefinition object.
-	 */
-	public final BeanDefinition getBeanDefinition() {
-		return this.beanDefinition;
-	}
+    @Override
+    public boolean exists() {
+        return false;
+    }
 
+    @Override
+    public boolean isReadable() {
+        return false;
+    }
 
-	@Override
-	public boolean exists() {
-		return false;
-	}
+    @Override
+    public InputStream getInputStream() throws IOException {
+        throw new FileNotFoundException("Resource cannot be opened because it points to " + getDescription());
+    }
 
-	@Override
-	public boolean isReadable() {
-		return false;
-	}
+    @Override
+    public String getDescription() {
+        return "BeanDefinition defined in " + this.beanDefinition.getResourceDescription();
+    }
 
-	@Override
-	public InputStream getInputStream() throws IOException {
-		throw new FileNotFoundException(
-				"Resource cannot be opened because it points to " + getDescription());
-	}
+    /**
+     * 此实现比较底层的BeanDefinition。
+     */
+    @Override
+    public boolean equals(@Nullable Object other) {
+        return (this == other || (other instanceof BeanDefinitionResource that && this.beanDefinition.equals(that.beanDefinition)));
+    }
 
-	@Override
-	public String getDescription() {
-		return "BeanDefinition defined in " + this.beanDefinition.getResourceDescription();
-	}
-
-
-	/**
-	 * This implementation compares the underlying BeanDefinition.
-	 */
-	@Override
-	public boolean equals(@Nullable Object other) {
-		return (this == other || (other instanceof BeanDefinitionResource that &&
-				this.beanDefinition.equals(that.beanDefinition)));
-	}
-
-	/**
-	 * This implementation returns the hash code of the underlying BeanDefinition.
-	 */
-	@Override
-	public int hashCode() {
-		return this.beanDefinition.hashCode();
-	}
-
+    /**
+     * 此实现返回底层BeanDefinition的哈希码。
+     */
+    @Override
+    public int hashCode() {
+        return this.beanDefinition.hashCode();
+    }
 }

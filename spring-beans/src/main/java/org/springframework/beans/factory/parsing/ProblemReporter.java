@@ -1,24 +1,17 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，您可能不遵守许可证使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”分发，
+* 不提供任何明示或暗示的保证或条件。有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.beans.factory.parsing;
 
 /**
- * SPI interface allowing tools and other external processes to handle errors
- * and warnings reported during bean definition parsing.
+ * SPI（服务提供接口）允许工具和其他外部进程处理在bean定义解析过程中报告的错误和警告。
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
@@ -27,26 +20,25 @@ package org.springframework.beans.factory.parsing;
  */
 public interface ProblemReporter {
 
-	/**
-	 * Called when a fatal error is encountered during the parsing process.
-	 * <p>Implementations must treat the given problem as fatal,
-	 * i.e. they have to eventually raise an exception.
-	 * @param problem the source of the error (never {@code null})
-	 */
-	void fatal(Problem problem);
+    /**
+     * 在解析过程中遇到致命错误时调用。
+     * <p>实现类必须将给定的问题视为致命的，
+     * 即它们最终必须抛出一个异常。
+     * @param problem 错误的来源（从不为 {@code null}）
+     */
+    void fatal(Problem problem);
 
-	/**
-	 * Called when an error is encountered during the parsing process.
-	 * <p>Implementations may choose to treat errors as fatal.
-	 * @param problem the source of the error (never {@code null})
-	 */
-	void error(Problem problem);
+    /**
+     * 在解析过程中遇到错误时被调用。
+     * <p>实现者可以选择将错误视为致命的。
+     * @param problem 错误的来源（永远不会为 {@code null}）
+     */
+    void error(Problem problem);
 
-	/**
-	 * Called when a warning is raised during the parsing process.
-	 * <p>Warnings are <strong>never</strong> considered to be fatal.
-	 * @param problem the source of the warning (never {@code null})
-	 */
-	void warning(Problem problem);
-
+    /**
+     * 在解析过程中触发警告时调用。
+     * <p>警告<strong>永远</strong>不被视为致命。
+     * @param problem 警告的来源（从不为{@code null}）
+     */
+    void warning(Problem problem);
 }

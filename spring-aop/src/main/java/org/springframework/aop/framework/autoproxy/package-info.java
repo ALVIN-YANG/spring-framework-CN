@@ -1,13 +1,10 @@
+// 翻译完成 glm-4-flash
 /**
- * Bean post-processors for use in ApplicationContexts to simplify AOP usage
- * by automatically creating AOP proxies without the need to use a ProxyFactoryBean.
+ * 用于在ApplicationContext中使用的Bean后处理器，通过自动创建AOP代理来简化AOP的使用，无需使用ProxyFactoryBean。
  *
- * <p>The various post-processors in this package need only be added to an ApplicationContext
- * (typically in an XML bean definition document) to automatically proxy selected beans.
+ * <p>本包中的各种后处理器只需添加到ApplicationContext中（通常在XML bean定义文档中），就可以自动代理所选的Bean。
  *
- * <p><b>NB</b>: Automatic auto-proxying is not supported for BeanFactory implementations,
- * as post-processors beans are only automatically detected in application contexts.
- * Post-processors can be explicitly registered on a ConfigurableBeanFactory instead.
+ * <p><b>注意</b>：对于BeanFactory实现，不支持自动自动代理，因为后处理器Bean仅在应用程序上下文中自动检测。可以在ConfigurableBeanFactory上显式注册后处理器。
  */
 @NonNullApi
 @NonNullFields
@@ -15,3 +12,4 @@ package org.springframework.aop.framework.autoproxy;
 
 import org.springframework.lang.NonNullApi;
 import org.springframework.lang.NonNullFields;
+

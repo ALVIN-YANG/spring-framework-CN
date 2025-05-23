@@ -1,29 +1,23 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012，原作者或作者。
+*
+* 根据 Apache License 2.0（“许可证”）许可；
+* 除非遵守许可证规定，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件
+* 是“按原样”分发的，不提供任何形式的保证或条件，无论是明示的还是暗示的。
+* 请参阅许可证，了解具体管理许可权限和限制的语言。*/
 package org.springframework.aop.scope;
 
 import org.springframework.aop.RawTargetAccess;
 
 /**
- * An AOP introduction interface for scoped objects.
+ * AOP（面向切面编程）中用于作用域对象的引入接口。
  *
- * <p>Objects created from the {@link ScopedProxyFactoryBean} can be cast
- * to this interface, enabling access to the raw target object
- * and programmatic removal of the target object.
+ * <p>从{@link ScopedProxyFactoryBean}创建的对象可以转换为这个接口，从而能够访问原始目标对象，并能够以编程方式移除目标对象。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -32,22 +26,16 @@ import org.springframework.aop.RawTargetAccess;
  */
 public interface ScopedObject extends RawTargetAccess {
 
-	/**
-	 * Return the current target object behind this scoped object proxy,
-	 * in its raw form (as stored in the target scope).
-	 * <p>The raw target object can for example be passed to persistence
-	 * providers which would not be able to handle the scoped proxy object.
-	 * @return the current target object behind this scoped object proxy
-	 */
-	Object getTargetObject();
+    /**
+     * 返回此作用域对象代理背后的当前目标对象，以原始形式（如存储在目标作用域中）返回。
+     * <p>原始目标对象可以传递给无法处理作用域代理对象的持久化提供者。
+     * @return 此作用域对象代理背后的当前目标对象
+     */
+    Object getTargetObject();
 
-	/**
-	 * Remove this object from its target scope, for example from
-	 * the backing session.
-	 * <p>Note that no further calls may be made to the scoped object
-	 * afterwards (at least within the current thread, that is, with
-	 * the exact same target object in the target scope).
-	 */
-	void removeFromScope();
-
+    /**
+     * 从其目标作用域中移除此对象，例如从后端会话中移除。
+     * <p>注意，之后不再可以对作用域内的对象进行调用（至少在当前线程中如此，即目标作用域中的目标对象完全相同）。
+     */
+    void removeFromScope();
 }

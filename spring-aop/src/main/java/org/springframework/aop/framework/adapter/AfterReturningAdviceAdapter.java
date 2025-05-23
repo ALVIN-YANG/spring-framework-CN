@@ -1,32 +1,25 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2012 原作者或作者。
+ 
+根据Apache License, Version 2.0（“许可证”）许可；
+除非符合许可证规定，否则不得使用此文件。
+您可以在以下地址获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非法律规定或书面同意，否则在许可证下分发的软件按“现状”提供，
+不提供任何形式的质量保证或适用性保证，无论是明示的还是暗示的。
+有关权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.framework.adapter;
 
 import java.io.Serializable;
-
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.AfterReturningAdvice;
 
 /**
- * Adapter to enable {@link org.springframework.aop.AfterReturningAdvice}
- * to be used in the Spring AOP framework.
+ * 适配器，使 {@link org.springframework.aop.AfterReturningAdvice} 能够在 Spring AOP 框架中使用。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -34,15 +27,14 @@ import org.springframework.aop.AfterReturningAdvice;
 @SuppressWarnings("serial")
 class AfterReturningAdviceAdapter implements AdvisorAdapter, Serializable {
 
-	@Override
-	public boolean supportsAdvice(Advice advice) {
-		return (advice instanceof AfterReturningAdvice);
-	}
+    @Override
+    public boolean supportsAdvice(Advice advice) {
+        return (advice instanceof AfterReturningAdvice);
+    }
 
-	@Override
-	public MethodInterceptor getInterceptor(Advisor advisor) {
-		AfterReturningAdvice advice = (AfterReturningAdvice) advisor.getAdvice();
-		return new AfterReturningAdviceInterceptor(advice);
-	}
-
+    @Override
+    public MethodInterceptor getInterceptor(Advisor advisor) {
+        AfterReturningAdvice advice = (AfterReturningAdvice) advisor.getAdvice();
+        return new AfterReturningAdviceInterceptor(advice);
+    }
 }

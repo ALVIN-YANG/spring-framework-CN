@@ -1,31 +1,22 @@
-/*
- * Copyright 2002-2022 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2022 原作者或作者。
 
+根据Apache License 2.0许可（“许可证”）；除非遵守许可证，否则您不得使用此文件。
+您可以在以下链接获取许可证副本：
+https://www.apache.org/licenses/LICENSE-2.0
+
+除非法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，
+不提供任何形式（明示或暗示）的保证或条件。
+有关权限和限制的特定语言，请参阅许可证。*/
 package org.springframework.aop.framework.adapter;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 /**
- * BeanPostProcessor that registers {@link AdvisorAdapter} beans in the BeanFactory with
- * an {@link AdvisorAdapterRegistry} (by default the {@link GlobalAdvisorAdapterRegistry}).
+ * 一个BeanPostProcessor，用于在BeanFactory中注册带有AdvisorAdapterRegistry的beans（默认为GlobalAdvisorAdapterRegistry）。
  *
- * <p>The only requirement for it to work is that it needs to be defined
- * in application context along with "non-native" Spring AdvisorAdapters
- * that need to be "recognized" by Spring's AOP framework.
+ * <p>它要正常工作，唯一的要求是它需要定义在应用程序上下文中，并包含“非原生”的Spring AdvisorAdapters，这些Adapter需要被Spring的AOP框架“识别”。
  *
  * @author Dmitriy Kopylenko
  * @author Juergen Hoeller
@@ -35,30 +26,27 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  */
 public class AdvisorAdapterRegistrationManager implements BeanPostProcessor {
 
-	private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();
+    private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();
 
+    /**
+     * 指定 AdvisorAdapterRegistry 以注册 AdvisorAdapter 实例。
+     * 默认为全局 AdvisorAdapterRegistry。
+     * @see GlobalAdvisorAdapterRegistry
+     */
+    public void setAdvisorAdapterRegistry(AdvisorAdapterRegistry advisorAdapterRegistry) {
+        this.advisorAdapterRegistry = advisorAdapterRegistry;
+    }
 
-	/**
-	 * Specify the AdvisorAdapterRegistry to register AdvisorAdapter beans with.
-	 * Default is the global AdvisorAdapterRegistry.
-	 * @see GlobalAdvisorAdapterRegistry
-	 */
-	public void setAdvisorAdapterRegistry(AdvisorAdapterRegistry advisorAdapterRegistry) {
-		this.advisorAdapterRegistry = advisorAdapterRegistry;
-	}
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
 
-
-	@Override
-	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-		return bean;
-	}
-
-	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-		if (bean instanceof AdvisorAdapter advisorAdapter) {
-			this.advisorAdapterRegistry.registerAdvisorAdapter(advisorAdapter);
-		}
-		return bean;
-	}
-
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        if (bean instanceof AdvisorAdapter advisorAdapter) {
+            this.advisorAdapterRegistry.registerAdvisorAdapter(advisorAdapter);
+        }
+        return bean;
+    }
 }

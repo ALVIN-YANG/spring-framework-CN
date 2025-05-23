@@ -1,24 +1,19 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2023 原作者或作者。
+ 
+根据Apache License, Version 2.0 ("许可证")授权；
+除非遵守许可证，否则不得使用此文件。
+您可以在以下地址获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非适用法律要求或书面同意，否则在许可证下分发的软件按"原样"分发，
+不提供任何明示或暗示的保证或条件。
+有关许可权限和限制的特定语言，请参阅许可证。*/
 package org.springframework.aop.framework;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -27,181 +22,148 @@ import org.springframework.core.SmartClassLoader;
 import org.springframework.lang.Nullable;
 
 /**
- * Base class for {@link BeanPostProcessor} implementations that apply a
- * Spring AOP {@link Advisor} to specific beans.
+ * 为应用Spring AOP的{@link Advisor}到特定bean的{@link BeanPostProcessor}实现提供基类的基类。
  *
  * @author Juergen Hoeller
  * @since 3.2
  */
 @SuppressWarnings("serial")
-public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSupport
-		implements SmartInstantiationAwareBeanPostProcessor {
+public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSupport implements SmartInstantiationAwareBeanPostProcessor {
 
-	@Nullable
-	protected Advisor advisor;
+    @Nullable
+    protected Advisor advisor;
 
-	protected boolean beforeExistingAdvisors = false;
+    protected boolean beforeExistingAdvisors = false;
 
-	private final Map<Class<?>, Boolean> eligibleBeans = new ConcurrentHashMap<>(256);
+    private final Map<Class<?>, Boolean> eligibleBeans = new ConcurrentHashMap<>(256);
 
+    /**
+     * 设置是否在遇到预先建议的对象时，此后处理器建议器应该应用于现有建议器之前。
+     * <p>默认为"false"，即在现有建议器之后应用建议器，即尽可能接近目标方法。将此切换为"true"，
+     * 以便此后处理器的建议器也能包装现有建议器。
+     * <p>注意：请检查具体后处理器的javadoc，以了解它是否默认根据其建议器的性质更改此标志。
+     */
+    public void setBeforeExistingAdvisors(boolean beforeExistingAdvisors) {
+        this.beforeExistingAdvisors = beforeExistingAdvisors;
+    }
 
-	/**
-	 * Set whether this post-processor's advisor is supposed to apply before
-	 * existing advisors when encountering a pre-advised object.
-	 * <p>Default is "false", applying the advisor after existing advisors, i.e.
-	 * as close as possible to the target method. Switch this to "true" in order
-	 * for this post-processor's advisor to wrap existing advisors as well.
-	 * <p>Note: Check the concrete post-processor's javadoc whether it possibly
-	 * changes this flag by default, depending on the nature of its advisor.
-	 */
-	public void setBeforeExistingAdvisors(boolean beforeExistingAdvisors) {
-		this.beforeExistingAdvisors = beforeExistingAdvisors;
-	}
+    @Override
+    public Class<?> determineBeanType(Class<?> beanClass, String beanName) {
+        if (this.advisor != null && isEligible(beanClass)) {
+            ProxyFactory proxyFactory = new ProxyFactory();
+            proxyFactory.copyFrom(this);
+            proxyFactory.setTargetClass(beanClass);
+            if (!proxyFactory.isProxyTargetClass()) {
+                evaluateProxyInterfaces(beanClass, proxyFactory);
+            }
+            proxyFactory.addAdvisor(this.advisor);
+            customizeProxyFactory(proxyFactory);
+            // 如果被覆盖的类加载器中没有本地加载的bean类，则使用原始的ClassLoader。
+            ClassLoader classLoader = getProxyClassLoader();
+            if (classLoader instanceof SmartClassLoader smartClassLoader && classLoader != beanClass.getClassLoader()) {
+                classLoader = smartClassLoader.getOriginalClassLoader();
+            }
+            return proxyFactory.getProxyClass(classLoader);
+        }
+        return beanClass;
+    }
 
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
+        if (this.advisor == null || bean instanceof AopInfrastructureBean) {
+            // 忽略 AOP（面向切面编程）基础设施，例如作用域代理。
+            return bean;
+        }
+        if (bean instanceof Advised advised) {
+            if (!advised.isFrozen() && isEligible(AopUtils.getTargetClass(bean))) {
+                // 将我们的本地顾问（Advisor）添加到现有代理（proxy）的顾问链（Advisor chain）中。
+                if (this.beforeExistingAdvisors) {
+                    advised.addAdvisor(0, this.advisor);
+                } else if (advised.getTargetSource() == AdvisedSupport.EMPTY_TARGET_SOURCE && advised.getAdvisorCount() > 0) {
+                    // 没有目标，保持最后一位顾问的位置不变，并在其右侧添加新的顾问。
+                    advised.addAdvisor(advised.getAdvisorCount() - 1, this.advisor);
+                    return bean;
+                } else {
+                    advised.addAdvisor(this.advisor);
+                }
+                return bean;
+            }
+        }
+        if (isEligible(bean, beanName)) {
+            ProxyFactory proxyFactory = prepareProxyFactory(bean, beanName);
+            if (!proxyFactory.isProxyTargetClass()) {
+                evaluateProxyInterfaces(bean.getClass(), proxyFactory);
+            }
+            proxyFactory.addAdvisor(this.advisor);
+            customizeProxyFactory(proxyFactory);
+            // 如果被覆盖的类加载器中没有本地加载的bean类，则使用原始的ClassLoader。
+            ClassLoader classLoader = getProxyClassLoader();
+            if (classLoader instanceof SmartClassLoader smartClassLoader && classLoader != bean.getClass().getClassLoader()) {
+                classLoader = smartClassLoader.getOriginalClassLoader();
+            }
+            return proxyFactory.getProxy(classLoader);
+        }
+        // 无需代理。
+        return bean;
+    }
 
-	@Override
-	public Class<?> determineBeanType(Class<?> beanClass, String beanName) {
-		if (this.advisor != null && isEligible(beanClass)) {
-			ProxyFactory proxyFactory = new ProxyFactory();
-			proxyFactory.copyFrom(this);
-			proxyFactory.setTargetClass(beanClass);
+    /**
+     * 检查给定的bean是否适合使用此后处理器的{@link Advisor}进行咨询。
+     * <p>委托给{@link #isEligible(Class)}进行目标类的检查。
+     * 可以被覆盖，例如，可以通过名称特别排除某些bean。
+     * <p>注意：仅对常规bean实例进行调用，而不是对实现{@link Advised}并允许将本地{@link Advisor}添加到现有代理的{@link Advisor}链的现有代理实例进行调用。
+     * 对于后者，直接调用{@link #isEligible(Class)}，使用现有代理后面的实际目标类（由{@link AopUtils#getTargetClass(Object)}确定）。
+     * @param bean bean实例
+     * @param beanName bean的名称
+     * @see #isEligible(Class)
+     */
+    protected boolean isEligible(Object bean, String beanName) {
+        return isEligible(bean.getClass());
+    }
 
-			if (!proxyFactory.isProxyTargetClass()) {
-				evaluateProxyInterfaces(beanClass, proxyFactory);
-			}
-			proxyFactory.addAdvisor(this.advisor);
-			customizeProxyFactory(proxyFactory);
+    /**
+     * 检查给定的类是否适合使用此后处理器的 {@link Advisor} 进行建议。
+     * <p>实现缓存每个目标类上的 {@code canApply} 结果。
+     * @param targetClass 要检查的类
+     * @see AopUtils#canApply(Advisor, Class)
+     */
+    protected boolean isEligible(Class<?> targetClass) {
+        Boolean eligible = this.eligibleBeans.get(targetClass);
+        if (eligible != null) {
+            return eligible;
+        }
+        if (this.advisor == null) {
+            return false;
+        }
+        eligible = AopUtils.canApply(this.advisor, targetClass);
+        this.eligibleBeans.put(targetClass, eligible);
+        return eligible;
+    }
 
-			// Use original ClassLoader if bean class not locally loaded in overriding class loader
-			ClassLoader classLoader = getProxyClassLoader();
-			if (classLoader instanceof SmartClassLoader smartClassLoader &&
-					classLoader != beanClass.getClassLoader()) {
-				classLoader = smartClassLoader.getOriginalClassLoader();
-			}
-			return proxyFactory.getProxyClass(classLoader);
-		}
+    /**
+     * 为给定Bean准备一个 {@link ProxyFactory}。
+     * <p>子类可以自定义对目标实例的处理，特别是对目标类的暴露。默认情况下，非目标类代理将应用接口的反射，以及配置的顾问；之后，`#customizeProxyFactory` 允许在创建代理之前对这些部分进行晚期自定义。
+     * @param bean 要创建代理的Bean实例
+     * @param beanName 相应的Bean名称
+     * @return 初始化了此处理器 {@link ProxyConfig} 设置和指定Bean的 ProxyFactory
+     * @since 4.2.3
+     * @see #customizeProxyFactory
+     */
+    protected ProxyFactory prepareProxyFactory(Object bean, String beanName) {
+        ProxyFactory proxyFactory = new ProxyFactory();
+        proxyFactory.copyFrom(this);
+        proxyFactory.setTarget(bean);
+        return proxyFactory;
+    }
 
-		return beanClass;
-	}
-
-	@Override
-	public Object postProcessAfterInitialization(Object bean, String beanName) {
-		if (this.advisor == null || bean instanceof AopInfrastructureBean) {
-			// Ignore AOP infrastructure such as scoped proxies.
-			return bean;
-		}
-
-		if (bean instanceof Advised advised) {
-			if (!advised.isFrozen() && isEligible(AopUtils.getTargetClass(bean))) {
-				// Add our local Advisor to the existing proxy's Advisor chain.
-				if (this.beforeExistingAdvisors) {
-					advised.addAdvisor(0, this.advisor);
-				}
-				else if (advised.getTargetSource() == AdvisedSupport.EMPTY_TARGET_SOURCE &&
-						advised.getAdvisorCount() > 0) {
-					// No target, leave last Advisor in place and add new Advisor right before.
-					advised.addAdvisor(advised.getAdvisorCount() - 1, this.advisor);
-					return bean;
-				}
-				else {
-					advised.addAdvisor(this.advisor);
-				}
-				return bean;
-			}
-		}
-
-		if (isEligible(bean, beanName)) {
-			ProxyFactory proxyFactory = prepareProxyFactory(bean, beanName);
-			if (!proxyFactory.isProxyTargetClass()) {
-				evaluateProxyInterfaces(bean.getClass(), proxyFactory);
-			}
-			proxyFactory.addAdvisor(this.advisor);
-			customizeProxyFactory(proxyFactory);
-
-			// Use original ClassLoader if bean class not locally loaded in overriding class loader
-			ClassLoader classLoader = getProxyClassLoader();
-			if (classLoader instanceof SmartClassLoader smartClassLoader &&
-					classLoader != bean.getClass().getClassLoader()) {
-				classLoader = smartClassLoader.getOriginalClassLoader();
-			}
-			return proxyFactory.getProxy(classLoader);
-		}
-
-		// No proxy needed.
-		return bean;
-	}
-
-	/**
-	 * Check whether the given bean is eligible for advising with this
-	 * post-processor's {@link Advisor}.
-	 * <p>Delegates to {@link #isEligible(Class)} for target class checking.
-	 * Can be overridden e.g. to specifically exclude certain beans by name.
-	 * <p>Note: Only called for regular bean instances but not for existing
-	 * proxy instances which implement {@link Advised} and allow for adding
-	 * the local {@link Advisor} to the existing proxy's {@link Advisor} chain.
-	 * For the latter, {@link #isEligible(Class)} is being called directly,
-	 * with the actual target class behind the existing proxy (as determined
-	 * by {@link AopUtils#getTargetClass(Object)}).
-	 * @param bean the bean instance
-	 * @param beanName the name of the bean
-	 * @see #isEligible(Class)
-	 */
-	protected boolean isEligible(Object bean, String beanName) {
-		return isEligible(bean.getClass());
-	}
-
-	/**
-	 * Check whether the given class is eligible for advising with this
-	 * post-processor's {@link Advisor}.
-	 * <p>Implements caching of {@code canApply} results per bean target class.
-	 * @param targetClass the class to check against
-	 * @see AopUtils#canApply(Advisor, Class)
-	 */
-	protected boolean isEligible(Class<?> targetClass) {
-		Boolean eligible = this.eligibleBeans.get(targetClass);
-		if (eligible != null) {
-			return eligible;
-		}
-		if (this.advisor == null) {
-			return false;
-		}
-		eligible = AopUtils.canApply(this.advisor, targetClass);
-		this.eligibleBeans.put(targetClass, eligible);
-		return eligible;
-	}
-
-	/**
-	 * Prepare a {@link ProxyFactory} for the given bean.
-	 * <p>Subclasses may customize the handling of the target instance and in
-	 * particular the exposure of the target class. The default introspection
-	 * of interfaces for non-target-class proxies and the configured advisor
-	 * will be applied afterwards; {@link #customizeProxyFactory} allows for
-	 * late customizations of those parts right before proxy creation.
-	 * @param bean the bean instance to create a proxy for
-	 * @param beanName the corresponding bean name
-	 * @return the ProxyFactory, initialized with this processor's
-	 * {@link ProxyConfig} settings and the specified bean
-	 * @since 4.2.3
-	 * @see #customizeProxyFactory
-	 */
-	protected ProxyFactory prepareProxyFactory(Object bean, String beanName) {
-		ProxyFactory proxyFactory = new ProxyFactory();
-		proxyFactory.copyFrom(this);
-		proxyFactory.setTarget(bean);
-		return proxyFactory;
-	}
-
-	/**
-	 * Subclasses may choose to implement this: for example,
-	 * to change the interfaces exposed.
-	 * <p>The default implementation is empty.
-	 * @param proxyFactory the ProxyFactory that is already configured with
-	 * target, advisor and interfaces and will be used to create the proxy
-	 * immediately after this method returns
-	 * @since 4.2.3
-	 * @see #prepareProxyFactory
-	 */
-	protected void customizeProxyFactory(ProxyFactory proxyFactory) {
-	}
-
+    /**
+     * 子类可以选择实现此方法：例如，
+     * 用于更改公开的接口。
+     * <p>默认实现为空。
+     * @param proxyFactory 已配置了目标、顾问和接口的 ProxyFactory，将在此方法返回后立即使用它来创建代理
+     * @since 4.2.3
+     * @see #prepareProxyFactory
+     */
+    protected void customizeProxyFactory(ProxyFactory proxyFactory) {
+    }
 }

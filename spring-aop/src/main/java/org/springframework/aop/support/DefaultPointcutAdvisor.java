@@ -1,34 +1,24 @@
-/*
- * Copyright 2002-2017 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2017 原作者或作者们。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体管理许可权限和限制的语言。*/
 package org.springframework.aop.support;
 
 import java.io.Serializable;
-
 import org.aopalliance.aop.Advice;
-
 import org.springframework.aop.Pointcut;
 import org.springframework.lang.Nullable;
 
 /**
- * Convenient Pointcut-driven Advisor implementation.
+ * 方便的切点驱动型顾问实现。
  *
- * <p>This is the most commonly used Advisor implementation. It can be used
- * with any pointcut and advice type, except for introductions. There is
- * normally no need to subclass this class, or to implement custom Advisors.
+ * 这是最常用的顾问实现方式。它可以与任何切点和建议类型一起使用，除了引入（introductions）。通常不需要子类化这个类，或者实现自定义的顾问。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -38,55 +28,51 @@ import org.springframework.lang.Nullable;
 @SuppressWarnings("serial")
 public class DefaultPointcutAdvisor extends AbstractGenericPointcutAdvisor implements Serializable {
 
-	private Pointcut pointcut = Pointcut.TRUE;
+    private Pointcut pointcut = Pointcut.TRUE;
 
+    /**
+     * 创建一个空的 DefaultPointcutAdvisor。
+     * <p>在使用setter方法之前必须设置通知。
+     * 通常也会设置切入点，但默认为 {@code Pointcut.TRUE}。
+     */
+    public DefaultPointcutAdvisor() {
+    }
 
-	/**
-	 * Create an empty DefaultPointcutAdvisor.
-	 * <p>Advice must be set before using setter methods.
-	 * Pointcut will normally be set also, but defaults to {@code Pointcut.TRUE}.
-	 */
-	public DefaultPointcutAdvisor() {
-	}
+    /**
+     * 创建一个匹配所有方法的 DefaultPointcutAdvisor。
+     * <p>将使用 {@code Pointcut.TRUE} 作为切入点。
+     * @param advice 要使用的通知（Advice）
+     */
+    public DefaultPointcutAdvisor(Advice advice) {
+        this(Pointcut.TRUE, advice);
+    }
 
-	/**
-	 * Create a DefaultPointcutAdvisor that matches all methods.
-	 * <p>{@code Pointcut.TRUE} will be used as Pointcut.
-	 * @param advice the Advice to use
-	 */
-	public DefaultPointcutAdvisor(Advice advice) {
-		this(Pointcut.TRUE, advice);
-	}
+    /**
+     * 创建一个 DefaultPointcutAdvisor，指定 Pointcut 和 Advice。
+     * @param pointcut 目标 Advice 的 Pointcut
+     * @param advice 当 Pointcut 匹配时运行的 Advice
+     */
+    public DefaultPointcutAdvisor(Pointcut pointcut, Advice advice) {
+        this.pointcut = pointcut;
+        setAdvice(advice);
+    }
 
-	/**
-	 * Create a DefaultPointcutAdvisor, specifying Pointcut and Advice.
-	 * @param pointcut the Pointcut targeting the Advice
-	 * @param advice the Advice to run when Pointcut matches
-	 */
-	public DefaultPointcutAdvisor(Pointcut pointcut, Advice advice) {
-		this.pointcut = pointcut;
-		setAdvice(advice);
-	}
+    /**
+     * 指定目标通知（Advice）的切入点。
+     * <p>默认值为 {@code Pointcut.TRUE}。
+     * @see #setAdvice
+     */
+    public void setPointcut(@Nullable Pointcut pointcut) {
+        this.pointcut = (pointcut != null ? pointcut : Pointcut.TRUE);
+    }
 
+    @Override
+    public Pointcut getPointcut() {
+        return this.pointcut;
+    }
 
-	/**
-	 * Specify the pointcut targeting the advice.
-	 * <p>Default is {@code Pointcut.TRUE}.
-	 * @see #setAdvice
-	 */
-	public void setPointcut(@Nullable Pointcut pointcut) {
-		this.pointcut = (pointcut != null ? pointcut : Pointcut.TRUE);
-	}
-
-	@Override
-	public Pointcut getPointcut() {
-		return this.pointcut;
-	}
-
-
-	@Override
-	public String toString() {
-		return getClass().getName() + ": pointcut [" + getPointcut() + "]; advice [" + getAdvice() + "]";
-	}
-
+    @Override
+    public String toString() {
+        return getClass().getName() + ": pointcut [" + getPointcut() + "]; advice [" + getAdvice() + "]";
+    }
 }

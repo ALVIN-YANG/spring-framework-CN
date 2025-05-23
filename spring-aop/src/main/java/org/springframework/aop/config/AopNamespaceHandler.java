@@ -1,19 +1,13 @@
-/*
- * Copyright 2002-2020 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2020 原作者或作者们。
+*
+* 根据 Apache License 2.0（“许可证”），除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下链接处获得许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，
+* 不提供任何明示或暗示的保证或条件。有关权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.config;
 
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
@@ -21,22 +15,16 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
- * {@code NamespaceHandler} for the {@code aop} namespace.
+ * 用于 {@code aop} 命名空间的 {@code NamespaceHandler}。
  *
- * <p>Provides a {@link org.springframework.beans.factory.xml.BeanDefinitionParser} for the
- * {@code <aop:config>} tag. A {@code config} tag can include nested
- * {@code pointcut}, {@code advisor} and {@code aspect} tags.
+ * <p>提供用于解析 {@code <aop:config>} 标签的 {@link org.springframework.beans.factory.xml.BeanDefinitionParser}。一个配置标签可以包含嵌套的 {@code pointcut}、{@code advisor} 和 {@code aspect} 标签。
  *
- * <p>The {@code pointcut} tag allows for creation of named
- * {@link AspectJExpressionPointcut} beans using a simple syntax:
+ * <p>使用 {@code pointcut} 标签可以创建名为的 {@link AspectJExpressionPointcut} 实例，并使用简单的语法：
  * <pre class="code">
  * &lt;aop:pointcut id=&quot;getNameCalls&quot; expression=&quot;execution(* *..ITestBean.getName(..))&quot;/&gt;
  * </pre>
  *
- * <p>Using the {@code advisor} tag you can configure an {@link org.springframework.aop.Advisor}
- * and have it applied to all relevant beans in you {@link org.springframework.beans.factory.BeanFactory}
- * automatically. The {@code advisor} tag supports both in-line and referenced
- * {@link org.springframework.aop.Pointcut Pointcuts}:
+ * <p>通过使用 {@code advisor} 标签，您可以配置一个 {@link org.springframework.aop.Advisor} 并自动将其应用于您的 {@link org.springframework.beans.factory.BeanFactory} 中所有相关的 bean。该标签支持内联和引用的 {@link org.springframework.aop.Pointcut}：
  *
  * <pre class="code">
  * &lt;aop:advisor id=&quot;getAgeAdvisor&quot;
@@ -54,20 +42,17 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  */
 public class AopNamespaceHandler extends NamespaceHandlerSupport {
 
-	/**
-	 * Register the {@link BeanDefinitionParser BeanDefinitionParsers} for the
-	 * '{@code config}', '{@code spring-configured}', '{@code aspectj-autoproxy}'
-	 * and '{@code scoped-proxy}' tags.
-	 */
-	@Override
-	public void init() {
-		// In 2.0 XSD as well as in 2.5+ XSDs
-		registerBeanDefinitionParser("config", new ConfigBeanDefinitionParser());
-		registerBeanDefinitionParser("aspectj-autoproxy", new AspectJAutoProxyBeanDefinitionParser());
-		registerBeanDefinitionDecorator("scoped-proxy", new ScopedProxyBeanDefinitionDecorator());
-
-		// Only in 2.0 XSD: moved to context namespace in 2.5+
-		registerBeanDefinitionParser("spring-configured", new SpringConfiguredBeanDefinitionParser());
-	}
-
+    /**
+     * 注册 '{@code config}'、'@{code spring-configured}'、'@{code aspectj-autoproxy}'
+     * 和 '{@code scoped-proxy}' 标签的 {@link BeanDefinitionParser BeanDefinitionParsers}。
+     */
+    @Override
+    public void init() {
+        // 在 2.0 XSD 以及 2.5+ XSD 中
+        registerBeanDefinitionParser("config", new ConfigBeanDefinitionParser());
+        registerBeanDefinitionParser("aspectj-autoproxy", new AspectJAutoProxyBeanDefinitionParser());
+        registerBeanDefinitionDecorator("scoped-proxy", new ScopedProxyBeanDefinitionDecorator());
+        // 仅在 2.0 XSD 中：在 2.5+ 中移动到上下文命名空间
+        registerBeanDefinitionParser("spring-configured", new SpringConfiguredBeanDefinitionParser());
+    }
 }

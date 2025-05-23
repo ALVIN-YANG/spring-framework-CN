@@ -1,19 +1,13 @@
-/*
- * Copyright 2002-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2016，原作者或作者。
+*
+* 根据 Apache License，版本 2.0（“许可证”），除非适用法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件按“原样”提供，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.aop.aspectj.annotation;
 
 import org.springframework.aop.aspectj.SimpleAspectInstanceFactory;
@@ -21,43 +15,37 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.OrderUtils;
 
 /**
- * Implementation of {@link MetadataAwareAspectInstanceFactory} that
- * creates a new instance of the specified aspect class for every
- * {@link #getAspectInstance()} call.
+ *  实现{@link MetadataAwareAspectInstanceFactory}，该实现为每次调用{@link #getAspectInstance()}创建指定切面类的新实例。
  *
  * @author Juergen Hoeller
  * @since 2.0.4
  */
-public class SimpleMetadataAwareAspectInstanceFactory extends SimpleAspectInstanceFactory
-		implements MetadataAwareAspectInstanceFactory {
+public class SimpleMetadataAwareAspectInstanceFactory extends SimpleAspectInstanceFactory implements MetadataAwareAspectInstanceFactory {
 
-	private final AspectMetadata metadata;
+    private final AspectMetadata metadata;
 
+    /**
+     * 为给定的切面类创建一个新的 SimpleMetadataAwareAspectInstanceFactory。
+     * @param aspectClass 切面类
+     * @param aspectName 切面名称
+     */
+    public SimpleMetadataAwareAspectInstanceFactory(Class<?> aspectClass, String aspectName) {
+        super(aspectClass);
+        this.metadata = new AspectMetadata(aspectClass, aspectName);
+    }
 
-	/**
-	 * Create a new SimpleMetadataAwareAspectInstanceFactory for the given aspect class.
-	 * @param aspectClass the aspect class
-	 * @param aspectName the aspect name
-	 */
-	public SimpleMetadataAwareAspectInstanceFactory(Class<?> aspectClass, String aspectName) {
-		super(aspectClass);
-		this.metadata = new AspectMetadata(aspectClass, aspectName);
-	}
+    @Override
+    public final AspectMetadata getAspectMetadata() {
+        return this.metadata;
+    }
 
+    @Override
+    public Object getAspectCreationMutex() {
+        return this;
+    }
 
-	@Override
-	public final AspectMetadata getAspectMetadata() {
-		return this.metadata;
-	}
-
-	@Override
-	public Object getAspectCreationMutex() {
-		return this;
-	}
-
-	@Override
-	protected int getOrderForAspectClass(Class<?> aspectClass) {
-		return OrderUtils.getOrder(aspectClass, Ordered.LOWEST_PRECEDENCE);
-	}
-
+    @Override
+    protected int getOrderForAspectClass(Class<?> aspectClass) {
+        return OrderUtils.getOrder(aspectClass, Ordered.LOWEST_PRECEDENCE);
+    }
 }

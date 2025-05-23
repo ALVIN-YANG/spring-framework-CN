@@ -1,31 +1,21 @@
-/*
- * Copyright 2002-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2016，原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可协议”）许可，除非适用法律要求或经书面同意，否则您不得使用此文件。
+* 您可以在以下链接获取许可协议的副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可协议下分发的软件按“原样”分发，不提供任何明示或暗示的保证或条件。
+* 请参阅许可协议了解具体管理权限和限制的内容。*/
 package org.aopalliance.intercept;
 
 import javax.annotation.Nonnull;
 
 /**
- * Intercepts the construction of a new object.
+ * 拦截新对象的构造过程。
  *
- * <p>The user should implement the {@link
- * #construct(ConstructorInvocation)} method to modify the original
- * behavior. E.g. the following class implements a singleton
- * interceptor (allows only one unique instance for the intercepted
- * class):
+ * <p>用户应实现 {@link #construct(ConstructorInvocation)} 方法来修改原始行为。例如，以下类实现了一个单例拦截器（只允许被拦截类的唯一实例）：
  *
  * <pre class=code>
  * class DebuggingInterceptor implements ConstructorInterceptor {
@@ -35,7 +25,7 @@ import javax.annotation.Nonnull;
  *     if(instance==null) {
  *       return instance=i.proceed();
  *     } else {
- *       throw new Exception("singleton does not allow multiple instance");
+ *       throw new Exception("singleton does not allow multiple instances");
  *     }
  *   }
  * }
@@ -43,20 +33,14 @@ import javax.annotation.Nonnull;
  *
  * @author Rod Johnson
  */
-public interface ConstructorInterceptor extends Interceptor  {
+public interface ConstructorInterceptor extends Interceptor {
 
-	/**
-	 * Implement this method to perform extra treatments before and
-	 * after the construction of a new object. Polite implementations
-	 * would certainly like to invoke {@link Joinpoint#proceed()}.
-	 * @param invocation the construction joinpoint
-	 * @return the newly created object, which is also the result of
-	 * the call to {@link Joinpoint#proceed()}; might be replaced by
-	 * the interceptor
-	 * @throws Throwable if the interceptors or the target object
-	 * throws an exception
-	 */
-	@Nonnull
-	Object construct(ConstructorInvocation invocation) throws Throwable;
-
+    /**
+     * 实现此方法以在新建对象构造前后执行额外处理。礼貌的实现当然会调用{@link Joinpoint#proceed()}。
+     * @param invocation 构造连接点
+     * @return 新创建的对象，也是调用{@link Joinpoint#proceed()}的结果；可能被拦截器替换
+     * @throws Throwable 如果拦截器或目标对象抛出异常
+     */
+    @Nonnull
+    Object construct(ConstructorInvocation invocation) throws Throwable;
 }

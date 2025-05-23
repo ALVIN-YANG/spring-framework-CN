@@ -1,33 +1,22 @@
-/*
- * Copyright 2002-2020 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2020 原作者或作者。
+ 
+根据Apache License，版本2.0（以下简称“许可证”）许可；除非遵守许可证，否则您不得使用此文件。
+您可以在以下链接获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”分发，不提供任何明示或暗示的保证或条件。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.interceptor;
 
 import org.aopalliance.intercept.MethodInvocation;
-
 import org.springframework.lang.Nullable;
 
 /**
- * AOP Alliance {@code MethodInterceptor} that can be introduced in a chain
- * to display verbose information about intercepted invocations to the logger.
+ * AOP Alliance 的 {@code MethodInterceptor}，可以被引入到链中，向日志记录器显示拦截调用时的详细信息。
  *
- * <p>Logs full invocation details on method entry and method exit,
- * including invocation arguments and invocation count. This is only
- * intended for debugging purposes; use {@code SimpleTraceInterceptor}
- * or {@code CustomizableTraceInterceptor} for pure tracing purposes.
+ * <p>在方法进入和退出时记录完整的调用细节，包括调用参数和调用次数。这仅适用于调试目的；使用 {@code SimpleTraceInterceptor} 或 {@code CustomizableTraceInterceptor} 进行纯跟踪。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -37,53 +26,48 @@ import org.springframework.lang.Nullable;
 @SuppressWarnings("serial")
 public class DebugInterceptor extends SimpleTraceInterceptor {
 
-	private volatile long count;
+    private volatile long count;
 
+    /**
+     * 创建一个新的 DebugInterceptor，并使用静态日志记录器。
+     */
+    public DebugInterceptor() {
+    }
 
-	/**
-	 * Create a new DebugInterceptor with a static logger.
-	 */
-	public DebugInterceptor() {
-	}
+    /**
+     * 根据给定的标志创建一个新的 DebugInterceptor，使用动态或静态日志记录器。
+     * @param useDynamicLogger 是否使用动态日志记录器或静态日志记录器
+     * @see #setUseDynamicLogger
+     */
+    public DebugInterceptor(boolean useDynamicLogger) {
+        setUseDynamicLogger(useDynamicLogger);
+    }
 
-	/**
-	 * Create a new DebugInterceptor with dynamic or static logger,
-	 * according to the given flag.
-	 * @param useDynamicLogger whether to use a dynamic logger or a static logger
-	 * @see #setUseDynamicLogger
-	 */
-	public DebugInterceptor(boolean useDynamicLogger) {
-		setUseDynamicLogger(useDynamicLogger);
-	}
+    @Override
+    @Nullable
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+        synchronized (this) {
+            this.count++;
+        }
+        return super.invoke(invocation);
+    }
 
+    @Override
+    protected String getInvocationDescription(MethodInvocation invocation) {
+        return invocation + "; count=" + this.count;
+    }
 
-	@Override
-	@Nullable
-	public Object invoke(MethodInvocation invocation) throws Throwable {
-		synchronized (this) {
-			this.count++;
-		}
-		return super.invoke(invocation);
-	}
+    /**
+     * 返回此拦截器被调用的次数。
+     */
+    public long getCount() {
+        return this.count;
+    }
 
-	@Override
-	protected String getInvocationDescription(MethodInvocation invocation) {
-		return invocation + "; count=" + this.count;
-	}
-
-
-	/**
-	 * Return the number of times this interceptor has been invoked.
-	 */
-	public long getCount() {
-		return this.count;
-	}
-
-	/**
-	 * Reset the invocation count to zero.
-	 */
-	public synchronized void resetCount() {
-		this.count = 0;
-	}
-
+    /**
+     * 将调用次数重置为零。
+     */
+    public synchronized void resetCount() {
+        this.count = 0;
+    }
 }

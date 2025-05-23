@@ -1,13 +1,12 @@
+// 翻译完成 glm-4-flash
 /**
- * SPI package allowing Spring AOP framework to handle arbitrary advice types.
+ * SPI（服务提供者接口）包，允许Spring AOP框架处理任意类型的建议。
  *
- * <p>Users who want merely to <i>use</i> the Spring AOP framework, rather than extend
- * its capabilities, don't need to concern themselves with this package.
+ * <p>那些只想<i>使用</i>Spring AOP框架而不是扩展其功能的用户，不需要关心这个包。
  *
- * <p>You may wish to use these adapters to wrap Spring-specific advices, such as MethodBeforeAdvice,
- * in MethodInterceptor, to allow their use in another AOP framework supporting the AOP Alliance interfaces.
+ * <p>您可能希望使用这些适配器来将Spring特定的建议（如MethodBeforeAdvice）包装在MethodInterceptor中，以便在其他支持AOP Alliance接口的AOP框架中使用。
  *
- * <p>These adapters do not depend on any other Spring framework classes to allow such usage.
+ * <p>这些适配器不依赖于任何其他Spring框架类，以允许这种使用。
  */
 @NonNullApi
 @NonNullFields
@@ -15,3 +14,4 @@ package org.springframework.aop.framework.adapter;
 
 import org.springframework.lang.NonNullApi;
 import org.springframework.lang.NonNullFields;
+

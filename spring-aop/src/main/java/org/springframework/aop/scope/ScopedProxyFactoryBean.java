@@ -1,23 +1,18 @@
-/*
- * Copyright 2002-2021 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2021 原作者或原作者。
+*
+* 根据 Apache License, Version 2.0 ("许可证") 进行许可；
+* 除非遵守许可证，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，
+* 不提供任何明示或暗示的保证或条件，包括但不限于适销性、适用于特定目的或非侵权性。
+* 请参阅许可证，了解具体规定许可权限和限制。*/
 package org.springframework.aop.scope;
 
 import java.lang.reflect.Modifier;
-
 import org.springframework.aop.framework.AopInfrastructureBean;
 import org.springframework.aop.framework.ProxyConfig;
 import org.springframework.aop.framework.ProxyFactory;
@@ -33,18 +28,13 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 /**
- * Convenient proxy factory bean for scoped objects.
+ * 用于范围对象的便捷代理工厂Bean。
  *
- * <p>Proxies created using this factory bean are thread-safe singletons
- * and may be injected into shared objects, with transparent scoping behavior.
+ * <p>使用此工厂Bean创建的代理是线程安全的单例，并且可以注入到共享对象中，具有透明的范围行为。
  *
- * <p>Proxies returned by this class implement the {@link ScopedObject} interface.
- * This presently allows for removing the corresponding object from the scope,
- * seamlessly creating a new instance in the scope on next access.
+ * <p>此类返回的代理实现了{@link ScopedObject}接口。这目前允许在访问时无缝地从范围中删除相应的对象，并在下次访问时在范围中创建一个新的实例。
  *
- * <p>Please note that the proxies created by this factory are
- * <i>class-based</i> proxies by default. This can be customized
- * through switching the "proxyTargetClass" property to "false".
+ * <p>请注意，此工厂创建的代理默认是<i>基于类的</i>代理。这可以通过将"proxyTargetClass"属性切换为"false"来自定义。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -52,89 +42,84 @@ import org.springframework.util.ClassUtils;
  * @see #setProxyTargetClass
  */
 @SuppressWarnings("serial")
-public class ScopedProxyFactoryBean extends ProxyConfig
-		implements FactoryBean<Object>, BeanFactoryAware, AopInfrastructureBean {
+public class ScopedProxyFactoryBean extends ProxyConfig implements FactoryBean<Object>, BeanFactoryAware, AopInfrastructureBean {
 
-	/** The TargetSource that manages scoping. */
-	private final SimpleBeanTargetSource scopedTargetSource = new SimpleBeanTargetSource();
+    /**
+     * 管理作用域的 TargetSource。
+     */
+    private final SimpleBeanTargetSource scopedTargetSource = new SimpleBeanTargetSource();
 
-	/** The name of the target bean. */
-	@Nullable
-	private String targetBeanName;
+    /**
+     * 目标 Bean 的名称。
+     */
+    @Nullable
+    private String targetBeanName;
 
-	/** The cached singleton proxy. */
-	@Nullable
-	private Object proxy;
+    /**
+     * 缓存的单例代理。
+     */
+    @Nullable
+    private Object proxy;
 
+    /**
+     * 创建一个新的ScopedProxyFactoryBean实例。
+     */
+    public ScopedProxyFactoryBean() {
+        setProxyTargetClass(true);
+    }
 
-	/**
-	 * Create a new ScopedProxyFactoryBean instance.
-	 */
-	public ScopedProxyFactoryBean() {
-		setProxyTargetClass(true);
-	}
+    /**
+     * 设置要设置作用域的bean的名称。
+     */
+    public void setTargetBeanName(String targetBeanName) {
+        this.targetBeanName = targetBeanName;
+        this.scopedTargetSource.setTargetBeanName(targetBeanName);
+    }
 
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) {
+        if (!(beanFactory instanceof ConfigurableBeanFactory cbf)) {
+            throw new IllegalStateException("Not running in a ConfigurableBeanFactory: " + beanFactory);
+        }
+        this.scopedTargetSource.setBeanFactory(beanFactory);
+        ProxyFactory pf = new ProxyFactory();
+        pf.copyFrom(this);
+        pf.setTargetSource(this.scopedTargetSource);
+        Assert.notNull(this.targetBeanName, "Property 'targetBeanName' is required");
+        Class<?> beanType = beanFactory.getType(this.targetBeanName);
+        if (beanType == null) {
+            throw new IllegalStateException("Cannot create scoped proxy for bean '" + this.targetBeanName + "': Target type could not be determined at the time of proxy creation.");
+        }
+        if (!isProxyTargetClass() || beanType.isInterface() || Modifier.isPrivate(beanType.getModifiers())) {
+            pf.setInterfaces(ClassUtils.getAllInterfacesForClass(beanType, cbf.getBeanClassLoader()));
+        }
+        // 添加一个只实现ScopedObject上方法的介绍。
+        ScopedObject scopedObject = new DefaultScopedObject(cbf, this.scopedTargetSource.getTargetBeanName());
+        pf.addAdvice(new DelegatingIntroductionInterceptor(scopedObject));
+        // 将 AopInfrastructureBean 标记添加到表示作用域代理
+        // 它自身不受自动代理的影响！只有它的目标 Bean 才会。
+        pf.addInterface(AopInfrastructureBean.class);
+        this.proxy = pf.getProxy(cbf.getBeanClassLoader());
+    }
 
-	/**
-	 * Set the name of the bean that is to be scoped.
-	 */
-	public void setTargetBeanName(String targetBeanName) {
-		this.targetBeanName = targetBeanName;
-		this.scopedTargetSource.setTargetBeanName(targetBeanName);
-	}
+    @Override
+    public Object getObject() {
+        if (this.proxy == null) {
+            throw new FactoryBeanNotInitializedException();
+        }
+        return this.proxy;
+    }
 
-	@Override
-	public void setBeanFactory(BeanFactory beanFactory) {
-		if (!(beanFactory instanceof ConfigurableBeanFactory cbf)) {
-			throw new IllegalStateException("Not running in a ConfigurableBeanFactory: " + beanFactory);
-		}
-		this.scopedTargetSource.setBeanFactory(beanFactory);
+    @Override
+    public Class<?> getObjectType() {
+        if (this.proxy != null) {
+            return this.proxy.getClass();
+        }
+        return this.scopedTargetSource.getTargetClass();
+    }
 
-		ProxyFactory pf = new ProxyFactory();
-		pf.copyFrom(this);
-		pf.setTargetSource(this.scopedTargetSource);
-
-		Assert.notNull(this.targetBeanName, "Property 'targetBeanName' is required");
-		Class<?> beanType = beanFactory.getType(this.targetBeanName);
-		if (beanType == null) {
-			throw new IllegalStateException("Cannot create scoped proxy for bean '" + this.targetBeanName +
-					"': Target type could not be determined at the time of proxy creation.");
-		}
-		if (!isProxyTargetClass() || beanType.isInterface() || Modifier.isPrivate(beanType.getModifiers())) {
-			pf.setInterfaces(ClassUtils.getAllInterfacesForClass(beanType, cbf.getBeanClassLoader()));
-		}
-
-		// Add an introduction that implements only the methods on ScopedObject.
-		ScopedObject scopedObject = new DefaultScopedObject(cbf, this.scopedTargetSource.getTargetBeanName());
-		pf.addAdvice(new DelegatingIntroductionInterceptor(scopedObject));
-
-		// Add the AopInfrastructureBean marker to indicate that the scoped proxy
-		// itself is not subject to auto-proxying! Only its target bean is.
-		pf.addInterface(AopInfrastructureBean.class);
-
-		this.proxy = pf.getProxy(cbf.getBeanClassLoader());
-	}
-
-
-	@Override
-	public Object getObject() {
-		if (this.proxy == null) {
-			throw new FactoryBeanNotInitializedException();
-		}
-		return this.proxy;
-	}
-
-	@Override
-	public Class<?> getObjectType() {
-		if (this.proxy != null) {
-			return this.proxy.getClass();
-		}
-		return this.scopedTargetSource.getTargetClass();
-	}
-
-	@Override
-	public boolean isSingleton() {
-		return true;
-	}
-
+    @Override
+    public boolean isSingleton() {
+        return true;
+    }
 }

@@ -1,109 +1,89 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2018 原作者或作者。
 
+根据Apache License, Version 2.0（以下简称“许可证”）许可；除非符合许可证规定，否则不得使用此文件。
+您可以在以下链接获取许可证副本：
+https://www.apache.org/licenses/LICENSE-2.0
+
+除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”提供，不提供任何明示或暗示的保证或条件。
+有关许可权限和限制的特定语言，请参阅许可证。*/
 package org.springframework.aop.framework.autoproxy;
 
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.lang.Nullable;
 
 /**
- * {@code BeanPostProcessor} implementation that creates AOP proxies based on all
- * candidate {@code Advisor}s in the current {@code BeanFactory}. This class is
- * completely generic; it contains no special code to handle any particular aspects,
- * such as pooling aspects.
+ *  {@code BeanPostProcessor} 实现类，它基于当前 {@code BeanFactory} 中所有候选的 {@code Advisor} 创建 AOP 代理。此类完全通用；它不包含处理特定方面的特殊代码，例如处理池化方面。
  *
- * <p>It's possible to filter out advisors - for example, to use multiple post processors
- * of this type in the same factory - by setting the {@code usePrefix} property to true,
- * in which case only advisors beginning with the DefaultAdvisorAutoProxyCreator's bean
- * name followed by a dot (like "aapc.") will be used. This default prefix can be changed
- * from the bean name by setting the {@code advisorBeanNamePrefix} property.
- * The separator (.) will also be used in this case.
+ * <p>可以通过设置 {@code usePrefix} 属性为 true 来过滤掉顾问 - 例如，在同一个工厂中使用多个此类后处理器 - 在这种情况下，只有以 DefaultAdvisorAutoProxyCreator 的 bean 名称后跟一个点（如 "aapc."）开头的顾问将被使用。可以通过设置 {@code advisorBeanNamePrefix} 属性来改变这个默认前缀。在这种情况下，也将使用分隔符（.）。
  *
- * @author Rod Johnson
- * @author Rob Harrop
+ * @作者 Rod Johnson
+ * @作者 Rob Harrop
  */
 @SuppressWarnings("serial")
 public class DefaultAdvisorAutoProxyCreator extends AbstractAdvisorAutoProxyCreator implements BeanNameAware {
 
-	/** Separator between prefix and remainder of bean name. */
-	public static final String SEPARATOR = ".";
+    /**
+     * 前缀与 Bean 名称剩余部分之间的分隔符。
+     */
+    public static final String SEPARATOR = ".";
 
+    private boolean usePrefix = false;
 
-	private boolean usePrefix = false;
+    @Nullable
+    private String advisorBeanNamePrefix;
 
-	@Nullable
-	private String advisorBeanNamePrefix;
+    /**
+     * 设置是否仅包括具有特定前缀的顾问类（Advisor）在Bean名称中。
+     * <p>默认值为{@code false}，包括所有类型的{@code Advisor} Bean。
+     * @see #setAdvisorBeanNamePrefix
+     */
+    public void setUsePrefix(boolean usePrefix) {
+        this.usePrefix = usePrefix;
+    }
 
+    /**
+     * 返回是否仅包含具有特定前缀的bean名称的顾问。
+     */
+    public boolean isUsePrefix() {
+        return this.usePrefix;
+    }
 
-	/**
-	 * Set whether to only include advisors with a certain prefix in the bean name.
-	 * <p>Default is {@code false}, including all beans of type {@code Advisor}.
-	 * @see #setAdvisorBeanNamePrefix
-	 */
-	public void setUsePrefix(boolean usePrefix) {
-		this.usePrefix = usePrefix;
-	}
+    /**
+     * 设置用于自动代理的 bean 名称前缀。此前缀应设置以避免循环引用。默认值为该对象 bean 名称加一个点。
+     * @param advisorBeanNamePrefix 排除前缀
+     */
+    public void setAdvisorBeanNamePrefix(@Nullable String advisorBeanNamePrefix) {
+        this.advisorBeanNamePrefix = advisorBeanNamePrefix;
+    }
 
-	/**
-	 * Return whether to only include advisors with a certain prefix in the bean name.
-	 */
-	public boolean isUsePrefix() {
-		return this.usePrefix;
-	}
+    /**
+     * 返回将导致它们被包含以供此对象自动代理的bean名称前缀。
+     */
+    @Nullable
+    public String getAdvisorBeanNamePrefix() {
+        return this.advisorBeanNamePrefix;
+    }
 
-	/**
-	 * Set the prefix for bean names that will cause them to be included for
-	 * auto-proxying by this object. This prefix should be set to avoid circular
-	 * references. Default value is the bean name of this object + a dot.
-	 * @param advisorBeanNamePrefix the exclusion prefix
-	 */
-	public void setAdvisorBeanNamePrefix(@Nullable String advisorBeanNamePrefix) {
-		this.advisorBeanNamePrefix = advisorBeanNamePrefix;
-	}
+    @Override
+    public void setBeanName(String name) {
+        // 如果尚未设置基础设施bean名称前缀，则覆盖它。
+        if (this.advisorBeanNamePrefix == null) {
+            this.advisorBeanNamePrefix = name + SEPARATOR;
+        }
+    }
 
-	/**
-	 * Return the prefix for bean names that will cause them to be included
-	 * for auto-proxying by this object.
-	 */
-	@Nullable
-	public String getAdvisorBeanNamePrefix() {
-		return this.advisorBeanNamePrefix;
-	}
-
-	@Override
-	public void setBeanName(String name) {
-		// If no infrastructure bean name prefix has been set, override it.
-		if (this.advisorBeanNamePrefix == null) {
-			this.advisorBeanNamePrefix = name + SEPARATOR;
-		}
-	}
-
-
-	/**
-	 * Consider {@code Advisor} beans with the specified prefix as eligible, if activated.
-	 * @see #setUsePrefix
-	 * @see #setAdvisorBeanNamePrefix
-	 */
-	@Override
-	protected boolean isEligibleAdvisorBean(String beanName) {
-		if (!isUsePrefix()) {
-			return true;
-		}
-		String prefix = getAdvisorBeanNamePrefix();
-		return (prefix != null && beanName.startsWith(prefix));
-	}
-
+    /**
+     * 如果激活，考虑具有指定前缀的 {@code Advisor} 实例为有效。
+     * @see #setUsePrefix
+     * @see #setAdvisorBeanNamePrefix
+     */
+    @Override
+    protected boolean isEligibleAdvisorBean(String beanName) {
+        if (!isUsePrefix()) {
+            return true;
+        }
+        String prefix = getAdvisorBeanNamePrefix();
+        return (prefix != null && beanName.startsWith(prefix));
+    }
 }

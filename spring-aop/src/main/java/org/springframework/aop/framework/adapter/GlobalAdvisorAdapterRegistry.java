@@ -1,23 +1,17 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2018 原作者或作者。
+ 
+根据Apache许可证2.0版本（以下简称“许可证”）许可；除非符合许可证规定，否则不得使用此文件。
+您可以在以下地址获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”分发，不提供任何形式的明示或暗示保证。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.framework.adapter;
 
 /**
- * Singleton to publish a shared DefaultAdvisorAdapterRegistry instance.
+ * 单例用于发布一个共享的 DefaultAdvisorAdapterRegistry 实例。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -26,29 +20,28 @@ package org.springframework.aop.framework.adapter;
  */
 public final class GlobalAdvisorAdapterRegistry {
 
-	private GlobalAdvisorAdapterRegistry() {
-	}
+    private GlobalAdvisorAdapterRegistry() {
+    }
 
+    /**
+     * 记录单个实例，以便我们可以将其返回给请求它的类。
+     */
+    private static AdvisorAdapterRegistry instance = new DefaultAdvisorAdapterRegistry();
 
-	/**
-	 * Keep track of a single instance so we can return it to classes that request it.
-	 */
-	private static AdvisorAdapterRegistry instance = new DefaultAdvisorAdapterRegistry();
+    /**
+     * 返回单例的 {@link DefaultAdvisorAdapterRegistry} 实例。
+     */
+    public static AdvisorAdapterRegistry getInstance() {
+        return instance;
+    }
 
-	/**
-	 * Return the singleton {@link DefaultAdvisorAdapterRegistry} instance.
-	 */
-	public static AdvisorAdapterRegistry getInstance() {
-		return instance;
-	}
-
-	/**
-	 * Reset the singleton {@link DefaultAdvisorAdapterRegistry}, removing any
-	 * {@link AdvisorAdapterRegistry#registerAdvisorAdapter(AdvisorAdapter) registered}
-	 * adapters.
-	 */
-	static void reset() {
-		instance = new DefaultAdvisorAdapterRegistry();
-	}
-
+    /**
+     * /**
+     *  重置单例 {@link DefaultAdvisorAdapterRegistry}，移除任何已注册的
+     *  {@link AdvisorAdapterRegistry#registerAdvisorAdapter(AdvisorAdapter) 插件适配器}。
+     * /
+     */
+    static void reset() {
+        instance = new DefaultAdvisorAdapterRegistry();
+    }
 }

@@ -1,42 +1,37 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2012 原作者或作者。
+ 
+根据Apache License，版本2.0（“许可证”）授权；
+除非遵守许可证，否则您不得使用此文件。
+您可以在以下地址获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”分发，
+不提供任何形式的保证或条件，无论是明示的还是暗示的。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.target;
 
 /**
- * Statistics for a ThreadLocal TargetSource.
+ * 用于ThreadLocal TargetSource的统计信息。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
 public interface ThreadLocalTargetSourceStats {
 
-	/**
-	 * Return the number of client invocations.
-	 */
-	int getInvocationCount();
+    /**
+     * 返回客户端调用次数。
+     */
+    int getInvocationCount();
 
-	/**
-	 * Return the number of hits that were satisfied by a thread-bound object.
-	 */
-	int getHitCount();
+    /**
+     * 返回由线程绑定对象满足的命中次数。
+     */
+    int getHitCount();
 
-	/**
-	 * Return the number of thread-bound objects created.
-	 */
-	int getObjectCount();
-
+    /**
+     * 返回已创建的线程绑定对象的数量。
+     */
+    int getObjectCount();
 }

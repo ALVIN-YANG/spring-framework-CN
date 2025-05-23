@@ -1,85 +1,75 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2023 原作者或作者。
+ 
+根据Apache License, Version 2.0（“许可证”）许可；
+除非根据适用法律要求或书面同意，否则不得使用此文件，除非符合许可证。
+您可以在以下地址获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非法律规定或书面同意，否则在许可证下分发的软件按“原样”分发，
+不提供任何形式（明示或暗示）的保证或条件。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.support;
 
 import java.io.Serializable;
-
 import org.aopalliance.aop.Advice;
-
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.PointcutAdvisor;
 import org.springframework.core.Ordered;
 import org.springframework.util.Assert;
 
 /**
- * Convenient base class for Advisors that are also static pointcuts.
- * Serializable if Advice and subclass are.
+ * 适用于同时作为静态切点的顾问的便捷基类。
+ * 如果建议和子类是可序列化的，则也是可序列化的。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
 @SuppressWarnings("serial")
-public abstract class StaticMethodMatcherPointcutAdvisor extends StaticMethodMatcherPointcut
-		implements PointcutAdvisor, Ordered, Serializable {
+public abstract class StaticMethodMatcherPointcutAdvisor extends StaticMethodMatcherPointcut implements PointcutAdvisor, Ordered, Serializable {
 
-	private Advice advice = EMPTY_ADVICE;
+    private Advice advice = EMPTY_ADVICE;
 
-	private int order = Ordered.LOWEST_PRECEDENCE;
+    private int order = Ordered.LOWEST_PRECEDENCE;
 
+    /**
+     * 创建一个新的 StaticMethodMatcherPointcutAdvisor，
+     * 预期使用bean风格的配置。
+     * @see #setAdvice
+     */
+    public StaticMethodMatcherPointcutAdvisor() {
+    }
 
-	/**
-	 * Create a new StaticMethodMatcherPointcutAdvisor,
-	 * expecting bean-style configuration.
-	 * @see #setAdvice
-	 */
-	public StaticMethodMatcherPointcutAdvisor() {
-	}
+    /**
+     * 为给定的建议创建一个新的 StaticMethodMatcherPointcutAdvisor。
+     * @param advice 要使用的建议
+     */
+    public StaticMethodMatcherPointcutAdvisor(Advice advice) {
+        Assert.notNull(advice, "Advice must not be null");
+        this.advice = advice;
+    }
 
-	/**
-	 * Create a new StaticMethodMatcherPointcutAdvisor for the given advice.
-	 * @param advice the Advice to use
-	 */
-	public StaticMethodMatcherPointcutAdvisor(Advice advice) {
-		Assert.notNull(advice, "Advice must not be null");
-		this.advice = advice;
-	}
+    public void setOrder(int order) {
+        this.order = order;
+    }
 
+    @Override
+    public int getOrder() {
+        return this.order;
+    }
 
-	public void setOrder(int order) {
-		this.order = order;
-	}
+    public void setAdvice(Advice advice) {
+        this.advice = advice;
+    }
 
-	@Override
-	public int getOrder() {
-		return this.order;
-	}
+    @Override
+    public Advice getAdvice() {
+        return this.advice;
+    }
 
-	public void setAdvice(Advice advice) {
-		this.advice = advice;
-	}
-
-	@Override
-	public Advice getAdvice() {
-		return this.advice;
-	}
-
-	@Override
-	public Pointcut getPointcut() {
-		return this;
-	}
-
+    @Override
+    public Pointcut getPointcut() {
+        return this;
+    }
 }

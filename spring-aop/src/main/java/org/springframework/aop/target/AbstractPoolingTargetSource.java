@@ -1,19 +1,13 @@
-/*
- * Copyright 2002-2021 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2021 原作者或作者。
+*
+* 根据 Apache 许可证 2.0 版（“许可证”），除非法律要求或经书面同意，否则您不得使用此文件。
+* 您可以在以下网址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非根据适用的法律或书面同意，否则在许可证下分发的软件按“原样”提供，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.aop.target;
 
 import org.springframework.aop.support.DefaultIntroductionAdvisor;
@@ -25,25 +19,19 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.lang.Nullable;
 
 /**
- * Abstract base class for pooling {@link org.springframework.aop.TargetSource}
- * implementations which maintain a pool of target instances, acquiring and
- * releasing a target object from the pool for each method invocation.
- * This abstract base class is independent of concrete pooling technology;
- * see the subclass {@link CommonsPool2TargetSource} for a concrete example.
+ * 用于管理目标实例池的抽象基类，每个方法调用时从池中获取和释放一个目标对象。
+ * 此抽象基类独立于具体的池化技术；请参阅子类 {@link CommonsPool2TargetSource} 以获取一个具体示例。
  *
- * <p>Subclasses must implement the {@link #getTarget} and
- * {@link #releaseTarget} methods based on their chosen object pool.
- * The {@link #newPrototypeInstance()} method inherited from
- * {@link AbstractPrototypeBasedTargetSource} can be used to create objects
- * in order to put them into the pool.
+ * <p>子类必须根据所选的对象池实现 {@link #getTarget} 和
+ * {@link #releaseTarget} 方法。从 {@link AbstractPrototypeBasedTargetSource} 继承的
+ * {@link #newPrototypeInstance()} 方法可用于创建对象，以便将它们放入池中。
  *
- * <p>Subclasses must also implement some monitoring methods from the
- * {@link PoolingConfig} interface. The {@link #getPoolingConfigMixin()} method
- * makes these stats available on proxied objects through an IntroductionAdvisor.
+ * <p>子类还必须实现来自 {@link PoolingConfig} 接口的一些监控方法。通过
+ * {@link #getPoolingConfigMixin()} 方法，这些统计信息可以通过 IntroductionAdvisor
+ * 在代理对象上提供。
  *
- * <p>This class implements the {@link org.springframework.beans.factory.DisposableBean}
- * interface in order to force subclasses to implement a {@link #destroy()}
- * method, closing down their object pool.
+ * <p>此类实现了 {@link org.springframework.beans.factory.DisposableBean} 接口，以强制子类实现
+ * 一个 {@link #destroy()} 方法，关闭其对象池。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -52,76 +40,68 @@ import org.springframework.lang.Nullable;
  * @see #destroy
  */
 @SuppressWarnings("serial")
-public abstract class AbstractPoolingTargetSource extends AbstractPrototypeBasedTargetSource
-		implements PoolingConfig, DisposableBean {
+public abstract class AbstractPoolingTargetSource extends AbstractPrototypeBasedTargetSource implements PoolingConfig, DisposableBean {
 
-	/** The maximum size of the pool. */
-	private int maxSize = -1;
+    /**
+     * 池的最大大小。
+     */
+    private int maxSize = -1;
 
+    /**
+     * 设置线程池的最大大小。
+     * 默认值为-1，表示没有大小限制。
+     */
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
+    }
 
-	/**
-	 * Set the maximum size of the pool.
-	 * Default is -1, indicating no size limit.
-	 */
-	public void setMaxSize(int maxSize) {
-		this.maxSize = maxSize;
-	}
+    /**
+     * 返回池的最大大小。
+     */
+    @Override
+    public int getMaxSize() {
+        return this.maxSize;
+    }
 
-	/**
-	 * Return the maximum size of the pool.
-	 */
-	@Override
-	public int getMaxSize() {
-		return this.maxSize;
-	}
+    @Override
+    public final void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        super.setBeanFactory(beanFactory);
+        try {
+            createPool();
+        } catch (Throwable ex) {
+            throw new BeanInitializationException("Could not create instance pool for TargetSource", ex);
+        }
+    }
 
+    /**
+     * 创建池。
+     * @throws Exception 抛出异常以避免对池化API施加约束
+     */
+    protected abstract void createPool() throws Exception;
 
-	@Override
-	public final void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		super.setBeanFactory(beanFactory);
-		try {
-			createPool();
-		}
-		catch (Throwable ex) {
-			throw new BeanInitializationException("Could not create instance pool for TargetSource", ex);
-		}
-	}
+    /**
+     * 从池中获取一个对象。
+     * @return 从池中返回一个对象
+     * @throws Exception 我们可能需要处理来自池APIs的受检异常，因此我们对异常签名采取了宽容的态度
+     */
+    @Override
+    @Nullable
+    public abstract Object getTarget() throws Exception;
 
+    /**
+     * 将给定对象返回到池中。
+     * @param target 必须是通过调用 {@code getTarget()} 从池中获取的对象
+     * @throws Exception 允许池化API抛出异常
+     * @see #getTarget
+     */
+    @Override
+    public abstract void releaseTarget(Object target) throws Exception;
 
-	/**
-	 * Create the pool.
-	 * @throws Exception to avoid placing constraints on pooling APIs
-	 */
-	protected abstract void createPool() throws Exception;
-
-	/**
-	 * Acquire an object from the pool.
-	 * @return an object from the pool
-	 * @throws Exception we may need to deal with checked exceptions from pool
-	 * APIs, so we're forgiving with our exception signature
-	 */
-	@Override
-	@Nullable
-	public abstract Object getTarget() throws Exception;
-
-	/**
-	 * Return the given object to the pool.
-	 * @param target object that must have been acquired from the pool
-	 * via a call to {@code getTarget()}
-	 * @throws Exception to allow pooling APIs to throw exception
-	 * @see #getTarget
-	 */
-	@Override
-	public abstract void releaseTarget(Object target) throws Exception;
-
-
-	/**
-	 * Return an IntroductionAdvisor that provides a mixin
-	 * exposing statistics about the pool maintained by this object.
-	 */
-	public DefaultIntroductionAdvisor getPoolingConfigMixin() {
-		DelegatingIntroductionInterceptor dii = new DelegatingIntroductionInterceptor(this);
-		return new DefaultIntroductionAdvisor(dii, PoolingConfig.class);
-	}
-
+    /**
+     * 返回一个 IntroductionAdvisor，它提供了一个混合模式，用于暴露由该对象维护的池的统计信息。
+     */
+    public DefaultIntroductionAdvisor getPoolingConfigMixin() {
+        DelegatingIntroductionInterceptor dii = new DelegatingIntroductionInterceptor(this);
+        return new DefaultIntroductionAdvisor(dii, PoolingConfig.class);
+    }
 }

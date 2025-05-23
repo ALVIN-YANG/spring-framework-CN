@@ -1,35 +1,26 @@
-/*
- * Copyright 2002-2020 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2020 原作者或作者。
+ 
+根据Apache License, Version 2.0（以下简称“许可证”）许可；
+除非根据法律规定或书面同意，否则不得使用此文件，除非遵守许可证。
+您可以在以下链接处获得许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，
+不提供任何明示或暗示的保证或条件，包括但不限于适销性、适用于特定目的和不侵权。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.interceptor;
 
 import java.lang.reflect.Method;
-
 import org.aopalliance.intercept.MethodInvocation;
-
 import org.springframework.lang.Nullable;
 
 /**
- * Base class for monitoring interceptors, such as performance monitors.
- * Provides configurable "prefix and "suffix" properties that help to
- * classify/group performance monitoring results.
+ * 监控拦截器的基础类，例如性能监控器。
+ * 提供可配置的“前缀”和“后缀”属性，有助于对性能监控结果进行分类/分组。
  *
- * <p>In their {@link #invokeUnderTrace} implementation, subclasses should call the
- * {@link #createInvocationTraceName} method to create a name for the given trace,
- * including information about the method invocation along with a prefix/suffix.
+ * <p>在其 {@link #invokeUnderTrace} 实现中，子类应调用 {@link #createInvocationTraceName} 方法为给定的跟踪创建一个名称，包括关于方法调用的信息以及前缀/后缀。
  *
  * @author Rob Harrop
  * @author Juergen Hoeller
@@ -41,70 +32,62 @@ import org.springframework.lang.Nullable;
 @SuppressWarnings("serial")
 public abstract class AbstractMonitoringInterceptor extends AbstractTraceInterceptor {
 
-	private String prefix = "";
+    private String prefix = "";
 
-	private String suffix = "";
+    private String suffix = "";
 
-	private boolean logTargetClassInvocation = false;
+    private boolean logTargetClassInvocation = false;
 
+    /**
+     * 设置将被追加到跟踪数据中的文本。
+     * <p>默认值为无。
+     */
+    public void setPrefix(@Nullable String prefix) {
+        this.prefix = (prefix != null ? prefix : "");
+    }
 
-	/**
-	 * Set the text that will get appended to the trace data.
-	 * <p>Default is none.
-	 */
-	public void setPrefix(@Nullable String prefix) {
-		this.prefix = (prefix != null ? prefix : "");
-	}
+    /**
+     * 返回将附加到跟踪数据中的文本。
+     */
+    protected String getPrefix() {
+        return this.prefix;
+    }
 
-	/**
-	 * Return the text that will get appended to the trace data.
-	 */
-	protected String getPrefix() {
-		return this.prefix;
-	}
+    /**
+     * 设置将要附加到跟踪数据前的文本。
+     * <p>默认为无。
+     */
+    public void setSuffix(@Nullable String suffix) {
+        this.suffix = (suffix != null ? suffix : "");
+    }
 
-	/**
-	 * Set the text that will get prepended to the trace data.
-	 * <p>Default is none.
-	 */
-	public void setSuffix(@Nullable String suffix) {
-		this.suffix = (suffix != null ? suffix : "");
-	}
+    /**
+     * 返回将要附加到跟踪数据前的文本。
+     */
+    protected String getSuffix() {
+        return this.suffix;
+    }
 
-	/**
-	 * Return the text that will get prepended to the trace data.
-	 */
-	protected String getSuffix() {
-		return this.suffix;
-	}
+    /**
+     * 设置是否在目标类上记录调用，如果适用（即如果方法实际上被委托给目标类）。
+     * <p>默认为"false"，根据代理接口/类名记录调用。
+     */
+    public void setLogTargetClassInvocation(boolean logTargetClassInvocation) {
+        this.logTargetClassInvocation = logTargetClassInvocation;
+    }
 
-	/**
-	 * Set whether to log the invocation on the target class, if applicable
-	 * (i.e. if the method is actually delegated to the target class).
-	 * <p>Default is "false", logging the invocation based on the proxy
-	 * interface/class name.
-	 */
-	public void setLogTargetClassInvocation(boolean logTargetClassInvocation) {
-		this.logTargetClassInvocation = logTargetClassInvocation;
-	}
-
-
-	/**
-	 * Create a {@code String} name for the given {@code MethodInvocation}
-	 * that can be used for trace/logging purposes. This name is made up of the
-	 * configured prefix, followed by the fully-qualified name of the method being
-	 * invoked, followed by the configured suffix.
-	 * @see #setPrefix
-	 * @see #setSuffix
-	 */
-	protected String createInvocationTraceName(MethodInvocation invocation) {
-		Method method = invocation.getMethod();
-		Class<?> clazz = method.getDeclaringClass();
-		if (this.logTargetClassInvocation && clazz.isInstance(invocation.getThis())) {
-			clazz = invocation.getThis().getClass();
-		}
-		String className = clazz.getName();
-		return getPrefix() + className + '.' + method.getName() + getSuffix();
-	}
-
+    /**
+     * 为给定的 {@code MethodInvocation} 创建一个用于跟踪/日志记录的 {@code String} 名称。此名称由配置的前缀、正在调用方法的完全限定名称以及配置的后缀组成。
+     * @see #setPrefix
+     * @see #setSuffix
+     */
+    protected String createInvocationTraceName(MethodInvocation invocation) {
+        Method method = invocation.getMethod();
+        Class<?> clazz = method.getDeclaringClass();
+        if (this.logTargetClassInvocation && clazz.isInstance(invocation.getThis())) {
+            clazz = invocation.getThis().getClass();
+        }
+        String className = clazz.getName();
+        return getPrefix() + className + '.' + method.getName() + getSuffix();
+    }
 }

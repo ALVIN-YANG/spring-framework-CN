@@ -1,27 +1,20 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2012，原作者或作者。
 
+根据Apache License，版本2.0（“许可证”）授权；
+除非根据法律规定或书面同意，否则不得使用此文件，除非遵守许可证。
+您可以在以下地址获取许可证副本：
+https://www.apache.org/licenses/LICENSE-2.0
+
+除非法律规定或书面同意，否则在许可证下分发的软件按照“原样”分发，
+不提供任何形式的保证或条件，无论是明示的还是隐含的。
+有关权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop;
 
 /**
- * Core Spring pointcut abstraction.
+ * 核心Spring切入点抽象。
  *
- * <p>A pointcut is composed of a {@link ClassFilter} and a {@link MethodMatcher}.
- * Both these basic terms and a Pointcut itself can be combined to build up combinations
- * (e.g. through {@link org.springframework.aop.support.ComposablePointcut}).
+ * <p>切入点由一个 {@link ClassFilter} 和一个 {@link MethodMatcher} 组成。这两个基本术语以及切入点本身都可以组合起来构建组合（例如，通过 {@link org.springframework.aop.support.ComposablePointcut}）。
  *
  * @author Rod Johnson
  * @see ClassFilter
@@ -32,22 +25,20 @@ package org.springframework.aop;
  */
 public interface Pointcut {
 
-	/**
-	 * Return the ClassFilter for this pointcut.
-	 * @return the ClassFilter (never {@code null})
-	 */
-	ClassFilter getClassFilter();
+    /**
+     * 返回此切入点对应的类过滤器。
+     * @return 类过滤器（永远不会为null）
+     */
+    ClassFilter getClassFilter();
 
-	/**
-	 * Return the MethodMatcher for this pointcut.
-	 * @return the MethodMatcher (never {@code null})
-	 */
-	MethodMatcher getMethodMatcher();
+    /**
+     * 返回此切入点对应的 MethodMatcher。
+     * @return MethodMatcher（从不为 {@code null}）
+     */
+    MethodMatcher getMethodMatcher();
 
-
-	/**
-	 * Canonical Pointcut instance that always matches.
-	 */
-	Pointcut TRUE = TruePointcut.INSTANCE;
-
+    /**
+     * 始终匹配的规范切入点实例。
+     */
+    Pointcut TRUE = TruePointcut.INSTANCE;
 }

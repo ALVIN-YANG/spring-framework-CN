@@ -1,19 +1,12 @@
-/*
- * Copyright 2002-2022 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2022 原作者或作者们。
 
+根据Apache许可证2.0版（以下简称“许可证”）许可；除非符合许可证规定，否则不得使用此文件。
+您可以在以下网址获取许可证副本：
+https://www.apache.org/licenses/LICENSE-2.0
+
+除非法律要求或经书面同意，否则在许可证下分发的软件按“原样”分发，不提供任何明示或暗示的保证或条件。
+有关许可的特定语言、权限和限制，请参阅许可证。*/
 package org.springframework.aop.framework.autoproxy.target;
 
 import org.springframework.aop.target.AbstractBeanFactoryBasedTargetSource;
@@ -23,19 +16,13 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.lang.Nullable;
 
 /**
- * {@code TargetSourceCreator} that enforces a {@link LazyInitTargetSource} for
- * each bean that is defined as "lazy-init". This will lead to a proxy created for
- * each of those beans, allowing to fetch a reference to such a bean without
- * actually initializing the target bean instance.
+ *  用于强制为每个定义为“延迟初始化”的bean创建一个`LazyInitTargetSource`的`TargetSourceCreator`。这将导致为这些bean中的每一个创建一个代理，允许在不实际初始化目标bean实例的情况下获取该bean的引用。
  *
- * <p>To be registered as custom {@code TargetSourceCreator} for an auto-proxy
- * creator, in combination with custom interceptors for specific beans or for the
- * creation of lazy-init proxies only. For example, as an autodetected
- * infrastructure bean in an XML application context definition:
+ * <p>作为自动代理创建器的自定义`TargetSourceCreator`进行注册，结合特定bean的自定义拦截器或仅用于创建延迟初始化代理。例如，作为一个在XML应用程序上下文定义中自动检测的基础设施bean：
  *
  * <pre class="code">
  * &lt;bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator"&gt;
- *   &lt;property name="beanNames" value="*" /&gt; &lt;!-- apply to all beans --&gt;
+ *   &lt;property name="beanNames" value="*" /&gt; &lt;!-- 应用到所有bean --&gt;
  *   &lt;property name="customTargetSourceCreators"&gt;
  *     &lt;list&gt;
  *       &lt;bean class="org.springframework.aop.framework.autoproxy.target.LazyInitTargetSourceCreator" /&gt;
@@ -47,8 +34,6 @@ import org.springframework.lang.Nullable;
  *   &lt;!-- ... --&gt;
  * &lt;/bean&gt;</pre>
  *
- * @author Juergen Hoeller
- * @author Sam Brannen
  * @since 1.2
  * @see org.springframework.beans.factory.config.BeanDefinition#isLazyInit
  * @see org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#setCustomTargetSourceCreators
@@ -56,23 +41,20 @@ import org.springframework.lang.Nullable;
  */
 public class LazyInitTargetSourceCreator extends AbstractBeanFactoryBasedTargetSourceCreator {
 
-	@Override
-	protected boolean isPrototypeBased() {
-		return false;
-	}
+    @Override
+    protected boolean isPrototypeBased() {
+        return false;
+    }
 
-	@Override
-	@Nullable
-	protected AbstractBeanFactoryBasedTargetSource createBeanFactoryBasedTargetSource(
-			Class<?> beanClass, String beanName) {
-
-		if (getBeanFactory() instanceof ConfigurableListableBeanFactory clbf) {
-			BeanDefinition definition = clbf.getBeanDefinition(beanName);
-			if (definition.isLazyInit()) {
-				return new LazyInitTargetSource();
-			}
-		}
-		return null;
-	}
-
+    @Override
+    @Nullable
+    protected AbstractBeanFactoryBasedTargetSource createBeanFactoryBasedTargetSource(Class<?> beanClass, String beanName) {
+        if (getBeanFactory() instanceof ConfigurableListableBeanFactory clbf) {
+            BeanDefinition definition = clbf.getBeanDefinition(beanName);
+            if (definition.isLazyInit()) {
+                return new LazyInitTargetSource();
+            }
+        }
+        return null;
+    }
 }

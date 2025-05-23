@@ -1,29 +1,21 @@
-/*
- * Copyright 2002-2022 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2022 原作者或作者。
+ 
+根据Apache License 2.0（以下简称“许可证”）许可；除非遵守许可证，否则不得使用此文件。
+您可以在以下链接获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”分发，不提供任何明示或暗示的保证或条件。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.aspectj.autoproxy;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import org.aopalliance.aop.Advice;
 import org.aspectj.util.PartialOrder;
 import org.aspectj.util.PartialOrder.PartialComparable;
-
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AbstractAspectJAdvice;
 import org.springframework.aop.aspectj.AspectJPointcutAdvisor;
@@ -35,8 +27,7 @@ import org.springframework.util.ClassUtils;
 
 /**
  * {@link org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator}
- * subclass that exposes AspectJ's invocation context and understands AspectJ's rules
- * for advice precedence when multiple pieces of advice come from the same aspect.
+ * AspectJ的调用上下文暴露子类，理解当来自同一方面的多个通知（advice）存在时，AspectJ的优先级规则。
  *
  * @author Adrian Colyer
  * @author Juergen Hoeller
@@ -46,116 +37,102 @@ import org.springframework.util.ClassUtils;
 @SuppressWarnings("serial")
 public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProxyCreator {
 
-	private static final Comparator<Advisor> DEFAULT_PRECEDENCE_COMPARATOR = new AspectJPrecedenceComparator();
+    private static final Comparator<Advisor> DEFAULT_PRECEDENCE_COMPARATOR = new AspectJPrecedenceComparator();
 
+    /**
+     * 根据AspectJ优先级对提供的{@link Advisor}实例进行排序。
+     * <p>如果两条通知来自同一个切面，它们将具有相同的顺序。来自同一切面的通知将进一步按照以下规则排序：
+     * <ul>
+     * <li>如果这对中的任何一个都是<em>after</em>通知，则最后声明的通知获得最高的优先级（即最后执行）。</li>
+     * <li>否则，最早声明的通知获得最高的优先级（即首先执行）。</li>
+     * </ul>
+     * <p><b>重要：</b>通知按优先级排序，从最高优先级到最低优先级。在进入连接点时，最高优先级的通知应该首先运行。在离开连接点时，最高优先级的通知应该最后运行。
+     */
+    @Override
+    protected List<Advisor> sortAdvisors(List<Advisor> advisors) {
+        List<PartiallyComparableAdvisorHolder> partiallyComparableAdvisors = new ArrayList<>(advisors.size());
+        for (Advisor advisor : advisors) {
+            partiallyComparableAdvisors.add(new PartiallyComparableAdvisorHolder(advisor, DEFAULT_PRECEDENCE_COMPARATOR));
+        }
+        List<PartiallyComparableAdvisorHolder> sorted = PartialOrder.sort(partiallyComparableAdvisors);
+        if (sorted != null) {
+            List<Advisor> result = new ArrayList<>(advisors.size());
+            for (PartiallyComparableAdvisorHolder pcAdvisor : sorted) {
+                result.add(pcAdvisor.getAdvisor());
+            }
+            return result;
+        } else {
+            return super.sortAdvisors(advisors);
+        }
+    }
 
-	/**
-	 * Sort the supplied {@link Advisor} instances according to AspectJ precedence.
-	 * <p>If two pieces of advice come from the same aspect, they will have the same
-	 * order. Advice from the same aspect is then further ordered according to the
-	 * following rules:
-	 * <ul>
-	 * <li>If either of the pair is <em>after</em> advice, then the advice declared
-	 * last gets highest precedence (i.e., runs last).</li>
-	 * <li>Otherwise the advice declared first gets highest precedence (i.e., runs
-	 * first).</li>
-	 * </ul>
-	 * <p><b>Important:</b> Advisors are sorted in precedence order, from the highest
-	 * precedence to the lowest. "On the way in" to a join point, the highest precedence
-	 * advisor should run first. "On the way out" of a join point, the highest
-	 * precedence advisor should run last.
-	 */
-	@Override
-	protected List<Advisor> sortAdvisors(List<Advisor> advisors) {
-		List<PartiallyComparableAdvisorHolder> partiallyComparableAdvisors = new ArrayList<>(advisors.size());
-		for (Advisor advisor : advisors) {
-			partiallyComparableAdvisors.add(
-					new PartiallyComparableAdvisorHolder(advisor, DEFAULT_PRECEDENCE_COMPARATOR));
-		}
-		List<PartiallyComparableAdvisorHolder> sorted = PartialOrder.sort(partiallyComparableAdvisors);
-		if (sorted != null) {
-			List<Advisor> result = new ArrayList<>(advisors.size());
-			for (PartiallyComparableAdvisorHolder pcAdvisor : sorted) {
-				result.add(pcAdvisor.getAdvisor());
-			}
-			return result;
-		}
-		else {
-			return super.sortAdvisors(advisors);
-		}
-	}
+    /**
+     * 将一个 {@link ExposeInvocationInterceptor} 添加到建议链的开头。
+     * <p>当使用 AspectJ 点切表达式和 AspectJ 风格的建议时，需要这个额外的建议。
+     */
+    @Override
+    protected void extendAdvisors(List<Advisor> candidateAdvisors) {
+        AspectJProxyUtils.makeAdvisorChainAspectJCapableIfNecessary(candidateAdvisors);
+    }
 
-	/**
-	 * Add an {@link ExposeInvocationInterceptor} to the beginning of the advice chain.
-	 * <p>This additional advice is needed when using AspectJ pointcut expressions
-	 * and when using AspectJ-style advice.
-	 */
-	@Override
-	protected void extendAdvisors(List<Advisor> candidateAdvisors) {
-		AspectJProxyUtils.makeAdvisorChainAspectJCapableIfNecessary(candidateAdvisors);
-	}
+    @Override
+    protected boolean shouldSkip(Class<?> beanClass, String beanName) {
+        // 待办：考虑通过缓存方面名称列表进行优化
+        List<Advisor> candidateAdvisors = findCandidateAdvisors();
+        for (Advisor advisor : candidateAdvisors) {
+            if (advisor instanceof AspectJPointcutAdvisor pointcutAdvisor && pointcutAdvisor.getAspectName().equals(beanName)) {
+                return true;
+            }
+        }
+        return super.shouldSkip(beanClass, beanName);
+    }
 
-	@Override
-	protected boolean shouldSkip(Class<?> beanClass, String beanName) {
-		// TODO: Consider optimization by caching the list of the aspect names
-		List<Advisor> candidateAdvisors = findCandidateAdvisors();
-		for (Advisor advisor : candidateAdvisors) {
-			if (advisor instanceof AspectJPointcutAdvisor pointcutAdvisor &&
-					pointcutAdvisor.getAspectName().equals(beanName)) {
-				return true;
-			}
-		}
-		return super.shouldSkip(beanClass, beanName);
-	}
+    /**
+     * 实现了 AspectJ 的 {@link PartialComparable} 接口，用于定义偏序关系。
+     */
+    private static class PartiallyComparableAdvisorHolder implements PartialComparable {
 
+        private final Advisor advisor;
 
-	/**
-	 * Implements AspectJ's {@link PartialComparable} interface for defining partial orderings.
-	 */
-	private static class PartiallyComparableAdvisorHolder implements PartialComparable {
+        private final Comparator<Advisor> comparator;
 
-		private final Advisor advisor;
+        public PartiallyComparableAdvisorHolder(Advisor advisor, Comparator<Advisor> comparator) {
+            this.advisor = advisor;
+            this.comparator = comparator;
+        }
 
-		private final Comparator<Advisor> comparator;
+        @Override
+        public int compareTo(Object obj) {
+            Advisor otherAdvisor = ((PartiallyComparableAdvisorHolder) obj).advisor;
+            return this.comparator.compare(this.advisor, otherAdvisor);
+        }
 
-		public PartiallyComparableAdvisorHolder(Advisor advisor, Comparator<Advisor> comparator) {
-			this.advisor = advisor;
-			this.comparator = comparator;
-		}
+        @Override
+        public int fallbackCompareTo(Object obj) {
+            return 0;
+        }
 
-		@Override
-		public int compareTo(Object obj) {
-			Advisor otherAdvisor = ((PartiallyComparableAdvisorHolder) obj).advisor;
-			return this.comparator.compare(this.advisor, otherAdvisor);
-		}
+        public Advisor getAdvisor() {
+            return this.advisor;
+        }
 
-		@Override
-		public int fallbackCompareTo(Object obj) {
-			return 0;
-		}
-
-		public Advisor getAdvisor() {
-			return this.advisor;
-		}
-
-		@Override
-		public String toString() {
-			Advice advice = this.advisor.getAdvice();
-			StringBuilder sb = new StringBuilder(ClassUtils.getShortName(advice.getClass()));
-			boolean appended = false;
-			if (this.advisor instanceof Ordered ordered) {
-				sb.append(": order = ").append(ordered.getOrder());
-				appended = true;
-			}
-			if (advice instanceof AbstractAspectJAdvice ajAdvice) {
-				sb.append(!appended ? ": " : ", ");
-				sb.append("aspect name = ");
-				sb.append(ajAdvice.getAspectName());
-				sb.append(", declaration order = ");
-				sb.append(ajAdvice.getDeclarationOrder());
-			}
-			return sb.toString();
-		}
-	}
-
+        @Override
+        public String toString() {
+            Advice advice = this.advisor.getAdvice();
+            StringBuilder sb = new StringBuilder(ClassUtils.getShortName(advice.getClass()));
+            boolean appended = false;
+            if (this.advisor instanceof Ordered ordered) {
+                sb.append(": order = ").append(ordered.getOrder());
+                appended = true;
+            }
+            if (advice instanceof AbstractAspectJAdvice ajAdvice) {
+                sb.append(!appended ? ": " : ", ");
+                sb.append("aspect name = ");
+                sb.append(ajAdvice.getAspectName());
+                sb.append(", declaration order = ");
+                sb.append(ajAdvice.getDeclarationOrder());
+            }
+            return sb.toString();
+        }
+    }
 }

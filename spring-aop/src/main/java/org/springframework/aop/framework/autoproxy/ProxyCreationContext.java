@@ -1,27 +1,22 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2018 原作者或作者。
+ 
+根据Apache License, Version 2.0 ("许可证")进行许可；
+除非法律要求或书面同意，否则不得使用此文件，除非遵守许可证。
+您可以在以下网址获得许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非法律要求或书面同意，否则在许可证下分发的软件按"原样"提供，
+不提供任何形式的保证或条件，无论是明示的还是暗示的。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.framework.autoproxy;
 
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.lang.Nullable;
 
 /**
- * Holder for the current proxy creation context, as exposed by auto-proxy creators
- * such as {@link AbstractAdvisorAutoProxyCreator}.
+ * 用于存储当前代理创建上下文的持有者，由自动代理创建者如 {@link AbstractAdvisorAutoProxyCreator} 公开。
  *
  * @author Juergen Hoeller
  * @author Ramnivas Laddad
@@ -29,35 +24,32 @@ import org.springframework.lang.Nullable;
  */
 public final class ProxyCreationContext {
 
-	/** ThreadLocal holding the current proxied bean name during Advisor matching. */
-	private static final ThreadLocal<String> currentProxiedBeanName =
-			new NamedThreadLocal<>("Name of currently proxied bean");
+    /**
+     * ThreadLocal 用于在 Advisor 匹配期间保存当前代理的 bean 名称。
+     */
+    private static final ThreadLocal<String> currentProxiedBeanName = new NamedThreadLocal<>("Name of currently proxied bean");
 
+    private ProxyCreationContext() {
+    }
 
-	private ProxyCreationContext() {
-	}
+    /**
+     * 返回当前代理的 Bean 实例的名称。
+     * @return 返回 Bean 的名称，或如果不可用则返回 {@code null}
+     */
+    @Nullable
+    public static String getCurrentProxiedBeanName() {
+        return currentProxiedBeanName.get();
+    }
 
-
-	/**
-	 * Return the name of the currently proxied bean instance.
-	 * @return the name of the bean, or {@code null} if none available
-	 */
-	@Nullable
-	public static String getCurrentProxiedBeanName() {
-		return currentProxiedBeanName.get();
-	}
-
-	/**
-	 * Set the name of the currently proxied bean instance.
-	 * @param beanName the name of the bean, or {@code null} to reset it
-	 */
-	static void setCurrentProxiedBeanName(@Nullable String beanName) {
-		if (beanName != null) {
-			currentProxiedBeanName.set(beanName);
-		}
-		else {
-			currentProxiedBeanName.remove();
-		}
-	}
-
+    /**
+     * 设置当前代理的 bean 实例的名称。
+     * @param beanName bean 的名称，或使用 {@code null} 来重置它
+     */
+    static void setCurrentProxiedBeanName(@Nullable String beanName) {
+        if (beanName != null) {
+            currentProxiedBeanName.set(beanName);
+        } else {
+            currentProxiedBeanName.remove();
+        }
+    }
 }

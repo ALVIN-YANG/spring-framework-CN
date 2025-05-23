@@ -1,25 +1,18 @@
-/*
- * Copyright 2002-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2016 原作者或作者。
+ 
+根据Apache License，版本2.0（“许可证”）；除非遵守许可证，否则您不得使用此文件。
+您可以在以下链接获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非适用法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，不提供任何形式的保证或条件，无论是明示的还是隐含的。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.aspectj;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-
 import org.springframework.aop.AfterAdvice;
 import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.lang.Nullable;
@@ -27,7 +20,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.TypeUtils;
 
 /**
- * Spring AOP advice wrapping an AspectJ after-returning advice method.
+ * Spring AOP 提供的包装 AspectJ 后返回（after-returning）建议方法的建议。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -35,76 +28,62 @@ import org.springframework.util.TypeUtils;
  * @since 2.0
  */
 @SuppressWarnings("serial")
-public class AspectJAfterReturningAdvice extends AbstractAspectJAdvice
-		implements AfterReturningAdvice, AfterAdvice, Serializable {
+public class AspectJAfterReturningAdvice extends AbstractAspectJAdvice implements AfterReturningAdvice, AfterAdvice, Serializable {
 
-	public AspectJAfterReturningAdvice(
-			Method aspectJBeforeAdviceMethod, AspectJExpressionPointcut pointcut, AspectInstanceFactory aif) {
+    public AspectJAfterReturningAdvice(Method aspectJBeforeAdviceMethod, AspectJExpressionPointcut pointcut, AspectInstanceFactory aif) {
+        super(aspectJBeforeAdviceMethod, pointcut, aif);
+    }
 
-		super(aspectJBeforeAdviceMethod, pointcut, aif);
-	}
+    @Override
+    public boolean isBeforeAdvice() {
+        return false;
+    }
 
+    @Override
+    public boolean isAfterAdvice() {
+        return true;
+    }
 
-	@Override
-	public boolean isBeforeAdvice() {
-		return false;
-	}
+    @Override
+    public void setReturningName(String name) {
+        setReturningNameNoCheck(name);
+    }
 
-	@Override
-	public boolean isAfterAdvice() {
-		return true;
-	}
+    @Override
+    public void afterReturning(@Nullable Object returnValue, Method method, Object[] args, @Nullable Object target) throws Throwable {
+        if (shouldInvokeOnReturnValueOf(method, returnValue)) {
+            invokeAdviceMethod(getJoinPointMatch(), returnValue, null);
+        }
+    }
 
-	@Override
-	public void setReturningName(String name) {
-		setReturningNameNoCheck(name);
-	}
+    /**
+     * 依据 AspectJ 的语义，如果指定了返回语句，则只有当返回值是给定返回类型及其任何泛型类型参数的实例，并且泛型类型参数匹配赋值规则时，才会调用通知。如果返回类型是 Object，则通知始终会被调用。
+     * @param returnValue 目标方法的返回值
+     * @return 对于给定的返回值是否调用通知方法
+     */
+    private boolean shouldInvokeOnReturnValueOf(Method method, @Nullable Object returnValue) {
+        Class<?> type = getDiscoveredReturningType();
+        Type genericType = getDiscoveredReturningGenericType();
+        // 如果我们处理的不是原始类型，检查泛型参数是否可赋值。
+        return (matchesReturnValue(type, method, returnValue) && (genericType == null || genericType == type || TypeUtils.isAssignable(genericType, method.getGenericReturnType())));
+    }
 
-	@Override
-	public void afterReturning(@Nullable Object returnValue, Method method, Object[] args, @Nullable Object target) throws Throwable {
-		if (shouldInvokeOnReturnValueOf(method, returnValue)) {
-			invokeAdviceMethod(getJoinPointMatch(), returnValue, null);
-		}
-	}
-
-
-	/**
-	 * Following AspectJ semantics, if a returning clause was specified, then the
-	 * advice is only invoked if the returned value is an instance of the given
-	 * returning type and generic type parameters, if any, match the assignment
-	 * rules. If the returning type is Object, the advice is *always* invoked.
-	 * @param returnValue the return value of the target method
-	 * @return whether to invoke the advice method for the given return value
-	 */
-	private boolean shouldInvokeOnReturnValueOf(Method method, @Nullable Object returnValue) {
-		Class<?> type = getDiscoveredReturningType();
-		Type genericType = getDiscoveredReturningGenericType();
-		// If we aren't dealing with a raw type, check if generic parameters are assignable.
-		return (matchesReturnValue(type, method, returnValue) &&
-				(genericType == null || genericType == type ||
-						TypeUtils.isAssignable(genericType, method.getGenericReturnType())));
-	}
-
-	/**
-	 * Following AspectJ semantics, if a return value is null (or return type is void),
-	 * then the return type of target method should be used to determine whether advice
-	 * is invoked or not. Also, even if the return type is void, if the type of argument
-	 * declared in the advice method is Object, then the advice must still get invoked.
-	 * @param type the type of argument declared in advice method
-	 * @param method the advice method
-	 * @param returnValue the return value of the target method
-	 * @return whether to invoke the advice method for the given return value and type
-	 */
-	private boolean matchesReturnValue(Class<?> type, Method method, @Nullable Object returnValue) {
-		if (returnValue != null) {
-			return ClassUtils.isAssignableValue(type, returnValue);
-		}
-		else if (Object.class == type && void.class == method.getReturnType()) {
-			return true;
-		}
-		else {
-			return ClassUtils.isAssignable(type, method.getReturnType());
-		}
-	}
-
+    /**
+     * 根据AspectJ的语义，如果返回值是null（或者返回类型是void），
+     * 则应该使用目标方法的返回类型来决定是否调用通知。此外，即使返回类型是void，
+     * 如果通知方法中声明的参数类型是Object，则通知仍然必须被调用。
+     * @param type 通知方法中声明的参数类型
+     * @param method 通知方法
+     * @param returnValue 目标方法的返回值
+     * @return 对于给定的返回值和类型，是否调用通知方法
+     */
+    private boolean matchesReturnValue(Class<?> type, Method method, @Nullable Object returnValue) {
+        if (returnValue != null) {
+            return ClassUtils.isAssignableValue(type, returnValue);
+        } else if (Object.class == type && void.class == method.getReturnType()) {
+            return true;
+        } else {
+            return ClassUtils.isAssignable(type, method.getReturnType());
+        }
+    }
 }

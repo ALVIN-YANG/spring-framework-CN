@@ -1,27 +1,21 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2018 原作者或作者。
+ 
+根据Apache License, Version 2.0 ("许可证")授权；
+除非符合许可证规定或书面同意，否则不得使用此文件。
+您可以在以下地址获得许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非适用法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，
+不提供任何形式的明示或暗示保证，无论是否明确声明。
+有关权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.aspectj.annotation;
 
 import org.springframework.aop.framework.AopConfigException;
 
 /**
- * Extension of AopConfigException thrown when trying to perform
- * an advisor generation operation on a class that is not an
- * AspectJ annotation-style aspect.
+ * 在尝试对一个不是 AspectJ 注解风格的切面类执行顾问生成操作时抛出的 AopConfigException 的扩展。
  *
  * @author Rod Johnson
  * @since 2.0
@@ -29,23 +23,21 @@ import org.springframework.aop.framework.AopConfigException;
 @SuppressWarnings("serial")
 public class NotAnAtAspectException extends AopConfigException {
 
-	private final Class<?> nonAspectClass;
+    private final Class<?> nonAspectClass;
 
+    /**
+     * 为给定的类创建一个新的 NotAnAtAspectException。
+     * @param nonAspectClass 导致问题的类
+     */
+    public NotAnAtAspectException(Class<?> nonAspectClass) {
+        super(nonAspectClass.getName() + " is not an @AspectJ aspect");
+        this.nonAspectClass = nonAspectClass;
+    }
 
-	/**
-	 * Create a new NotAnAtAspectException for the given class.
-	 * @param nonAspectClass the offending class
-	 */
-	public NotAnAtAspectException(Class<?> nonAspectClass) {
-		super(nonAspectClass.getName() + " is not an @AspectJ aspect");
-		this.nonAspectClass = nonAspectClass;
-	}
-
-	/**
-	 * Returns the offending class.
-	 */
-	public Class<?> getNonAspectClass() {
-		return this.nonAspectClass;
-	}
-
+    /**
+     * 返回有问题的类。
+     */
+    public Class<?> getNonAspectClass() {
+        return this.nonAspectClass;
+    }
 }

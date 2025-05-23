@@ -1,24 +1,17 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2012 原作者或原作者。
 
+根据Apache License，版本2.0（以下简称“许可证”）许可，除非法律要求或书面同意，否则不得使用此文件，除非遵守许可证。
+您可以在以下地址获取许可证副本：
+https://www.apache.org/licenses/LICENSE-2.0
+
+除非根据法律规定或书面同意，否则在许可证下分发的软件按“原样”分发，不提供任何明示或暗示的保证或条件。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.target.dynamic;
 
 /**
- * Interface to be implemented by dynamic target objects,
- * which support reloading and optionally polling for updates.
+ * 接口，由动态目标对象实现，
+ * 支持重新加载，并可选择轮询以获取更新。
  *
  * @author Rod Johnson
  * @author Rob Harrop
@@ -26,19 +19,18 @@ package org.springframework.aop.target.dynamic;
  */
 public interface Refreshable {
 
-	/**
-	 * Refresh the underlying target object.
-	 */
-	void refresh();
+    /**
+     * 刷新底层的目标对象。
+     */
+    void refresh();
 
-	/**
-	 * Return the number of actual refreshes since startup.
-	 */
-	long getRefreshCount();
+    /**
+     * 返回自启动以来实际刷新的次数。
+     */
+    long getRefreshCount();
 
-	/**
-	 * Return the last time an actual refresh happened (as timestamp).
-	 */
-	long getLastRefreshTime();
-
+    /**
+     * 返回实际刷新发生的最后时间（作为时间戳）。
+     */
+    long getLastRefreshTime();
 }

@@ -1,31 +1,25 @@
-/*
- * Copyright 2002-2015 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2015 原作者或作者。
+ 
+根据Apache许可证版本2.0（“许可证”）许可；
+除非符合许可证规定，否则不得使用此文件。
+您可以在以下地址获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”分发，
+不提供任何明示或暗示的保证或条件，无论是关于其适用性还是其特定用途的适用性。
+有关许可的具体语言和限制，请参阅许可证。*/
 package org.springframework.aop;
 
 import org.aopalliance.intercept.MethodInvocation;
-
 import org.springframework.lang.Nullable;
 
 /**
- * Extension of the AOP Alliance {@link org.aopalliance.intercept.MethodInvocation}
- * interface, allowing access to the proxy that the method invocation was made through.
+ * 扩展 AOP 联盟（@link org.aopalliance.intercept.MethodInvocation）接口，
+ * 允许访问通过该方法调用所使用的代理。
  *
- * <p>Useful to be able to substitute return values with the proxy,
- * if necessary, for example if the invocation target returned itself.
+ * <p>如果需要，能够用代理替换返回值是有用的，例如如果调用目标返回了自身。
  *
  * @author Juergen Hoeller
  * @author Adrian Colyer
@@ -35,55 +29,49 @@ import org.springframework.lang.Nullable;
  */
 public interface ProxyMethodInvocation extends MethodInvocation {
 
-	/**
-	 * Return the proxy that this method invocation was made through.
-	 * @return the original proxy object
-	 */
-	Object getProxy();
+    /**
+     * 返回通过该方法调用所使用的代理。
+     * @return 原始代理对象
+     */
+    Object getProxy();
 
-	/**
-	 * Create a clone of this object. If cloning is done before {@code proceed()}
-	 * is invoked on this object, {@code proceed()} can be invoked once per clone
-	 * to invoke the joinpoint (and the rest of the advice chain) more than once.
-	 * @return an invocable clone of this invocation.
-	 * {@code proceed()} can be called once per clone.
-	 */
-	MethodInvocation invocableClone();
+    /**
+     * 创建此对象的副本。如果在调用此对象的 {@code proceed()} 方法之前进行克隆，
+     * 则每个克隆可以调用一次 {@code proceed()} 来调用连接点（以及整个通知链）超过一次。
+     * @return 此调用的可调用克隆。
+     * 每个克隆可以调用一次 {@code proceed()}。
+     */
+    MethodInvocation invocableClone();
 
-	/**
-	 * Create a clone of this object. If cloning is done before {@code proceed()}
-	 * is invoked on this object, {@code proceed()} can be invoked once per clone
-	 * to invoke the joinpoint (and the rest of the advice chain) more than once.
-	 * @param arguments the arguments that the cloned invocation is supposed to use,
-	 * overriding the original arguments
-	 * @return an invocable clone of this invocation.
-	 * {@code proceed()} can be called once per clone.
-	 */
-	MethodInvocation invocableClone(Object... arguments);
+    /**
+     * 创建此对象的副本。如果在调用此对象的 {@code proceed()} 方法之前进行克隆，
+     * 则每个克隆都可以调用一次 {@code proceed()} 来执行连接点（以及剩余的咨询链）多次。
+     * @param arguments 应用于克隆调用的参数，覆盖原始参数
+     * @return 此调用的可调用克隆。
+     * 每个克隆可以调用一次 {@code proceed()}。
+     */
+    MethodInvocation invocableClone(Object... arguments);
 
-	/**
-	 * Set the arguments to be used on subsequent invocations in the any advice
-	 * in this chain.
-	 * @param arguments the argument array
-	 */
-	void setArguments(Object... arguments);
+    /**
+     * 设置后续调用此链中任何增强（Advice）时要使用的参数。
+     * @param arguments 参数数组
+     */
+    void setArguments(Object... arguments);
 
-	/**
-	 * Add the specified user attribute with the given value to this invocation.
-	 * <p>Such attributes are not used within the AOP framework itself. They are
-	 * just kept as part of the invocation object, for use in special interceptors.
-	 * @param key the name of the attribute
-	 * @param value the value of the attribute, or {@code null} to reset it
-	 */
-	void setUserAttribute(String key, @Nullable Object value);
+    /**
+     * 将指定的用户属性及其给定值添加到这次调用中。
+     * <p>这些属性在AOP框架本身中不被使用。它们只是作为调用对象的一部分保留，以便在特殊的拦截器中使用。
+     * @param key 属性的名称
+     * @param value 属性的值，或者使用{@code null}来重置它
+     */
+    void setUserAttribute(String key, @Nullable Object value);
 
-	/**
-	 * Return the value of the specified user attribute.
-	 * @param key the name of the attribute
-	 * @return the value of the attribute, or {@code null} if not set
-	 * @see #setUserAttribute
-	 */
-	@Nullable
-	Object getUserAttribute(String key);
-
+    /**
+     * 返回指定用户属性的值。
+     * @param key 属性的名称
+     * @return 属性的值，如果没有设置则返回 {@code null}
+     * @see #setUserAttribute
+     */
+    @Nullable
+    Object getUserAttribute(String key);
 }

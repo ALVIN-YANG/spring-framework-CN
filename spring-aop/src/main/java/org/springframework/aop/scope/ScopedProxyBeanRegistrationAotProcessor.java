@@ -1,29 +1,23 @@
-/*
- * Copyright 2002-2024 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2024 原作者或作者。
+ 
+根据Apache许可证版本2.0（以下简称“许可证”）授权；
+除非遵守许可证，否则您不得使用此文件。
+您可以在以下地址获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非适用法律要求或经书面同意，否则在许可证下分发的软件
+按照“原样”分发，不提供任何形式的明示或暗示保证，
+包括但不限于适销性、特定用途适用性或不侵犯第三方权利。
+有关许可证的具体语言规定权限和限制，请参阅许可证。*/
 package org.springframework.aop.scope;
 
 import java.lang.reflect.Executable;
 import java.util.function.Predicate;
-
 import javax.lang.model.element.Modifier;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aot.generate.GeneratedMethod;
 import org.springframework.aot.generate.GenerationContext;
 import org.springframework.beans.factory.aot.BeanRegistrationAotContribution;
@@ -42,7 +36,7 @@ import org.springframework.javapoet.CodeBlock;
 import org.springframework.lang.Nullable;
 
 /**
- * {@link BeanRegistrationAotProcessor} for {@link ScopedProxyFactoryBean}.
+ * 为 {@link ScopedProxyFactoryBean} 提供了 {@link BeanRegistrationAotProcessor}。
  *
  * @author Stephane Nicoll
  * @author Phillip Webb
@@ -50,113 +44,86 @@ import org.springframework.lang.Nullable;
  */
 class ScopedProxyBeanRegistrationAotProcessor implements BeanRegistrationAotProcessor {
 
-	private static final Log logger = LogFactory.getLog(ScopedProxyBeanRegistrationAotProcessor.class);
+    private static final Log logger = LogFactory.getLog(ScopedProxyBeanRegistrationAotProcessor.class);
 
+    @Override
+    @Nullable
+    public BeanRegistrationAotContribution processAheadOfTime(RegisteredBean registeredBean) {
+        Class<?> beanClass = registeredBean.getBeanClass();
+        if (beanClass.equals(ScopedProxyFactoryBean.class)) {
+            String targetBeanName = getTargetBeanName(registeredBean.getMergedBeanDefinition());
+            BeanDefinition targetBeanDefinition = getTargetBeanDefinition(registeredBean.getBeanFactory(), targetBeanName);
+            if (targetBeanDefinition == null) {
+                logger.warn("Could not handle " + ScopedProxyFactoryBean.class.getSimpleName() + ": no target bean definition found with name " + targetBeanName);
+                return null;
+            }
+            return BeanRegistrationAotContribution.withCustomCodeFragments(codeFragments -> new ScopedProxyBeanRegistrationCodeFragments(codeFragments, registeredBean, targetBeanName, targetBeanDefinition));
+        }
+        return null;
+    }
 
-	@Override
-	@Nullable
-	public BeanRegistrationAotContribution processAheadOfTime(RegisteredBean registeredBean) {
-		Class<?> beanClass = registeredBean.getBeanClass();
-		if (beanClass.equals(ScopedProxyFactoryBean.class)) {
-			String targetBeanName = getTargetBeanName(registeredBean.getMergedBeanDefinition());
-			BeanDefinition targetBeanDefinition =
-					getTargetBeanDefinition(registeredBean.getBeanFactory(), targetBeanName);
-			if (targetBeanDefinition == null) {
-				logger.warn("Could not handle " + ScopedProxyFactoryBean.class.getSimpleName() +
-						": no target bean definition found with name " + targetBeanName);
-				return null;
-			}
-			return BeanRegistrationAotContribution.withCustomCodeFragments(codeFragments ->
-					new ScopedProxyBeanRegistrationCodeFragments(codeFragments, registeredBean,
-							targetBeanName, targetBeanDefinition));
-		}
-		return null;
-	}
+    @Nullable
+    private String getTargetBeanName(BeanDefinition beanDefinition) {
+        Object value = beanDefinition.getPropertyValues().get("targetBeanName");
+        return (value instanceof String targetBeanName ? targetBeanName : null);
+    }
 
-	@Nullable
-	private String getTargetBeanName(BeanDefinition beanDefinition) {
-		Object value = beanDefinition.getPropertyValues().get("targetBeanName");
-		return (value instanceof String targetBeanName ? targetBeanName : null);
-	}
+    @Nullable
+    private BeanDefinition getTargetBeanDefinition(ConfigurableBeanFactory beanFactory, @Nullable String targetBeanName) {
+        if (targetBeanName != null && beanFactory.containsBean(targetBeanName)) {
+            return beanFactory.getMergedBeanDefinition(targetBeanName);
+        }
+        return null;
+    }
 
-	@Nullable
-	private BeanDefinition getTargetBeanDefinition(
-			ConfigurableBeanFactory beanFactory, @Nullable String targetBeanName) {
+    private static class ScopedProxyBeanRegistrationCodeFragments extends BeanRegistrationCodeFragmentsDecorator {
 
-		if (targetBeanName != null && beanFactory.containsBean(targetBeanName)) {
-			return beanFactory.getMergedBeanDefinition(targetBeanName);
-		}
-		return null;
-	}
+        private static final String REGISTERED_BEAN_PARAMETER_NAME = "registeredBean";
 
+        private final RegisteredBean registeredBean;
 
-	private static class ScopedProxyBeanRegistrationCodeFragments extends BeanRegistrationCodeFragmentsDecorator {
+        private final String targetBeanName;
 
-		private static final String REGISTERED_BEAN_PARAMETER_NAME = "registeredBean";
+        private final BeanDefinition targetBeanDefinition;
 
-		private final RegisteredBean registeredBean;
+        ScopedProxyBeanRegistrationCodeFragments(BeanRegistrationCodeFragments delegate, RegisteredBean registeredBean, String targetBeanName, BeanDefinition targetBeanDefinition) {
+            super(delegate);
+            this.registeredBean = registeredBean;
+            this.targetBeanName = targetBeanName;
+            this.targetBeanDefinition = targetBeanDefinition;
+        }
 
-		private final String targetBeanName;
+        @Override
+        public ClassName getTarget(RegisteredBean registeredBean, Executable constructorOrFactoryMethod) {
+            return ClassName.get(this.targetBeanDefinition.getResolvableType().toClass());
+        }
 
-		private final BeanDefinition targetBeanDefinition;
+        @Override
+        public CodeBlock generateNewBeanDefinitionCode(GenerationContext generationContext, ResolvableType beanType, BeanRegistrationCode beanRegistrationCode) {
+            return super.generateNewBeanDefinitionCode(generationContext, this.targetBeanDefinition.getResolvableType(), beanRegistrationCode);
+        }
 
-		ScopedProxyBeanRegistrationCodeFragments(BeanRegistrationCodeFragments delegate,
-				RegisteredBean registeredBean, String targetBeanName, BeanDefinition targetBeanDefinition) {
+        @Override
+        public CodeBlock generateSetBeanDefinitionPropertiesCode(GenerationContext generationContext, BeanRegistrationCode beanRegistrationCode, RootBeanDefinition beanDefinition, Predicate<String> attributeFilter) {
+            RootBeanDefinition processedBeanDefinition = new RootBeanDefinition(beanDefinition);
+            processedBeanDefinition.setTargetType(this.targetBeanDefinition.getResolvableType());
+            processedBeanDefinition.getPropertyValues().removePropertyValue("targetBeanName");
+            return super.generateSetBeanDefinitionPropertiesCode(generationContext, beanRegistrationCode, processedBeanDefinition, attributeFilter);
+        }
 
-			super(delegate);
-			this.registeredBean = registeredBean;
-			this.targetBeanName = targetBeanName;
-			this.targetBeanDefinition = targetBeanDefinition;
-		}
-
-		@Override
-		public ClassName getTarget(RegisteredBean registeredBean, Executable constructorOrFactoryMethod) {
-			return ClassName.get(this.targetBeanDefinition.getResolvableType().toClass());
-		}
-
-		@Override
-		public CodeBlock generateNewBeanDefinitionCode(GenerationContext generationContext,
-				ResolvableType beanType, BeanRegistrationCode beanRegistrationCode) {
-
-			return super.generateNewBeanDefinitionCode(generationContext,
-					this.targetBeanDefinition.getResolvableType(), beanRegistrationCode);
-		}
-
-		@Override
-		public CodeBlock generateSetBeanDefinitionPropertiesCode(
-				GenerationContext generationContext, BeanRegistrationCode beanRegistrationCode,
-				RootBeanDefinition beanDefinition, Predicate<String> attributeFilter) {
-
-			RootBeanDefinition processedBeanDefinition = new RootBeanDefinition(beanDefinition);
-			processedBeanDefinition.setTargetType(this.targetBeanDefinition.getResolvableType());
-			processedBeanDefinition.getPropertyValues().removePropertyValue("targetBeanName");
-			return super.generateSetBeanDefinitionPropertiesCode(generationContext,
-					beanRegistrationCode, processedBeanDefinition, attributeFilter);
-		}
-
-		@Override
-		public CodeBlock generateInstanceSupplierCode(
-				GenerationContext generationContext, BeanRegistrationCode beanRegistrationCode,
-				Executable constructorOrFactoryMethod, boolean allowDirectSupplierShortcut) {
-
-			GeneratedMethod generatedMethod = beanRegistrationCode.getMethods()
-					.add("getScopedProxyInstance", method -> {
-						method.addJavadoc("Create the scoped proxy bean instance for '$L'.",
-								this.registeredBean.getBeanName());
-						method.addModifiers(Modifier.PRIVATE, Modifier.STATIC);
-						method.returns(ScopedProxyFactoryBean.class);
-						method.addParameter(RegisteredBean.class, REGISTERED_BEAN_PARAMETER_NAME);
-						method.addStatement("$T factory = new $T()",
-								ScopedProxyFactoryBean.class, ScopedProxyFactoryBean.class);
-						method.addStatement("factory.setTargetBeanName($S)", this.targetBeanName);
-						method.addStatement("factory.setBeanFactory($L.getBeanFactory())",
-								REGISTERED_BEAN_PARAMETER_NAME);
-						method.addStatement("return factory");
-					});
-			return CodeBlock.of("$T.of($L)", InstanceSupplier.class,
-					generatedMethod.toMethodReference().toCodeBlock());
-		}
-
-	}
-
+        @Override
+        public CodeBlock generateInstanceSupplierCode(GenerationContext generationContext, BeanRegistrationCode beanRegistrationCode, Executable constructorOrFactoryMethod, boolean allowDirectSupplierShortcut) {
+            GeneratedMethod generatedMethod = beanRegistrationCode.getMethods().add("getScopedProxyInstance", method -> {
+                method.addJavadoc("Create the scoped proxy bean instance for '$L'.", this.registeredBean.getBeanName());
+                method.addModifiers(Modifier.PRIVATE, Modifier.STATIC);
+                method.returns(ScopedProxyFactoryBean.class);
+                method.addParameter(RegisteredBean.class, REGISTERED_BEAN_PARAMETER_NAME);
+                method.addStatement("$T factory = new $T()", ScopedProxyFactoryBean.class, ScopedProxyFactoryBean.class);
+                method.addStatement("factory.setTargetBeanName($S)", this.targetBeanName);
+                method.addStatement("factory.setBeanFactory($L.getBeanFactory())", REGISTERED_BEAN_PARAMETER_NAME);
+                method.addStatement("return factory");
+            });
+            return CodeBlock.of("$T.of($L)", InstanceSupplier.class, generatedMethod.toMethodReference().toCodeBlock());
+        }
+    }
 }

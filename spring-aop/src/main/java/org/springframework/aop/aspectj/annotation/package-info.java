@@ -1,7 +1,8 @@
+// 翻译完成 glm-4-flash
 /**
- * Classes enabling AspectJ 5 @Annotated classes to be used in Spring AOP.
+ * 允许在Spring AOP中使用AspectJ 5 @Annotated类的类。
  *
- * <p>Normally to be used through an AspectJAutoProxyCreator rather than directly.
+ * <p>通常应通过AspectJAutoProxyCreator使用，而不是直接使用。
  */
 @NonNullApi
 @NonNullFields
@@ -9,3 +10,4 @@ package org.springframework.aop.aspectj.annotation;
 
 import org.springframework.lang.NonNullApi;
 import org.springframework.lang.NonNullFields;
+

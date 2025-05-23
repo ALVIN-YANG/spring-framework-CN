@@ -1,37 +1,25 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2023 原作者或作者。
+ 
+根据Apache License，版本2.0（“许可证”）授权；
+除非遵守许可证，否则您不得使用此文件。
+您可以在以下地址获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，
+不提供任何明示或暗示的保证或条件。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.springframework.aop.target;
 
 import org.springframework.beans.BeansException;
 import org.springframework.lang.Nullable;
 
 /**
- * {@link org.springframework.aop.TargetSource} that lazily accesses a
- * singleton bean from a {@link org.springframework.beans.factory.BeanFactory}.
+ *  懒加载访问来自 `org.springframework.beans.factory.BeanFactory` 的单例 Bean 的 `org.springframework.aop.TargetSource`。
  *
- * <p>Useful when a proxy reference is needed on initialization but
- * the actual target object should not be initialized until first use.
- * When the target bean is defined in an
- * {@link org.springframework.context.ApplicationContext} (or a
- * {@code BeanFactory} that is eagerly pre-instantiating singleton beans)
- * it must be marked as "lazy-init" too, else it will be instantiated by said
- * {@code ApplicationContext} (or {@code BeanFactory}) on startup.
- * <p>For example:
- *
+ * <p>当需要在初始化时需要一个代理引用，但实际的目标对象应该在首次使用时才初始化时，这很有用。当目标 Bean 定义在 `org.springframework.context.ApplicationContext`（或一个会预先实例化单例 Bean 的 `BeanFactory`）中时，它也必须标记为 "lazy-init"，否则它将在启动时被该 `ApplicationContext`（或 `BeanFactory`）实例化。
+ * <p>例如：
  * <pre class="code">
  * &lt;bean id="serviceTarget" class="example.MyService" lazy-init="true"&gt;
  *   ...
@@ -44,15 +32,12 @@ import org.springframework.lang.Nullable;
  *     &lt;/bean&gt;
  *   &lt;/property&gt;
  * &lt;/bean&gt;</pre>
+ * “serviceTarget” Bean 不会在调用 "service" 代理上的任何方法之前初始化。
  *
- * The "serviceTarget" bean will not get initialized until a method on the
- * "service" proxy gets invoked.
+ * <p>子类可以扩展此类并覆盖 `#postProcessTargetObject(Object)` 方法，以便在目标对象首次加载时执行一些额外的处理。
  *
- * <p>Subclasses can extend this class and override the {@link #postProcessTargetObject(Object)} to
- * perform some additional processing with the target object when it is first loaded.
- *
- * @author Juergen Hoeller
- * @author Rob Harrop
+ * @作者 Juergen Hoeller
+ * @作者 Rob Harrop
  * @since 1.1.4
  * @see org.springframework.beans.factory.BeanFactory#getBean
  * @see #postProcessTargetObject
@@ -60,25 +45,22 @@ import org.springframework.lang.Nullable;
 @SuppressWarnings("serial")
 public class LazyInitTargetSource extends AbstractBeanFactoryBasedTargetSource {
 
-	@Nullable
-	private Object target;
+    @Nullable
+    private Object target;
 
+    @Override
+    public synchronized Object getTarget() throws BeansException {
+        if (this.target == null) {
+            this.target = getBeanFactory().getBean(getTargetBeanName());
+            postProcessTargetObject(this.target);
+        }
+        return this.target;
+    }
 
-	@Override
-	public synchronized Object getTarget() throws BeansException {
-		if (this.target == null) {
-			this.target = getBeanFactory().getBean(getTargetBeanName());
-			postProcessTargetObject(this.target);
-		}
-		return this.target;
-	}
-
-	/**
-	 * Subclasses may override this method to perform additional processing on
-	 * the target object when it is first loaded.
-	 * @param targetObject the target object that has just been instantiated (and configured)
-	 */
-	protected void postProcessTargetObject(Object targetObject) {
-	}
-
+    /**
+     * 子类可以重写此方法，在目标对象首次加载时执行额外的处理。
+     * @param targetObject 刚被实例化（并配置）的目标对象
+     */
+    protected void postProcessTargetObject(Object targetObject) {
+    }
 }

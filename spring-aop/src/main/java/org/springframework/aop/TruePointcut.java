@@ -1,61 +1,55 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2018 原作者或作者。
+ 
+根据Apache许可证版本2.0（“许可证”）授权；
+除非根据法律规定或书面同意，否则不得使用此文件，除非遵守许可证。
+您可以在以下网址获取许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非根据法律规定或书面同意，否则在许可证下分发的软件按“原样”分发，
+不提供任何明示或暗示的保证或条件，无论是关于其适用性、无侵权行为或特定用途的适用性。
+有关许可的具体语言、权限和限制，请参阅许可证。*/
 package org.springframework.aop;
 
 import java.io.Serializable;
 
 /**
- * Canonical Pointcut instance that always matches.
+ * 始终匹配的规范切点实例。
  *
  * @author Rod Johnson
  */
 @SuppressWarnings("serial")
 final class TruePointcut implements Pointcut, Serializable {
 
-	public static final TruePointcut INSTANCE = new TruePointcut();
+    public static final TruePointcut INSTANCE = new TruePointcut();
 
-	/**
-	 * Enforce Singleton pattern.
-	 */
-	private TruePointcut() {
-	}
+    /**
+     * 强制实现单例模式。
+     */
+    private TruePointcut() {
+    }
 
-	@Override
-	public ClassFilter getClassFilter() {
-		return ClassFilter.TRUE;
-	}
+    @Override
+    public ClassFilter getClassFilter() {
+        return ClassFilter.TRUE;
+    }
 
-	@Override
-	public MethodMatcher getMethodMatcher() {
-		return MethodMatcher.TRUE;
-	}
+    @Override
+    public MethodMatcher getMethodMatcher() {
+        return MethodMatcher.TRUE;
+    }
 
-	/**
-	 * Required to support serialization. Replaces with canonical
-	 * instance on deserialization, protecting Singleton pattern.
-	 * Alternative to overriding {@code equals()}.
-	 */
-	private Object readResolve() {
-		return INSTANCE;
-	}
+    /**
+     * 用于支持序列化。在反序列化时用规范实例替换，保护单例模式。
+     * 作为重写 {@code equals()} 的替代方案。
+     */
+    private Object readResolve() {
+        return INSTANCE;
+    }
 
-	@Override
-	public String toString() {
-		return "Pointcut.TRUE";
-	}
-
+    @Override
+    public String toString() {
+        return "Pointcut.TRUE";
+    }
 }

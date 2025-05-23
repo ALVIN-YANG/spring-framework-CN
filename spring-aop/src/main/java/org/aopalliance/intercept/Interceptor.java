@@ -1,35 +1,25 @@
-/*
- * Copyright 2002-2019 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2019 原作者或原作者。
 
+根据Apache License, Version 2.0（"许可证"）许可；
+除非适用法律要求或经书面同意，否则不得使用此文件，
+除非遵守许可证。
+您可以在以下网址获取许可证副本：
+https://www.apache.org/licenses/LICENSE-2.0
+
+除非法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，
+不提供任何明示或暗示的保证或条件。
+有关许可的具体语言和限制，请参阅许可证。*/
 package org.aopalliance.intercept;
 
 import org.aopalliance.aop.Advice;
 
 /**
- * This interface represents a generic interceptor.
+ * 此接口表示一个通用拦截器。
  *
- * <p>A generic interceptor can intercept runtime events that occur
- * within a base program. Those events are materialized by (reified
- * in) joinpoints. Runtime joinpoints can be invocations, field
- * access, exceptions...
+ * <p>一个通用拦截器可以拦截在基本程序中发生的运行时事件。这些事件由（在）连接点实现。运行时连接点可以是方法调用、字段访问、异常等...
  *
- * <p>This interface is not used directly. Use the sub-interfaces
- * to intercept specific events. For instance, the following class
- * implements some specific interceptors in order to implement a
- * debugger:
+ * <p>此接口不直接使用。使用子接口来拦截特定事件。例如，以下类实现了某些特定的拦截器以实现一个调试器：
  *
  * <pre class=code>
  * class DebuggingInterceptor implements MethodInterceptor,
@@ -55,5 +45,4 @@ import org.aopalliance.aop.Advice;
  * @see Joinpoint
  */
 public interface Interceptor extends Advice {
-
 }

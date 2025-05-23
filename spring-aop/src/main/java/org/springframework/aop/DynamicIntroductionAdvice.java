@@ -1,35 +1,23 @@
-/*
- * Copyright 2002-2021 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2021 原作者或原作者。
 
+根据Apache License 2.0（以下简称“许可证”）许可；除非遵守许可证，否则您不得使用此文件。
+您可以在以下链接获取许可证副本：
+https://www.apache.org/licenses/LICENSE-2.0
+
+除非法律要求或书面同意，否则在许可证下分发的软件按照“原样”分发，
+不提供任何明示或暗示的保证或条件，包括但不限于适销性、特定用途的适用性和非侵权性。
+有关许可的具体语言和限制，请参阅许可证。*/
 package org.springframework.aop;
 
 import org.aopalliance.aop.Advice;
 
 /**
- * Subinterface of AOP Alliance Advice that allows additional interfaces
- * to be implemented by an Advice, and available via a proxy using that
- * interceptor. This is a fundamental AOP concept called <b>introduction</b>.
+ * AOP联盟Advice的子接口，允许Advice实现额外的接口，并通过使用该拦截器的代理来访问这些接口。这是一个称为<b>引入</b>的AOP基本概念。
  *
- * <p>Introductions are often <b>mixins</b>, enabling the building of composite
- * objects that can achieve many of the goals of multiple inheritance in Java.
+ * <p>引入通常被用作<b>混入</b>，使得可以构建能够实现多个继承在Java中许多目标的多重对象。
  *
- * <p>Compared to {@link IntroductionInfo}, this interface allows an advice to
- * implement a range of interfaces that is not necessarily known in advance.
- * Thus an {@link IntroductionAdvisor} can be used to specify which interfaces
- * will be exposed in an advised object.
+ * <p>与{@link IntroductionInfo}相比，此接口允许Advice实现一系列接口，这些接口事先不一定已知。因此，可以使用{@link IntroductionAdvisor}来指定在advised对象中暴露哪些接口。
  *
  * @author Rod Johnson
  * @since 1.1.1
@@ -38,11 +26,10 @@ import org.aopalliance.aop.Advice;
  */
 public interface DynamicIntroductionAdvice extends Advice {
 
-	/**
-	 * Does this introduction advice implement the given interface?
-	 * @param intf the interface to check
-	 * @return whether the advice implements the specified interface
-	 */
-	boolean implementsInterface(Class<?> intf);
-
+    /**
+     * 这个介绍建议是否实现了给定的接口？
+     * @param intf 要检查的接口
+     * @return 是否实现了指定的接口
+     */
+    boolean implementsInterface(Class<?> intf);
 }

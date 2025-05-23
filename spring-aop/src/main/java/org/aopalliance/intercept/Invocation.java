@@ -1,40 +1,31 @@
-/*
- * Copyright 2002-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/*版权所有 2002-2016 原作者或作者。
+ 
+根据Apache License, Version 2.0（“许可证”），除非适用法律要求或书面同意，否则不得使用此文件，除非符合许可证。
+您可以在以下链接处获得许可证副本：
+ 
+      https://www.apache.org/licenses/LICENSE-2.0
+ 
+除非法律要求或书面同意，否则在许可证下分发的软件按“原样”分发，不提供任何明示或暗示的保证或条件。
+有关许可权限和限制的具体语言，请参阅许可证。*/
 package org.aopalliance.intercept;
 
 import javax.annotation.Nonnull;
 
 /**
- * This interface represents an invocation in the program.
+ * 此接口表示程序中的调用。
  *
- * <p>An invocation is a joinpoint and can be intercepted by an
- * interceptor.
+ * <p>调用是一个连接点，可以被拦截器拦截。
  *
  * @author Rod Johnson
  */
 public interface Invocation extends Joinpoint {
 
-	/**
-	 * Get the arguments as an array object.
-	 * It is possible to change element values within this
-	 * array to change the arguments.
-	 * @return the argument of the invocation
-	 */
-	@Nonnull
-	Object[] getArguments();
-
+    /**
+     * 获取参数作为数组对象。
+     * 可以修改该数组中的元素值来改变参数。
+     * @return 调用的参数
+     */
+    @Nonnull
+    Object[] getArguments();
 }

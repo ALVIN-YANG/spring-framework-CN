@@ -1,26 +1,19 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2018 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非根据法律规定或书面同意，否则在许可证下分发的软件按“原样”提供，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.aop.aspectj;
 
 import org.springframework.core.Ordered;
 
 /**
- * Interface to be implemented by types that can supply the information
- * needed to sort advice/advisors by AspectJ's precedence rules.
+ * 该接口由能够提供信息以按照 AspectJ 的优先级规则对建议/顾问进行排序的类型实现。
  *
  * @author Adrian Colyer
  * @since 2.0
@@ -28,31 +21,29 @@ import org.springframework.core.Ordered;
  */
 public interface AspectJPrecedenceInformation extends Ordered {
 
-	// Implementation note:
-	// We need the level of indirection this interface provides as otherwise the
-	// AspectJPrecedenceComparator must ask an Advisor for its Advice in all cases
-	// in order to sort advisors. This causes problems with the
-	// InstantiationModelAwarePointcutAdvisor which needs to delay creating
-	// its advice for aspects with non-singleton instantiation models.
+    // 实现备注：
+    // 我们需要这个接口提供的间接层次，否则否则
+    // AspectJPrecedenceComparator 必须在所有情况下向 Advisor 请求其 Advice
+    // 为了对顾问进行排序。这导致了一些问题。
+    // InstantiationModelAwarePointcutAdvisor 需要延迟创建
+    // 对于具有非单例实例化模式的方面，它的建议是：
+    /**
+     * 返回声明通知（增强）的方面（Bean）的名称。
+     */
+    String getAspectName();
 
-	/**
-	 * Return the name of the aspect (bean) in which the advice was declared.
-	 */
-	String getAspectName();
+    /**
+     * 返回在方面中建议成员的声明顺序。
+     */
+    int getDeclarationOrder();
 
-	/**
-	 * Return the declaration order of the advice member within the aspect.
-	 */
-	int getDeclarationOrder();
+    /**
+     * 返回这是否是前置通知。
+     */
+    boolean isBeforeAdvice();
 
-	/**
-	 * Return whether this is a before advice.
-	 */
-	boolean isBeforeAdvice();
-
-	/**
-	 * Return whether this is an after advice.
-	 */
-	boolean isAfterAdvice();
-
+    /**
+     * 返回是否这是一个后置通知。
+     */
+    boolean isAfterAdvice();
 }

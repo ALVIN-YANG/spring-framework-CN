@@ -1,19 +1,13 @@
-/*
- * Copyright 2002-2020 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2020 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非法律要求或书面同意，否则在许可证下分发的软件按“原样”提供，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.cache.aspectj;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -25,9 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
 
 /**
- * {@code @Configuration} class that registers the Spring infrastructure beans necessary
- * to enable AspectJ-based annotation-driven cache management for standard JSR-107
- * annotations.
+ * 使用 {@code @Configuration} 注解的类，该类注册了Spring基础设施Bean，这些Bean对于启用基于AspectJ的注解驱动的缓存管理（针对标准的JSR-107注解）是必要的。
  *
  * @author Stephane Nicoll
  * @since 4.1
@@ -38,12 +30,11 @@ import org.springframework.context.annotation.Role;
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class AspectJJCacheConfiguration extends AbstractJCacheConfiguration {
 
-	@Bean(name = CacheManagementConfigUtils.JCACHE_ASPECT_BEAN_NAME)
-	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public JCacheCacheAspect cacheAspect(JCacheOperationSource jCacheOperationSource) {
-		JCacheCacheAspect cacheAspect = JCacheCacheAspect.aspectOf();
-		cacheAspect.setCacheOperationSource(jCacheOperationSource);
-		return cacheAspect;
-	}
-
+    @Bean(name = CacheManagementConfigUtils.JCACHE_ASPECT_BEAN_NAME)
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public JCacheCacheAspect cacheAspect(JCacheOperationSource jCacheOperationSource) {
+        JCacheCacheAspect cacheAspect = JCacheCacheAspect.aspectOf();
+        cacheAspect.setCacheOperationSource(jCacheOperationSource);
+        return cacheAspect;
+    }
 }

@@ -1,39 +1,33 @@
-/*
- * Copyright 2002-2023 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2023 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，您可能不得使用此文件除非符合许可证规定。
+* 您可以在以下链接处获得许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件按“原样”提供，
+* 不提供任何明示或暗示的保证或条件，包括但不限于对适销性、适用性和非侵权的保证。
+* 请参阅许可证了解具体规定许可权限和限制。*/
 package org.springframework.beans.testfixture.beans.factory.aot;
 
 /**
- * A hierarchy where the exposed type of a bean is a partial signature.
+ * 一个层次结构，其中bean的暴露类型是部分签名。
  *
  * @author Stephane Nicoll
  */
 public class TestHierarchy {
 
-	public interface One {
-	}
+    public interface One {
+    }
 
-	public interface Two {
-	}
+    public interface Two {
+    }
 
-	public static class Implementation implements One, Two {
-	}
+    public static class Implementation implements One, Two {
+    }
 
-	public static One oneBean() {
-		return new Implementation();
-	}
-
+    public static One oneBean() {
+        return new Implementation();
+    }
 }

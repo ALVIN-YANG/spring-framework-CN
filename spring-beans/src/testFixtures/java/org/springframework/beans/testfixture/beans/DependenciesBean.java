@@ -1,72 +1,64 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012 原作者或作者。
+*
+* 根据 Apache 许可证 2.0 版（"许可证"），除非法律要求或经书面同意，否则不得使用此文件。
+* 您可以在以下地址获得许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件按"原样"提供，
+* 不提供任何明示或暗示的保证或条件。有关许可协议下授权和限制的具体语言，请参阅许可证。*/
 package org.springframework.beans.testfixture.beans;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 
 /**
- * Simple bean used to test dependency checking.
+ * 简单的Bean，用于测试依赖检查。
  *
  * @author Rod Johnson
- * @since 04.09.2003
+ * @since 2003年9月4日
  */
 public class DependenciesBean implements BeanFactoryAware {
 
-	private int age;
+    private int age;
 
-	private String name;
+    private String name;
 
-	private TestBean spouse;
+    private TestBean spouse;
 
-	private BeanFactory beanFactory;
+    private BeanFactory beanFactory;
 
+    public void setAge(int age) {
+        this.age = age;
+    }
 
-	public void setAge(int age) {
-		this.age = age;
-	}
+    public int getAge() {
+        return age;
+    }
 
-	public int getAge() {
-		return age;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setSpouse(TestBean spouse) {
+        this.spouse = spouse;
+    }
 
-	public void setSpouse(TestBean spouse) {
-		this.spouse = spouse;
-	}
+    public TestBean getSpouse() {
+        return spouse;
+    }
 
-	public TestBean getSpouse() {
-		return spouse;
-	}
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
+    }
 
-	@Override
-	public void setBeanFactory(BeanFactory beanFactory) {
-		this.beanFactory = beanFactory;
-	}
-
-	public BeanFactory getBeanFactory() {
-		return beanFactory;
-	}
-
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
+    }
 }

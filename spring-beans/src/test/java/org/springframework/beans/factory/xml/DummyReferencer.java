@@ -1,67 +1,58 @@
-/*
- * Copyright 2002-2018 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2018 原作者或作者。
+*
+* 根据 Apache License 2.0 ("许可协议") 许可，除非法律要求或书面同意，否则您不得使用此文件。
+* 您可以在以下地址获取许可协议的副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非根据适用的法律或书面同意，否则在许可协议下分发的软件是按“原样”分发的，
+* 不提供任何明示或暗示的保证或条件。有关许可协议具体规定的权限和限制，请参阅许可协议。*/
 package org.springframework.beans.factory.xml;
-
 
 import org.springframework.beans.testfixture.beans.TestBean;
 import org.springframework.beans.testfixture.beans.factory.DummyFactory;
 
 /**
  * @author Juergen Hoeller
- * @since 21.07.2003
+ * @since 2003年7月21日
  */
 public class DummyReferencer {
 
-	private TestBean testBean1;
+    private TestBean testBean1;
 
-	private TestBean testBean2;
+    private TestBean testBean2;
 
-	private DummyFactory dummyFactory;
+    private DummyFactory dummyFactory;
 
+    public DummyReferencer() {
+    }
 
-	public DummyReferencer() {
-	}
+    public DummyReferencer(DummyFactory dummyFactory) {
+        this.dummyFactory = dummyFactory;
+    }
 
-	public DummyReferencer(DummyFactory dummyFactory) {
-		this.dummyFactory = dummyFactory;
-	}
+    public void setDummyFactory(DummyFactory dummyFactory) {
+        this.dummyFactory = dummyFactory;
+    }
 
-	public void setDummyFactory(DummyFactory dummyFactory) {
-		this.dummyFactory = dummyFactory;
-	}
+    public DummyFactory getDummyFactory() {
+        return dummyFactory;
+    }
 
-	public DummyFactory getDummyFactory() {
-		return dummyFactory;
-	}
+    public void setTestBean1(TestBean testBean1) {
+        this.testBean1 = testBean1;
+    }
 
-	public void setTestBean1(TestBean testBean1) {
-		this.testBean1 = testBean1;
-	}
+    public TestBean getTestBean1() {
+        return testBean1;
+    }
 
-	public TestBean getTestBean1() {
-		return testBean1;
-	}
+    public void setTestBean2(TestBean testBean2) {
+        this.testBean2 = testBean2;
+    }
 
-	public void setTestBean2(TestBean testBean2) {
-		this.testBean2 = testBean2;
-	}
-
-	public TestBean getTestBean2() {
-		return testBean2;
-	}
-
+    public TestBean getTestBean2() {
+        return testBean2;
+    }
 }

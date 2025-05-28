@@ -1,7 +1,6 @@
+// 翻译完成 glm-4-flash
 /**
- * AspectJ-based dependency injection support driven by the
- * {@link org.springframework.beans.factory.annotation.Configurable @Configurable}
- * annotation.
+ * 基于 AspectJ 的依赖注入支持，由 `@Configurable` 注解驱动。
  */
 @NonNullApi
 @NonNullFields
@@ -9,3 +8,4 @@ package org.springframework.context.annotation.aspectj;
 
 import org.springframework.lang.NonNullApi;
 import org.springframework.lang.NonNullFields;
+

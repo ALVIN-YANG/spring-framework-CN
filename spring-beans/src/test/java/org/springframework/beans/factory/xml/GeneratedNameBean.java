@@ -1,47 +1,41 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012 原作者或作者。
+*
+* 根据 Apache License 2.0 ("许可证") 许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非根据法律要求或书面同意，否则在许可证下分发的软件按 "原样" 提供分发，
+* 不提供任何形式的明示或暗示保证，包括但不限于适销性、适用性和非侵权性。
+* 请参阅许可证以了解具体管理权限和限制的条款。*/
 package org.springframework.beans.factory.xml;
 
 import org.springframework.beans.factory.BeanNameAware;
 
 /**
- * @author Rob Harrop
+ * @作者 Rob Harrop
  */
 public class GeneratedNameBean implements BeanNameAware {
 
-	private String beanName;
+    private String beanName;
 
-	private GeneratedNameBean child;
+    private GeneratedNameBean child;
 
-	@Override
-	public void setBeanName(String beanName) {
-		this.beanName = beanName;
-	}
+    @Override
+    public void setBeanName(String beanName) {
+        this.beanName = beanName;
+    }
 
-	public String getBeanName() {
-		return beanName;
-	}
+    public String getBeanName() {
+        return beanName;
+    }
 
-	public void setChild(GeneratedNameBean child) {
-		this.child = child;
-	}
+    public void setChild(GeneratedNameBean child) {
+        this.child = child;
+    }
 
-	public GeneratedNameBean getChild() {
-		return child;
-	}
-
+    public GeneratedNameBean getChild() {
+        return child;
+    }
 }

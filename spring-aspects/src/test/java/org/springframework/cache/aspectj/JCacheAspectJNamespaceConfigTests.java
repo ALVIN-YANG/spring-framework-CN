@@ -1,19 +1,16 @@
-/*
- * Copyright 2002-2021 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2021 原作者或作者。
+*
+* 根据 Apache License 2.0（“许可证”）许可；
+* 除非符合许可证规定，否则不得使用此文件。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件
+* 是按“原样”分发的，不提供任何形式的明示或暗示保证，
+* 无论是否明确声明或暗示。有关许可的特定语言管理权限和
+* 限制，请参阅许可证。*/
 package org.springframework.cache.aspectj;
 
 import org.springframework.context.ApplicationContext;
@@ -21,19 +18,18 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.contextsupport.testfixture.jcache.AbstractJCacheAnnotationTests;
 
 /**
- * @author Stephane Nicoll
- * @author Sam Brannen
+ * @作者 Stephane Nicoll
+ * @作者 Sam Brannen
  */
 public class JCacheAspectJNamespaceConfigTests extends AbstractJCacheAnnotationTests {
 
-	@Override
-	protected ApplicationContext getApplicationContext() {
-		GenericXmlApplicationContext context = new GenericXmlApplicationContext();
-		// Disallow bean definition overriding to test https://github.com/spring-projects/spring-framework/pull/27499
-		context.setAllowBeanDefinitionOverriding(false);
-		context.load("/org/springframework/cache/config/annotation-jcache-aspectj.xml");
-		context.refresh();
-		return context;
-	}
-
+    @Override
+    protected ApplicationContext getApplicationContext() {
+        GenericXmlApplicationContext context = new GenericXmlApplicationContext();
+        // 禁止覆盖 Bean 定义以测试 https://github.com/spring-projects/spring-framework/pull/27499
+        context.setAllowBeanDefinitionOverriding(false);
+        context.load("/org/springframework/cache/config/annotation-jcache-aspectj.xml");
+        context.refresh();
+        return context;
+    }
 }

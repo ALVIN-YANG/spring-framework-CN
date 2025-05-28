@@ -1,19 +1,15 @@
-/*
- * Copyright 2002-2020 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2020 原作者或作者。
+*
+* 根据 Apache License 2.0 ("许可协议") 许可；
+* 除非遵守许可协议，否则您不得使用此文件。
+* 您可以在以下地址获取许可协议的副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可协议下分发的软件
+* 是按“原样”分发的，不提供任何明示或暗示的保证或条件。
+* 请参阅许可协议了解具体的管理权限和限制。*/
 package org.springframework.transaction.aspectj;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -26,9 +22,8 @@ import org.springframework.transaction.annotation.TransactionManagementConfigura
 import org.springframework.transaction.config.TransactionManagementConfigUtils;
 
 /**
- * {@code @Configuration} class that registers the Spring infrastructure beans necessary
- * to enable AspectJ-based annotation-driven transaction management for Spring's own
- * {@link org.springframework.transaction.annotation.Transactional} annotation.
+ * 用于注册Spring基础设施Bean的配置类，这些Bean是启用基于AspectJ的注解驱动事务管理所必需的，以支持Spring自己的
+ * {@link org.springframework.transaction.annotation.Transactional} 注解。
  *
  * @author Chris Beams
  * @author Juergen Hoeller
@@ -41,14 +36,13 @@ import org.springframework.transaction.config.TransactionManagementConfigUtils;
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class AspectJTransactionManagementConfiguration extends AbstractTransactionManagementConfiguration {
 
-	@Bean(name = TransactionManagementConfigUtils.TRANSACTION_ASPECT_BEAN_NAME)
-	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
-	public AnnotationTransactionAspect transactionAspect() {
-		AnnotationTransactionAspect txAspect = AnnotationTransactionAspect.aspectOf();
-		if (this.txManager != null) {
-			txAspect.setTransactionManager(this.txManager);
-		}
-		return txAspect;
-	}
-
+    @Bean(name = TransactionManagementConfigUtils.TRANSACTION_ASPECT_BEAN_NAME)
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public AnnotationTransactionAspect transactionAspect() {
+        AnnotationTransactionAspect txAspect = AnnotationTransactionAspect.aspectOf();
+        if (this.txManager != null) {
+            txAspect.setTransactionManager(this.txManager);
+        }
+        return txAspect;
+    }
 }

@@ -1,38 +1,31 @@
-/*
- * Copyright 2002-2019 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2019 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，除非法律要求或书面同意，否则不得使用此文件。
+* 您可以在以下地址获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或书面同意，否则在许可证下分发的软件按“原样”提供，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体管理许可和限制的条款。*/
 package org.springframework.beans.testfixture.beans;
 
 public class Employee extends TestBean {
 
-	private String co;
+    private String co;
 
-	public Employee() {
-	}
+    public Employee() {
+    }
 
-	public Employee(String name) {
-		super(name);
-	}
+    public Employee(String name) {
+        super(name);
+    }
 
-	public String getCompany() {
-		return co;
-	}
+    public String getCompany() {
+        return co;
+    }
 
-	public void setCompany(String co) {
-		this.co = co;
-	}
-
+    public void setCompany(String co) {
+        this.co = co;
+    }
 }

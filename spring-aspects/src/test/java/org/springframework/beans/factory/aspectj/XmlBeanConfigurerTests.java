@@ -1,40 +1,30 @@
-/*
- * Copyright 2002-2019 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2019 原作者或作者。
+*
+* 根据 Apache License 2.0 ("许可协议") 许可，除非法律要求或书面同意，否则您不得使用此文件。
+* 您可以在以下地址获取许可协议的副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非根据适用法律或书面同意，否则在许可协议下分发的软件按“原样”提供，
+* 不提供任何明示或暗示的保证或条件，无论是关于其适用性、 merchantability 或特定用途的适用性。
+* 请参阅许可协议了解管理许可权限和限制的特定语言。*/
 package org.springframework.beans.factory.aspectj;
 
 import org.junit.jupiter.api.Test;
-
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Chris Beams
+ * @作者 Chris Beams
  */
 public class XmlBeanConfigurerTests {
 
-	@Test
-	public void injection() {
-		try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-				"org/springframework/beans/factory/aspectj/beanConfigurerTests.xml")) {
-
-			ShouldBeConfiguredBySpring myObject = new ShouldBeConfiguredBySpring();
-			assertThat(myObject.getName()).isEqualTo("Rod");
-		}
-	}
-
+    @Test
+    public void injection() {
+        try (ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("org/springframework/beans/factory/aspectj/beanConfigurerTests.xml")) {
+            ShouldBeConfiguredBySpring myObject = new ShouldBeConfiguredBySpring();
+            assertThat(myObject.getName()).isEqualTo("Rod");
+        }
+    }
 }

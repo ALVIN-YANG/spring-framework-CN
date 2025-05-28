@@ -1,38 +1,30 @@
-/*
- * Copyright 2002-2012 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2012 原作者或作者。
+*
+* 根据 Apache License 2.0（以下简称“许可证”）许可，除非法律要求或书面同意，否则您不得使用此文件。
+* 您可以在以下链接获取许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非根据法律规定或书面同意，否则在许可证下分发的软件按“原样”分发，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证了解具体的管理权限和限制。*/
 package org.springframework.beans.testfixture.beans;
 
 /**
- *
  * @author Rod Johnson
  */
 public interface Person {
 
-	String getName();
+    String getName();
 
-	void setName(String name);
+    void setName(String name);
 
-	int getAge();
+    int getAge();
 
-	void setAge(int i);
+    void setAge(int i);
 
-	/**
-	 * Test for non-property method matching. If the parameter is a Throwable, it will be
-	 * thrown rather than returned.
-	 */
-	Object echo(Object o) throws Throwable;
+    /**
+     * 测试非属性方法匹配。如果参数是 Throwable 类型，则会抛出异常而不是返回。
+     */
+    Object echo(Object o) throws Throwable;
 }

@@ -1,30 +1,27 @@
-/*
- * Copyright 2002-2019 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// 翻译完成 glm-4-flash
+/** 版权所有 2002-2019 原作者或作者。
+*
+* 根据 Apache 许可协议版本 2.0（以下简称“许可证”）授权；
+* 您只能在不违反许可证的情况下使用此文件。
+* 您可以在以下地址获得许可证副本：
+*
+*      https://www.apache.org/licenses/LICENSE-2.0
+*
+* 除非适用法律要求或经书面同意，否则在许可证下分发的软件
+* 是“按原样”分发的，不提供任何明示或暗示的保证或条件。
+* 请参阅许可证以了解管理许可权和限制的具体语言。*/
 package org.springframework.beans.testfixture.beans.subpkg;
 
 /**
- * Used for testing pointcut matching.
+ * 用于测试切点匹配。
  *
  * @see org.springframework.aop.aspectj.AspectJExpressionPointcutTests#testWithinRootAndSubpackages()
  *
  * @author Chris Beams
  */
 public class DeepBean {
-	public void aMethod(String foo) {
-		// no-op
-	}
+
+    public void aMethod(String foo) {
+        // 无操作（No Operation）
+    }
 }

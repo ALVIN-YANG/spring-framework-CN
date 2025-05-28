@@ -1,5 +1,6 @@
+// 翻译完成 glm-4-flash
 /**
- * AspectJ-based dependency injection support.
+ * 基于 AspectJ 的依赖注入支持。
  */
 @NonNullApi
 @NonNullFields
@@ -7,3 +8,4 @@ package org.springframework.beans.factory.aspectj;
 
 import org.springframework.lang.NonNullApi;
 import org.springframework.lang.NonNullFields;
+
